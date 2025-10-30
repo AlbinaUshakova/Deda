@@ -1,0 +1,158 @@
+{
+  "id": "ep7",
+  "title": "7",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ",
+    "ლ",
+    "ნ",
+    "კ",
+    "მ",
+    "დ",
+    "თ",
+    "გ",
+    "ტ",
+    "ბ",
+    "ვ",
+    "ხ",
+    "პ",
+    "ზ",
+    "ჩ",
+    "ც",
+    "ჯ",
+    "ფ",
+    "შ",
+    "ჰ",
+    "ღ",
+    "ყ",
+    "ქ",
+    "ც",
+    "ჭ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "კაბა",
+      "reading": "k’aba",
+      "ru_meaning": "платье"
+    },
+    {
+      "type": "word",
+      "ge_text": "კი",
+      "reading": "k’i",
+      "ru_meaning": "да"
+    },
+    {
+      "type": "word",
+      "ge_text": "კარგი",
+      "reading": "k’argi",
+      "ru_meaning": "хорошо / хороший"
+    },
+    {
+      "type": "word",
+      "ge_text": "სკამი",
+      "reading": "sk’ami",
+      "ru_meaning": "стул"
+    },
+    {
+      "type": "word",
+      "ge_text": "კიევი",
+      "reading": "k’ievi",
+      "ru_meaning": "Киев"
+    },
+    {
+      "type": "word",
+      "ge_text": "მოსკოვი",
+      "reading": "mosk’ovi",
+      "ru_meaning": "Москва"
+    },
+    {
+      "type": "word",
+      "ge_text": "ქათამი",
+      "reading": "katami",
+      "ru_meaning": "курица"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს",
+      "reading": "me makvs",
+      "ru_meaning": "у меня есть"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია",
+      "reading": "me mkvia",
+      "ru_meaning": "меня зовут"
+    },
+    {
+      "type": "word",
+      "ge_text": "ექვსი",
+      "reading": "ekvsi",
+      "ru_meaning": "шесть"
+    },
+    {
+      "type": "word",
+      "ge_text": "შაქარი",
+      "reading": "shakari",
+      "ru_meaning": "сахар"
+    },
+    {
+      "type": "word",
+      "ge_text": "რა გქვია?",
+      "reading": "ra gkvia?",
+      "ru_meaning": "как тебя зовут?"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია დათო",
+      "reading": "me mkvia dato",
+      "ru_meaning": "меня зовут Дато"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ექვსი კაბა",
+      "reading": "me makvs ekvsi k’aba",
+      "ru_meaning": "у меня шесть платьев"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს მაგიდა",
+      "reading": "me makvs magida",
+      "ru_meaning": "у меня есть стол"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს შაქარი",
+      "reading": "me makvs shakari",
+      "ru_meaning": "у меня есть сахар"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს კარგი გოგოა",
+      "reading": "es k’argi gogoa",
+      "ru_meaning": "это хорошая девочка"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ კარგი დედა",
+      "reading": "me var k’argi deda",
+      "ru_meaning": "я хорошая мама"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სამი სკამი",
+      "reading": "ai sami sk’ami",
+      "ru_meaning": "вот три стула"
+    },
+    {
+      "type": "word",
+      "ge_text": "კა ქა კი ქი კე ქე კუ ქუ კო ქო",
+      "reading": "k’a ka k’i ki k’e ke k’u ku k’o ko",
+      "ru_meaning": "ка ки кэ ку ко"
+    }
+  ]
+}

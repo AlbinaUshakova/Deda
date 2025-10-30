@@ -1,0 +1,29 @@
+{
+  "name": "deda-full-v1",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "next telemetry disable || true"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "zustand": "4.5.2",
+    "@supabase/supabase-js": "2.45.3",
+    "clsx": "2.1.1"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4",
+    "@types/react": "18.2.74",
+    "@types/node": "20.14.10",
+    "tailwindcss": "3.4.10",
+    "postcss": "8.4.41",
+    "autoprefixer": "10.4.19",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "id": "ep6",
+  "title": "6",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ",
+    "ლ",
+    "ნ",
+    "კ",
+    "მ",
+    "დ",
+    "თ",
+    "გ",
+    "ტ",
+    "ბ",
+    "ვ",
+    "ხ",
+    "პ",
+    "ზ",
+    "ჩ",
+    "ც",
+    "ჯ",
+    "ფ",
+    "შ",
+    "ჰ",
+    "ღ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "მეგობარი",
+      "reading": "megobari",
+      "ru_meaning": "друг"
+    },
+    {
+      "type": "word",
+      "ge_text": "შოთი",
+      "reading": "shoti",
+      "ru_meaning": "хлеб"
+    },
+    {
+      "type": "word",
+      "ge_text": "შორს",
+      "reading": "shors",
+      "ru_meaning": "далеко"
+    },
+    {
+      "type": "word",
+      "ge_text": "შვიდი",
+      "reading": "shvidi",
+      "ru_meaning": "семь"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი რვა ვარდი",
+      "reading": "ai rva vardi",
+      "ru_meaning": "вот восемь роз"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს დათოს გოგოა",
+      "reading": "es datos gogoa",
+      "ru_meaning": "это девочка Дато"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს დედის ვარდია",
+      "reading": "es dedis vardia",
+      "ru_meaning": "это роза мамы"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ მამა",
+      "reading": "me var mama",
+      "ru_meaning": "я папа"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ დედა",
+      "reading": "me var deda",
+      "ru_meaning": "я мама"
+    },
+    {
+      "type": "word",
+      "ge_text": "დათო გიორგის მეგობარია",
+      "reading": "dato giorgis megobaria",
+      "ru_meaning": "Дато - друг Гиорги"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი მამის მაგიდა",
+      "reading": "ai mamis magida",
+      "ru_meaning": "вот стол папы"
+    }
+  ]
+}

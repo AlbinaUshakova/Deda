@@ -1,0 +1,48 @@
+{
+  "id": "ep2",
+  "title": "2",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ",
+    "ლ",
+    "ნ",
+    "კ",
+    "მ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "აი ათასი ია",
+      "reading": "ai atasi ia",
+      "ru_meaning": "вот тысяча фиалок"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი იას საათи",
+      "reading": "ai ias saatи",
+      "ru_meaning": "вот часы Ии"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი თათიას ათი თხა",
+      "reading": "ai tatias ati tkha",
+      "ru_meaning": "вот десять коз Татии"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სოსოს ოთახი",
+      "reading": "ai sosos otakhi",
+      "ru_meaning": "вот комната Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ხუთი უთო",
+      "reading": "ai khuti uto",
+      "ru_meaning": "вот пять утюгов"
+    }
+  ]
+}

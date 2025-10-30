@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: light dark; }
+body { @apply bg-neutral-950 text-neutral-100 min-h-screen; }
+.card { @apply rounded-3xl bg-neutral-900 border border-neutral-800 shadow-lg shadow-black/30; }
+.btn { @apply inline-flex items-center justify-center rounded-2xl px-4 py-2 font-medium border border-neutral-700 hover:bg-neutral-800 active:scale-95 transition; }
+.h1 { @apply text-3xl md:text-4xl font-semibold tracking-tight; }
+.h2 { @apply text-2xl font-semibold; }
+.badge { @apply text-xs px-2 py-0.5 rounded-full bg-neutral-800 border border-neutral-700; }
+input, select, textarea { @apply rounded-xl bg-neutral-900 border border-neutral-700 px-3 py-2; }
+a { @apply underline-offset-4; }

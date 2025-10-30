@@ -1,0 +1,119 @@
+{
+  "id": "ep8",
+  "title": "8",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ",
+    "ლ",
+    "ნ",
+    "კ",
+    "მ",
+    "დ",
+    "თ",
+    "გ",
+    "ტ",
+    "ბ",
+    "ვ",
+    "ხ",
+    "პ",
+    "ზ",
+    "ჩ",
+    "ც",
+    "ჯ",
+    "ფ",
+    "შ",
+    "ჰ",
+    "ღ",
+    "ყ",
+    "ქ",
+    "ც",
+    "ჭ",
+    "ძ",
+    "წ",
+    "ჟ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "ხორცი",
+      "reading": "khortsi",
+      "ru_meaning": "мясо"
+    },
+    {
+      "type": "word",
+      "ge_text": "ცხრა",
+      "reading": "tskhra",
+      "ru_meaning": "девять"
+    },
+    {
+      "type": "word",
+      "ge_text": "თევზი",
+      "reading": "tevzi",
+      "ru_meaning": "рыба"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეზო",
+      "reading": "ezo",
+      "ru_meaning": "двор"
+    },
+    {
+      "type": "word",
+      "ge_text": "გზა",
+      "reading": "gza",
+      "ru_meaning": "дорога"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ცხრა ქათამი და თევზი",
+      "reading": "ai tskhra katami da tevzi",
+      "ru_meaning": "вот девять кур и рыба"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არის ეზო",
+      "reading": "es aris ezo",
+      "ru_meaning": "это двор"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა ოთახშია",
+      "reading": "deda otakhshia",
+      "ru_meaning": "мама в комнате"
+    },
+    {
+      "type": "word",
+      "ge_text": "გოგო ეზოშია",
+      "reading": "gogo ezoshia",
+      "ru_meaning": "девочка во дворе"
+    },
+    {
+      "type": "word",
+      "ge_text": "დათო ბათუმშია",
+      "reading": "dato batumshia",
+      "ru_meaning": "Дато в Батуми"
+    },
+    {
+      "type": "word",
+      "ge_text": "გოგო სკამზეა",
+      "reading": "gogo sk’amzea",
+      "ru_meaning": "девочка на стуле"
+    },
+    {
+      "type": "word",
+      "ge_text": "თევზი მაგიდაზეა",
+      "reading": "tevzi magidazea",
+      "ru_meaning": "рыба на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
+      "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
+      "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
+    }
+  ]
+}

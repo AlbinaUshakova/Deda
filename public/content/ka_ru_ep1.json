@@ -1,0 +1,86 @@
+{
+  "id": "ep1",
+  "title": "1",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "ია",
+      "reading": "ia",
+      "ru_meaning": "фиалка"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი",
+      "reading": "ai",
+      "ru_meaning": "вот"
+    },
+    {
+      "type": "word",
+      "ge_text": "საათი",
+      "reading": "saati",
+      "ru_meaning": "часы"
+    },
+    {
+      "type": "word",
+      "ge_text": "ოთხი",
+      "reading": "otkhi",
+      "ru_meaning": "четыре"
+    },
+    {
+      "type": "word",
+      "ge_text": "უთო",
+      "reading": "uto",
+      "ru_meaning": "утюг"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ასი თხა",
+      "reading": "ai asi tkha",
+      "ru_meaning": "вот сто коз"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სოსოს ოთხი უთო",
+      "reading": "ai sosos otkhi uto",
+      "ru_meaning": "вот четыре утюга Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "ათი",
+      "reading": "ati",
+      "ru_meaning": "десять"
+    },
+    {
+      "type": "word",
+      "ge_text": "ასი",
+      "reading": "asi",
+      "ru_meaning": "сто"
+    },
+    {
+      "type": "word",
+      "ge_text": "თხა",
+      "reading": "tkha",
+      "ru_meaning": "коза"
+    },
+    {
+      "type": "word",
+      "ge_text": "ოთახი",
+      "reading": "otakhi",
+      "ru_meaning": "комната"
+    },
+    {
+      "type": "word",
+      "ge_text": "ხუთი",
+      "reading": "khuti",
+      "ru_meaning": "пять"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": "ep3",
+  "title": "3",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ",
+    "ლ",
+    "ნ",
+    "კ",
+    "მ",
+    "დ",
+    "თ",
+    "გ",
+    "ტ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "ორი",
+      "reading": "ori",
+      "ru_meaning": "два"
+    },
+    {
+      "type": "word",
+      "ge_text": "თარო",
+      "reading": "taro",
+      "ru_meaning": "полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ერთი",
+      "reading": "erti",
+      "ru_meaning": "один"
+    },
+    {
+      "type": "word",
+      "ge_text": "ხე",
+      "reading": "khe",
+      "ru_meaning": "дерево"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს",
+      "reading": "es",
+      "ru_meaning": "это"
+    },
+    {
+      "type": "word",
+      "ge_text": "არის",
+      "reading": "aris",
+      "ru_meaning": "есть"
+    },
+    {
+      "type": "word",
+      "ge_text": "რა",
+      "reading": "ra",
+      "ru_meaning": "что"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა",
+      "reading": "deda",
+      "ru_meaning": "мама"
+    },
+    {
+      "type": "word",
+      "ge_text": "და",
+      "reading": "da",
+      "ru_meaning": "и / сестра"
+    },
+    {
+      "type": "word",
+      "ge_text": "ბარათი",
+      "reading": "barati",
+      "ru_meaning": "карточка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ბაბუა",
+      "reading": "babua",
+      "ru_meaning": "дедушка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ბებია",
+      "reading": "bebia",
+      "ru_meaning": "бабушка"
+    },
+    {
+      "type": "word",
+      "ge_text": "სად",
+      "reading": "sad",
+      "ru_meaning": "где"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სოსოს ორი თარო",
+      "reading": "ai sosos ori taro",
+      "ru_meaning": "вот две полки Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "ერთი თარო",
+      "reading": "erti taro",
+      "ru_meaning": "одна полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ორი ხე",
+      "reading": "ori khe",
+      "ru_meaning": "два дерева"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არის ოთახი",
+      "reading": "es aris otakhi",
+      "ru_meaning": "это (есть) комната"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ოთახია",
+      "reading": "es otakhia",
+      "ru_meaning": "это комната"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "id": "ep4",
+  "title": "4",
+  "letters": [
+    "ა",
+    "ი",
+    "ე",
+    "ს",
+    "ო",
+    "რ",
+    "ლ",
+    "ნ",
+    "კ",
+    "მ",
+    "დ",
+    "თ",
+    "გ",
+    "ტ",
+    "ბ",
+    "ვ",
+    "ხ",
+    "პ"
+  ],
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "ეს არის ხე",
+      "reading": "es aris khe",
+      "ru_meaning": "это дерево"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ხეა",
+      "reading": "es khea",
+      "ru_meaning": "это дерево"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს რა არის?",
+      "reading": "es ra aris?",
+      "ru_meaning": "что это?"
+    },
+    {
+      "type": "word",
+      "ge_text": "რა არის ეს?",
+      "reading": "ra aris es?",
+      "ru_meaning": "что это?"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არ არის თარო",
+      "reading": "es ar aris taro",
+      "ru_meaning": "это не полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არაა თარო",
+      "reading": "es araa taro",
+      "ru_meaning": "это не полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არის თარო",
+      "reading": "es aris taro",
+      "ru_meaning": "это полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს თაროა",
+      "reading": "es taroa",
+      "ru_meaning": "это полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არ არის უთო",
+      "reading": "es ar aris uto",
+      "ru_meaning": "это не утюг"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არაა უთო",
+      "reading": "es araa uto",
+      "ru_meaning": "это не утюг"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს დედაა",
+      "reading": "es dedaa",
+      "ru_meaning": "это мама"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა და და",
+      "reading": "deda da da",
+      "ru_meaning": "мама и сестра"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ორი ბარათი",
+      "reading": "ai ori barati",
+      "ru_meaning": "вот две карточки"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ორი ბარათი",
+      "reading": "ai ori barati",
+      "ru_meaning": "вот две карточки"
+    },
+    {
+      "type": "word",
+      "ge_text": "სად არის დედა?",
+      "reading": "sad aris deda?",
+      "ru_meaning": "где мама?"
+    },
+    {
+      "type": "word",
+      "ge_text": "სად არის ბარათი?",
+      "reading": "sad aris barati?",
+      "ru_meaning": "где карточка?"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედის ოთახი",
+      "reading": "dedis otakhi",
+      "ru_meaning": "комната мамы"
+    },
+    {
+      "type": "word",
+      "ge_text": "დის საათი",
+      "reading": "dis saati",
+      "ru_meaning": "часы сестры"
+    }
+  ]
+}
