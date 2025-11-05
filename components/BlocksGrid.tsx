@@ -189,21 +189,21 @@ export default function BlocksGrid({
   const [cellSize, setCellSize] = useState(48);
   const [boardHeight, setBoardHeight] = useState(BOARD_SIZE * 48);
 
-  // Размеры поля
+  // Размеры поля: квадрат, фиксированный по ширине
   useEffect(() => {
     const measure = () => {
       if (!boardRef.current) return;
       const rect = boardRef.current.getBoundingClientRect();
       const size = rect.width / BOARD_SIZE;
       setCellSize(size);
-      setBoardHeight(rect.height);
+      setBoardHeight(rect.width); // высота = ширине → квадрат
     };
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // Новый раунд → новый набор фигур
+  // Новый раунд → новый набор фигур (логика раундов)
   useEffect(() => {
     if (roundId <= 0) return;
     const newBag = makeBag();
@@ -214,7 +214,7 @@ export default function BlocksGrid({
       setGameOver(false);
       setBag(newBag);
     }
-  }, [roundId]);
+  }, [roundId]); // ВАЖНО: только roundId, без board — иначе фигуры будут бесконечно появляться
 
   // Drag & drop с "прилипанием" к ближайшему валидному месту
   useEffect(() => {
@@ -240,18 +240,15 @@ export default function BlocksGrid({
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
 
-      // размеры фигуры в ячейках
       const maxCol = Math.max(...currentPiece.shape.cells.map(c => c.c)) + 1;
       const maxRow = Math.max(...currentPiece.shape.cells.map(c => c.r)) + 1;
 
-      // считаем базовый верхний левый угол так, чтобы ЦЕНТР фигуры был под курсором
       const baseColFloat = relX / cellSize - maxCol / 2;
       const baseRowFloat = relY / cellSize - maxRow / 2;
 
       const baseCol = Math.round(baseColFloat);
       const baseRow = Math.round(baseRowFloat);
 
-      // ищем ближайшее валидное место вокруг этого центра
       const nearest = findNearestValidPos(board, currentPiece.shape, baseRow, baseCol, 2);
       setHover(nearest);
     };
@@ -341,14 +338,13 @@ export default function BlocksGrid({
 
   return (
     <div className="flex justify-center w-full py-2">
-      <div className="flex w-full max-w-6xl gap-10 items-start">
-        {/* Колонка фигур слева, высота = высоте поля */}
+      <div className="flex w-full max-w-6xl items-start justify-center gap-20">
+        {/* КОЛОНКА ФИГУР: группа по центру слева от поля */}
         <div
-          className="flex flex-col items-center"
+          className="flex flex-col items-end pr-8"
           style={{ height: boardHeight }}
         >
-          {/* Фигуры растягиваются по высоте колонки */}
-          <div className="flex-1 flex flex-col justify-between items-center">
+          <div className="flex flex-col justify-center items-center gap-12 h-full">
             {bag.map(piece => {
               const widthCells = Math.max(...piece.shape.cells.map(c => c.c)) + 1;
               const heightCells = Math.max(...piece.shape.cells.map(c => c.r)) + 1;
@@ -374,7 +370,7 @@ export default function BlocksGrid({
           </div>
 
           {/* Очки под колонкой фигур */}
-          <div className="mt-6 text-xs text-neutral-400">
+          <div className="mt-6 text-xs text-neutral-400 self-center">
             Очки: {score}
           </div>
         </div>
@@ -383,7 +379,7 @@ export default function BlocksGrid({
         <div className="flex-1 flex justify-center">
           <div
             ref={boardRef}
-            className="relative grid grid-cols-8 gap-[4px] bg-[#020617] rounded-3xl p-3 shadow-lg border border-[#1e293b] w-full max-w-[520px]"
+            className="relative grid grid-cols-8 gap-[4px] rounded-3xl p-3 shadow-lg w-[min(72vh,560px)] bg-transparent"
           >
             {board.map((row, r) =>
               row.map((color, c) => {

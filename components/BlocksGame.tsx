@@ -28,7 +28,7 @@ function buildRandomQuestion(words: Word[]): Question | null {
 export default function BlocksGame({ words }: BlocksGameProps) {
   const hasWords = useMemo(() => words && words.length > 0, [words]);
 
-  // Состояние "сейчас надо ответить на задание?"
+  // сейчас нужно ответить на задание?
   const [awaitingAnswer, setAwaitingAnswer] = useState(true);
 
   // roundId – счётчик раундов (каждый раз новый набор фигур)
@@ -53,21 +53,20 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     if (normUser === normCorrect) {
       setError(false);
       setAnswer('');
-      setAwaitingAnswer(false);              // прячем задание
-      setRoundId(prev => prev + 1);          // новый раунд фигур
+      setAwaitingAnswer(false);               // прячем задание
+      setRoundId(prev => prev + 1);           // новый раунд фигур
       setQuestion(buildRandomQuestion(words)); // подготовим следующее задание
     } else {
       setError(true);
     }
   };
 
-  // Когда все 3 фигуры раунда поставлены – ждём новое задание
+  // Когда все 3 фигуры раунда поставлены – нужно новое задание
   const handleRoundFinished = () => {
     setAwaitingAnswer(true);
   };
 
-  // Игрок нажал "Сыграть снова" после "нет ходов" → очищаем поле/очки (это делает BlocksGrid)
-  // и снова показываем задание.
+  // Игрок нажал "Сыграть снова" после "нет ходов"
   const handleRestartRequested = () => {
     setAwaitingAnswer(true);
     setRoundId(0); // следующий верный ответ начнёт раунд с 1
@@ -75,12 +74,13 @@ export default function BlocksGame({ words }: BlocksGameProps) {
 
   return (
     <div className="flex w-full justify-center">
-      <div className="flex w-full max-w-6xl gap-10 items-stretch py-6">
-        {/* ЛЕВАЯ КОЛОНКА: либо задание, либо просто пустое место того же размера */}
-        <div className="flex flex-col justify-start flex-[0.35]">
+      {/* общий контейнер игры */}
+      <div className="flex w-full max-w-6xl mx-auto gap-8 items-start py-8">
+        {/* ЛЕВАЯ КОЛОНКА: фиксированная ширина, чтобы поле не прыгало */}
+        <div className="w-[320px] shrink-0">
           {awaitingAnswer && (
             <div>
-              <div className="text-lg font-semibold mb-2">Задание</div>
+              <div className="text-lg font-semibold mb-3">Задание</div>
 
               {!hasWords && (
                 <div className="text-sm text-neutral-400">
@@ -107,7 +107,7 @@ export default function BlocksGame({ words }: BlocksGameProps) {
                       }}
                       placeholder="введите ответ"
                       className={
-                        'px-3 py-2 rounded-lg border bg-transparent text-white outline-none w-full max-w-xs ' +
+                        'px-3 py-2 rounded-lg border bg-transparent text-white outline-none w-full ' +
                         (error
                           ? 'border-red-500'
                           : 'border-[#4b5563] focus:border-blue-400')
@@ -133,7 +133,7 @@ export default function BlocksGame({ words }: BlocksGameProps) {
         </div>
 
         {/* ПРАВАЯ КОЛОНКА: поле + фигуры */}
-        <div className="flex-1 flex justify-center items-center">
+        <div className="flex-1 flex justify-center">
           <BlocksGrid
             roundId={roundId}
             onRoundFinished={handleRoundFinished}
