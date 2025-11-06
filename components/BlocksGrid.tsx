@@ -1,9 +1,12 @@
+// src/components/BlocksGrid.tsx
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const BOARD_SIZE = 8;
-const PREVIEW_SCALE = 0.5; // 50% от размера клетки
+const PREVIEW_SCALE = 0.6;
+const BOARD_PIXEL_SIZE = 'min(72vh, 640px)';
 
 type CellColor = string | null;
 type ShapeCell = { r: number; c: number };
@@ -15,11 +18,18 @@ type DragState = { piece: Piece; pointerX: number; pointerY: number } | null;
 
 type BlocksGridProps = {
   roundId: number;
-  onRoundFinished: () => void;      // все фигуры этого раунда поставлены
-  onRestartRequested: () => void;   // игрок хочет начать заново после "нет ходов"
+  onRoundFinished: () => void;
+  onRestartRequested: () => void;
+  onGameOver: () => void;
 };
 
-// Набор фигур
+type ClearedCell = {
+  r: number;
+  c: number;
+  color1: string;
+  color2: string;
+};
+
 const SHAPES: Shape[] = [
   { id: 'line4', cells: [{ r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 }, { r: 0, c: 3 }] },
   { id: 'L3', cells: [{ r: 0, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 1 }] },
@@ -48,16 +58,22 @@ const SHAPES: Shape[] = [
   },
 ];
 
-const COLORS = ['#38bdf8', '#f97373', '#4ade80', '#a855f7', '#facc15', '#fb923c'];
+const COLORS = [
+  '#38bdf8', '#f97373', '#4ade80', '#a855f7',
+  '#facc15', '#fb923c', '#ef4444', '#06b6d4', '#f472b6',
+];
+
+function randomInt(max: number): number {
+  return Math.floor(Math.random() * max);
+}
+function randomColor() {
+  return COLORS[randomInt(COLORS.length)];
+}
 
 function createEmptyBoard(): CellColor[][] {
   return Array.from({ length: BOARD_SIZE }, () =>
     Array<CellColor>(BOARD_SIZE).fill(null),
   );
-}
-
-function randomInt(max: number): number {
-  return Math.floor(Math.random() * max);
 }
 
 function makePiece(idSuffix: number): Piece {
@@ -99,16 +115,18 @@ function placePiece(
 function clearLines(board: CellColor[][]) {
   let cleared = 0;
   let next = board.map(row => [...row]);
+  const clearedCellsRaw: { r: number; c: number }[] = [];
 
-  // строки
   for (let r = 0; r < BOARD_SIZE; r++) {
     if (next[r].every(c => c !== null)) {
       cleared++;
-      next[r] = Array<CellColor>(BOARD_SIZE).fill(null);
+      for (let c = 0; c < BOARD_SIZE; c++) {
+        clearedCellsRaw.push({ r, c });
+        next[r][c] = null;
+      }
     }
   }
 
-  // столбцы
   for (let c = 0; c < BOARD_SIZE; c++) {
     let full = true;
     for (let r = 0; r < BOARD_SIZE; r++) {
@@ -120,12 +138,13 @@ function clearLines(board: CellColor[][]) {
     if (full) {
       cleared++;
       for (let r = 0; r < BOARD_SIZE; r++) {
+        clearedCellsRaw.push({ r, c });
         next[r][c] = null;
       }
     }
   }
 
-  return { board: next, cleared };
+  return { board: next, cleared, clearedCellsRaw };
 }
 
 function hasAnyMove(board: CellColor[][], pieces: Piece[]): boolean {
@@ -141,7 +160,7 @@ function hasAnyMove(board: CellColor[][], pieces: Piece[]): boolean {
   return false;
 }
 
-// поиск ближайшей валидной позиции вокруг указанной клетки
+// поиск ближайшей валидной позиции вокруг примерной клетки
 function findNearestValidPos(
   board: CellColor[][],
   shape: Shape,
@@ -162,6 +181,7 @@ function findNearestValidPos(
       const c = baseCol + dc;
       if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) continue;
       if (!canPlace(board, shape, r, c)) continue;
+
       const d = Math.abs(dr) + Math.abs(dc);
       if (d < bestDist) {
         bestDist = d;
@@ -177,46 +197,59 @@ export default function BlocksGrid({
   roundId,
   onRoundFinished,
   onRestartRequested,
+  onGameOver,
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
   const [bag, setBag] = useState<Piece[]>([]);
   const [drag, setDrag] = useState<DragState>(null);
   const [hover, setHover] = useState<HoverPos>(null);
+
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+
+  const [clearedCells, setClearedCells] = useState<ClearedCell[]>([]);
 
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [cellSize, setCellSize] = useState(48);
-  const [boardHeight, setBoardHeight] = useState(BOARD_SIZE * 48);
 
-  // Размеры поля: квадрат, фиксированный по ширине
+  const [paletteContainer, setPaletteContainer] = useState<HTMLElement | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const el = document.getElementById('blocks-palette-slot');
+    setPaletteContainer(el);
+  }, [roundId]);
+
   useEffect(() => {
     const measure = () => {
       if (!boardRef.current) return;
       const rect = boardRef.current.getBoundingClientRect();
       const size = rect.width / BOARD_SIZE;
       setCellSize(size);
-      setBoardHeight(rect.width); // высота = ширине → квадрат
     };
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // Новый раунд → новый набор фигур (логика раундов)
+  // новый раунд → новый набор фигур
   useEffect(() => {
     if (roundId <= 0) return;
     const newBag = makeBag();
     if (!hasAnyMove(board, newBag)) {
       setBag([]);
       setGameOver(true);
+      onGameOver();
     } else {
       setGameOver(false);
       setBag(newBag);
     }
-  }, [roundId]); // ВАЖНО: только roundId, без board — иначе фигуры будут бесконечно появляться
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roundId]);
 
-  // Drag & drop с "прилипанием" к ближайшему валидному месту
+  // drag & drop
   useEffect(() => {
     if (!drag) return;
 
@@ -249,7 +282,13 @@ export default function BlocksGrid({
       const baseCol = Math.round(baseColFloat);
       const baseRow = Math.round(baseRowFloat);
 
-      const nearest = findNearestValidPos(board, currentPiece.shape, baseRow, baseCol, 2);
+      const nearest = findNearestValidPos(
+        board,
+        currentPiece.shape,
+        baseRow,
+        baseCol,
+        2,
+      );
       setHover(nearest);
     };
 
@@ -269,11 +308,24 @@ export default function BlocksGrid({
 
         if (canPlace(board, piece.shape, row, col)) {
           let placed = placePiece(board, piece.shape, row, col, piece.color);
-          const { board: clearedBoard, cleared } = clearLines(placed);
+          const { board: clearedBoard, cleared, clearedCellsRaw } =
+            clearLines(placed);
           const newScore = score + piece.shape.cells.length + cleared * 10;
 
           setBoard(clearedBoard);
           setScore(newScore);
+          setBestScore(prevBest => (newScore > prevBest ? newScore : prevBest));
+
+          if (cleared > 0 && clearedCellsRaw.length) {
+            const withColors: ClearedCell[] = clearedCellsRaw.map(cell => ({
+              r: cell.r,
+              c: cell.c,
+              color1: randomColor(),
+              color2: randomColor(),
+            }));
+            setClearedCells(withColors);
+            setTimeout(() => setClearedCells([]), 1900);
+          }
 
           setBag(oldBag => {
             const rest = oldBag.filter(p => p.id !== piece.id);
@@ -282,10 +334,10 @@ export default function BlocksGrid({
               if (!hasAnyMove(clearedBoard, rest)) {
                 setGameOver(true);
                 setHover(null);
+                onGameOver();
                 return [];
               }
             } else {
-              // все фигуры этого раунда поставлены
               onRoundFinished();
             }
 
@@ -306,7 +358,7 @@ export default function BlocksGrid({
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
     };
-  }, [drag, board, cellSize, gameOver, hover, score, onRoundFinished]);
+  }, [drag, board, cellSize, gameOver, hover, score, onRoundFinished, onGameOver]);
 
   const dragPiece = drag?.piece ?? null;
 
@@ -323,10 +375,10 @@ export default function BlocksGrid({
     setGameOver(false);
     setDrag(null);
     setHover(null);
+    setClearedCells([]);
     onRestartRequested();
   };
 
-  // Параметры "призрака" (фигура под курсором)
   let ghostWidth = 0;
   let ghostHeight = 0;
   if (dragPiece) {
@@ -338,48 +390,40 @@ export default function BlocksGrid({
 
   return (
     <div className="flex justify-center w-full py-2">
-      <div className="flex w-full max-w-6xl items-start justify-center gap-20">
-        {/* КОЛОНКА ФИГУР: группа по центру слева от поля */}
+      <div className="flex w-full max-w-6xl justify-center">
         <div
-          className="flex flex-col items-end pr-8"
-          style={{ height: boardHeight }}
+          className="flex flex-col items-stretch"
+          style={{ width: BOARD_PIXEL_SIZE }}
         >
-          <div className="flex flex-col justify-center items-center gap-12 h-full">
-            {bag.map(piece => {
-              const widthCells = Math.max(...piece.shape.cells.map(c => c.c)) + 1;
-              const heightCells = Math.max(...piece.shape.cells.map(c => c.r)) + 1;
-              const isDragging = dragPiece?.id === piece.id;
-
-              const previewCellSize = cellSize * PREVIEW_SCALE;
-
-              return (
-                <div
-                  key={piece.id}
-                  onPointerDown={e => startDrag(piece, e)}
-                  className="cursor-pointer touch-none transition-transform"
-                  style={{
-                    width: widthCells * previewCellSize,
-                    height: heightCells * previewCellSize,
-                    opacity: isDragging ? 0.2 : 1,
-                  }}
-                >
-                  <PieceSVG piece={piece} cellSize={previewCellSize} />
-                </div>
-              );
-            })}
+          {/* счёт + рекорд */}
+          <div className="flex items-center justify-between mb-3 text-neutral-300 px-3">
+            <div
+              className="font-bold text-white leading-none"
+              style={{ fontSize: `${cellSize * 0.4}px` }}
+            >
+              {score}
+            </div>
+            <div className="flex items-center gap-1">
+              <span
+                className="text-yellow-300"
+                style={{ fontSize: `${cellSize * 0.4}px` }}
+              >
+                🏆
+              </span>
+              <span
+                className="font-semibold text-white leading-none"
+                style={{ fontSize: `${cellSize * 0.35}px` }}
+              >
+                {bestScore}
+              </span>
+            </div>
           </div>
 
-          {/* Очки под колонкой фигур */}
-          <div className="mt-6 text-xs text-neutral-400 self-center">
-            Очки: {score}
-          </div>
-        </div>
-
-        {/* Поле 8×8 */}
-        <div className="flex-1 flex justify-center">
+          {/* поле */}
           <div
             ref={boardRef}
-            className="relative grid grid-cols-8 gap-[4px] rounded-3xl p-3 shadow-lg w-[min(72vh,560px)] bg-transparent"
+            className="relative grid grid-cols-8 gap-[4px] rounded-3xl p-3 bg-transparent"
+            style={{ width: '100%', height: BOARD_PIXEL_SIZE }}
           >
             {board.map((row, r) =>
               row.map((color, c) => {
@@ -388,14 +432,19 @@ export default function BlocksGrid({
                   dragPiece &&
                   canPlace(board, dragPiece.shape, hover.row, hover.col) &&
                   dragPiece.shape.cells.some(
-                    cell => cell.r + hover.row === r && cell.c + hover.col === c,
+                    cell =>
+                      cell.r + hover.row === r &&
+                      cell.c + hover.col === c,
                   );
+
+                const flash = clearedCells.find(
+                  cell => cell.r === r && cell.c === c,
+                );
 
                 return (
                   <div
                     key={`${r}-${c}`}
                     className="relative rounded-lg bg-[#111827] overflow-hidden"
-                    style={{ aspectRatio: '1 / 1' }}
                   >
                     {color && (
                       <div
@@ -404,16 +453,26 @@ export default function BlocksGrid({
                       />
                     )}
 
-                    {/* Подсветка текущей позиции фигуры */}
                     {showHover && (
                       <div className="absolute inset-[3px] rounded-md border border-white/80 pointer-events-none" />
+                    )}
+
+                    {flash && (
+                      <div
+                        className="absolute inset-[2px] rounded-md cell-flash pointer-events-none"
+                        style={
+                          {
+                            '--c1': flash.color1,
+                            '--c2': flash.color2,
+                          } as React.CSSProperties
+                        }
+                      />
                     )}
                   </div>
                 );
               }),
             )}
 
-            {/* Оверлей "нет ходов" */}
             {gameOver && (
               <div className="absolute inset-0 bg-black/70 rounded-3xl flex flex-col items-center justify-center gap-3 text-sm">
                 <div className="text-white font-semibold mb-1">
@@ -434,7 +493,7 @@ export default function BlocksGrid({
         </div>
       </div>
 
-      {/* Призрак фигуры под курсором: полный размер клетки, поверх всего, цветной */}
+      {/* призрак фигуры */}
       {drag && dragPiece && (
         <div
           className="pointer-events-none fixed z-[1000]"
@@ -446,6 +505,79 @@ export default function BlocksGrid({
           <PieceSVG piece={dragPiece} cellSize={cellSize} />
         </div>
       )}
+
+      {/* палитра фигур слева */}
+      {paletteContainer &&
+        createPortal(
+          <div className="flex flex-col justify-center items-center h-full">
+            <div className="flex flex-col items-center gap-[72px]">
+              {bag.map(piece => {
+                const widthCells = Math.max(
+                  ...piece.shape.cells.map(c => c.c),
+                ) + 1;
+                const heightCells = Math.max(
+                  ...piece.shape.cells.map(c => c.r),
+                ) + 1;
+                const isDragging = dragPiece?.id === piece.id;
+
+                const previewCellSize = cellSize * PREVIEW_SCALE;
+
+                return (
+                  <div
+                    key={piece.id}
+                    onPointerDown={e => startDrag(piece, e)}
+                    className="cursor-pointer touch-none transition-transform"
+                    style={{
+                      width: widthCells * previewCellSize,
+                      height: heightCells * previewCellSize,
+                      opacity: isDragging ? 0.2 : 1,
+                    }}
+                  >
+                    <PieceSVG
+                      piece={piece}
+                      cellSize={previewCellSize}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>,
+          paletteContainer,
+        )}
+
+      <style jsx>{`
+        @keyframes flashTwice {
+          0% {
+            opacity: 0;
+            transform: scale(1);
+            background: var(--c1);
+          }
+          10% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          25% {
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.08);
+            background: var(--c2);
+          }
+          75% {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+        }
+
+        .cell-flash {
+          animation: flashTwice 1.8s ease-in-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
