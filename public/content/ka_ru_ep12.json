@@ -1,0 +1,114 @@
+{
+  "id": "14-15",
+  "title": "Эპიზოდი 14–15",
+  "cards": [
+    {
+      "type": "word",
+      "ge_text": "ტელეფონი",
+      "ru_meaning": "телефон",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "კატა",
+      "ru_meaning": "кошка / кот",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სასტუმრო",
+      "ru_meaning": "отель",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "წვენი",
+      "ru_meaning": "сок",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "წყალი",
+      "ru_meaning": "вода",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა",
+      "ru_meaning": "я хочу",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა წვენი",
+      "ru_meaning": "я хочу сок",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მწვადი",
+      "ru_meaning": "шашлык",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ სასტუმროში",
+      "ru_meaning": "я в отеле",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა წყალი",
+      "ru_meaning": "я хочу воды",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს მწვადი",
+      "ru_meaning": "я люблю шашлык",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰალვა",
+      "ru_meaning": "халва",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰამბურგერი",
+      "ru_meaning": "гамбургер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჭაჭა",
+      "ru_meaning": "чача",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ხაჭო",
+      "ru_meaning": "творог",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ხაჭაპური",
+      "ru_meaning": "хачапури",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა ჭაჭა",
+      "ru_meaning": "я хочу чачу",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე არ მიყვარს ხაჭო",
+      "ru_meaning": "я не люблю творог",
+      "audio_url": ""
+    }
+  ]
+}

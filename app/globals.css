@@ -2,13 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --------- БАЗОВЫЕ НАСТРОЙКИ --------- */
+
 :root {
-    color-scheme: light dark;
+    color-scheme: dark;
+}
+
+html {
+    overflow-y: scroll;
 }
 
 body {
     @apply bg-neutral-950 text-neutral-100 min-h-screen;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "SF Pro Display", "Segoe UI", sans-serif;
 }
+
+/* --------- УТИЛИТНЫЕ КОМПОНЕНТЫ --------- */
 
 .card {
     @apply rounded-3xl bg-neutral-900 border border-neutral-800 shadow-lg shadow-black/30;
@@ -40,6 +50,22 @@ a {
     @apply underline-offset-4;
 }
 
-html {
-    overflow-y: scroll;
+/* --------- ЕДИНСТВЕННАЯ АНИМАЦИЯ: ПОКАЧИВАНИЕ ОБЛАКА --------- */
+
+/* лёгкое плавное движение вверх-вниз + небольшой наклон */
+@keyframes cloudBob {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(3px) rotate(-1deg);
+    }
+}
+
+/* применяем к коту */
+.animate-cloud {
+    animation: cloudBob 6s ease-in-out infinite;
 }
