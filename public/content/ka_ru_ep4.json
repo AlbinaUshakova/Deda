@@ -38,13 +38,13 @@
       "type": "word",
       "ge_text": "ეს რა არის?",
       "reading": "es ra aris?",
-      "ru_meaning": "что это?"
+      "ru_meaning": "что это"
     },
     {
       "type": "word",
       "ge_text": "რა არის ეს?",
       "reading": "ra aris es?",
-      "ru_meaning": "что это?"
+      "ru_meaning": "что это"
     },
     {
       "type": "word",
@@ -98,25 +98,19 @@
       "type": "word",
       "ge_text": "აი ორი ბარათი",
       "reading": "ai ori barati",
-      "ru_meaning": "вот две карточки"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი ორი ბარათი",
-      "reading": "ai ori barati",
-      "ru_meaning": "вот две карточки"
+      "ru_meaning": "вот 2 карточки"
     },
     {
       "type": "word",
       "ge_text": "სად არის დედა?",
       "reading": "sad aris deda?",
-      "ru_meaning": "где мама?"
+      "ru_meaning": "где мама"
     },
     {
       "type": "word",
       "ge_text": "სად არის ბარათი?",
       "reading": "sad aris barati?",
-      "ru_meaning": "где карточка?"
+      "ru_meaning": "где карточка"
     },
     {
       "type": "word",

@@ -1,6 +1,6 @@
 {
-  "id": "12-13",
-  "title": "Эპიზოდი 12–13",
+  "id": "ep11",
+  "title": "11",
   "cards": [
     {
       "type": "word",
@@ -47,13 +47,13 @@
     {
       "type": "word",
       "ge_text": "არაჟანი",
-      "ru_meaning": "мацони / сметана",
+      "ru_meaning": "сметана",
       "audio_url": ""
     },
     {
       "type": "word",
       "ge_text": "მე მიყვარს არაჟანი",
-      "ru_meaning": "я люблю мацони",
+      "ru_meaning": "я люблю сметану",
       "audio_url": ""
     },
     {
@@ -113,7 +113,7 @@
     {
       "type": "word",
       "ge_text": "ის ოფისშია",
-      "ru_meaning": "он / она в офисе",
+      "ru_meaning": "он в офисе",
       "audio_url": ""
     },
     {
@@ -125,7 +125,7 @@
     {
       "type": "word",
       "ge_text": "სად არის ფული?",
-      "ru_meaning": "где деньги?",
+      "ru_meaning": "где деньги",
       "audio_url": ""
     },
     {

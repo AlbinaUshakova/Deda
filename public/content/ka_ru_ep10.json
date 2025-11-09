@@ -1,6 +1,6 @@
 {
-  "id": "10-11",
-  "title": "Эპიზოდი 10–11",
+  "id": "ep10",
+  "title": "10",
   "cards": [
     {
       "type": "word",
@@ -35,7 +35,7 @@
     {
       "type": "word",
       "ge_text": "მე მყავს",
-      "ru_meaning": "у меня есть (кто-то)",
+      "ru_meaning": "у меня есть",
       "audio_url": ""
     },
     {
@@ -71,7 +71,7 @@
     {
       "type": "word",
       "ge_text": "ყა ყე ყი ყო ყუ",
-      "ru_meaning": "слоги ყა ყე ყი ყო ყუ",
+      "ru_meaning": "ка кэ ки ко ку",
       "audio_url": ""
     },
     {
@@ -83,7 +83,7 @@
     {
       "type": "word",
       "ge_text": "გაუმარჯოს",
-      "ru_meaning": "привет / здравствуй",
+      "ru_meaning": "Да здравствует",
       "audio_url": ""
     },
     {
@@ -101,7 +101,7 @@
     {
       "type": "word",
       "ge_text": "ძვირი",
-      "ru_meaning": "дорогой (по цене)",
+      "ru_meaning": "дорогой",
       "audio_url": ""
     },
     {

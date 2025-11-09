@@ -1,6 +1,6 @@
 {
-  "id": "9",
-  "title": "Эპიზოდი 9",
+  "id": "ep9",
+  "title": "9",
   "cards": [
     {
       "type": "word",
@@ -23,7 +23,7 @@
     {
       "type": "word",
       "ge_text": "ქართველი",
-      "ru_meaning": "грузин (человек)",
+      "ru_meaning": "грузин",
       "audio_url": ""
     },
     {
@@ -53,7 +53,7 @@
     {
       "type": "word",
       "ge_text": "ქართული",
-      "ru_meaning": "грузинский (язык)",
+      "ru_meaning": "грузинский язык",
       "audio_url": ""
     },
     {
@@ -89,7 +89,7 @@
     {
       "type": "word",
       "ge_text": "ღამე მშვიდობისა",
-      "ru_meaning": "спокойной ночи",
+      "ru_meaning": "доброй ночи",
       "audio_url": ""
     },
     {

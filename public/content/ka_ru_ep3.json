@@ -22,7 +22,7 @@
       "type": "word",
       "ge_text": "ორი",
       "reading": "ori",
-      "ru_meaning": "два"
+      "ru_meaning": "2"
     },
     {
       "type": "word",
@@ -34,7 +34,7 @@
       "type": "word",
       "ge_text": "ერთი",
       "reading": "erti",
-      "ru_meaning": "один"
+      "ru_meaning": "1"
     },
     {
       "type": "word",
@@ -70,7 +70,7 @@
       "type": "word",
       "ge_text": "და",
       "reading": "da",
-      "ru_meaning": "и / сестра"
+      "ru_meaning": "и сестра"
     },
     {
       "type": "word",
@@ -100,19 +100,19 @@
       "type": "word",
       "ge_text": "აი სოსოს ორი თარო",
       "reading": "ai sosos ori taro",
-      "ru_meaning": "вот две полки Сосо"
+      "ru_meaning": "вот 2 полки Сосо"
     },
     {
       "type": "word",
       "ge_text": "ერთი თარო",
       "reading": "erti taro",
-      "ru_meaning": "одна полка"
+      "ru_meaning": "1 полка"
     },
     {
       "type": "word",
       "ge_text": "ორი ხე",
       "reading": "ori khe",
-      "ru_meaning": "два дерева"
+      "ru_meaning": "2 дерева"
     },
     {
       "type": "word",

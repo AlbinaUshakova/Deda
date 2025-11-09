@@ -18,7 +18,7 @@
       "type": "word",
       "ge_text": "აი ათასი ია",
       "reading": "ai atasi ia",
-      "ru_meaning": "вот тысяча фиалок"
+      "ru_meaning": "вот 1000 фиалок"
     },
     {
       "type": "word",
@@ -30,7 +30,7 @@
       "type": "word",
       "ge_text": "აი თათიას ათი თხა",
       "reading": "ai tatias ati tkha",
-      "ru_meaning": "вот десять коз Татии"
+      "ru_meaning": "вот 10 коз Татии"
     },
     {
       "type": "word",
@@ -42,7 +42,7 @@
       "type": "word",
       "ge_text": "აი ხუთი უთო",
       "reading": "ai khuti uto",
-      "ru_meaning": "вот пять утюгов"
+      "ru_meaning": "вот 5 утюгов"
     }
   ]
 }

@@ -32,7 +32,7 @@
       "type": "word",
       "ge_text": "ოთხი",
       "reading": "otkhi",
-      "ru_meaning": "четыре"
+      "ru_meaning": "4"
     },
     {
       "type": "word",
@@ -44,25 +44,25 @@
       "type": "word",
       "ge_text": "აი ასი თხა",
       "reading": "ai asi tkha",
-      "ru_meaning": "вот сто коз"
+      "ru_meaning": "вот 100 коз"
     },
     {
       "type": "word",
       "ge_text": "აი სოსოს ოთხი უთო",
       "reading": "ai sosos otkhi uto",
-      "ru_meaning": "вот четыре утюга Сосо"
+      "ru_meaning": "вот 4 утюга Сосо"
     },
     {
       "type": "word",
       "ge_text": "ათი",
       "reading": "ati",
-      "ru_meaning": "десять"
+      "ru_meaning": "10"
     },
     {
       "type": "word",
       "ge_text": "ასი",
       "reading": "asi",
-      "ru_meaning": "сто"
+      "ru_meaning": "100"
     },
     {
       "type": "word",
@@ -80,7 +80,7 @@
       "type": "word",
       "ge_text": "ხუთი",
       "reading": "khuti",
-      "ru_meaning": "пять"
+      "ru_meaning": "5"
     }
   ]
 }

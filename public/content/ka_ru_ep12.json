@@ -1,6 +1,6 @@
 {
-  "id": "14-15",
-  "title": "Эპიზოდი 14–15",
+  "id": "ep12",
+  "title": "12",
   "cards": [
     {
       "type": "word",
@@ -11,7 +11,7 @@
     {
       "type": "word",
       "ge_text": "კატა",
-      "ru_meaning": "кошка / кот",
+      "ru_meaning": "кошка",
       "audio_url": ""
     },
     {
