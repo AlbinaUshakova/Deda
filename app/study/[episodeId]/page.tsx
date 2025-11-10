@@ -1,3 +1,4 @@
+// app/study/[episodeId]/page.tsx
 'use client';
 
 import Link from 'next/link';
@@ -18,6 +19,49 @@ type Card = {
   audio_url?: string;
 };
 
+/** Простая транслитерация грузинского в латиницу */
+function geToTranslit(text: string): string {
+  const map: Record<string, string> = {
+    'ა': 'a',
+    'ბ': 'b',
+    'გ': 'g',
+    'დ': 'd',
+    'ე': 'e',
+    'ვ': 'v',
+    'ზ': 'z',
+    'თ': 't',
+    'ი': 'i',
+    'კ': "k'",
+    'ლ': 'l',
+    'მ': 'm',
+    'ნ': 'n',
+    'ო': 'o',
+    'პ': "p'",
+    'ჟ': 'zh',
+    'რ': 'r',
+    'ს': 's',
+    'ტ': "t'",
+    'უ': 'u',
+    'ფ': 'p',
+    'ქ': 'k',
+    'ღ': 'gh',
+    'ყ': "q'",
+    'შ': 'sh',
+    'ჩ': 'ch',
+    'ც': 'ts',
+    'ძ': 'dz',
+    'წ': "ts'",
+    'ჭ': "ch'",
+    'ხ': 'kh',
+    'ჯ': 'j',
+    'ჰ': 'h',
+  };
+
+  return Array.from(text)
+    .map(ch => map[ch] ?? ch)
+    .join('');
+}
+
 export default function StudyPage({ params }: { params: { episodeId: string } }) {
   const { episodeId } = params;
 
@@ -31,6 +75,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
   const [flip, setFlip] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
   const [autoplay, setAutoplay] = useState(false);
+  const [showTranslit, setShowTranslit] = useState(false); // показывать ли транскрипцию
 
   const total = cards.length;
   const card = cards[idx] || null;
@@ -54,6 +99,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
       setFlip(false);
       setRevealCount(0);
       setAutoplay(false);
+      setShowTranslit(false);
     })();
   }, [episodeId]);
 
@@ -96,19 +142,21 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
     [episodeId, idx],
   );
 
-  // nav
+  // nav — зацикливание
   const goNext = useCallback(() => {
     if (!total) return;
-    setIdx(i => Math.min(total - 1, i + 1));
+    setIdx(i => (i + 1) % total);
     setFlip(false);
     setRevealCount(0);
+    setShowTranslit(false);
   }, [total]);
 
   const goPrev = useCallback(() => {
     if (!total) return;
-    setIdx(i => Math.max(0, i - 1));
+    setIdx(i => (i - 1 + total) % total);
     setFlip(false);
     setRevealCount(0);
+    setShowTranslit(false);
   }, [total]);
 
   // keyboard
@@ -148,6 +196,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
       });
       setFlip(false);
       setRevealCount(0);
+      setShowTranslit(false);
     }, 2500);
 
     return () => {
@@ -171,31 +220,30 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
     setIdx(0);
     setFlip(false);
     setRevealCount(0);
+    setShowTranslit(false);
   };
 
-  // hint masking
+  // HINT: посимвольно по всей фразе, включая цифры
   const hintText = useMemo(() => {
     if (!card) return '';
     const t = (card.ru_meaning || '').trim();
     if (!t) return '';
 
-    const m = t.match(
-      /^([A-Za-zА-Яа-яЁёІіЇїЄєҐґ\u0400-\u04FF\-]+)(.*)$/,
-    );
-    const first = m ? m[1] : t.split(/\s+/)[0];
-    const rest = m ? m[2] : t.slice(first.length);
+    const chars = Array.from(t);
+    const shown = Math.min(revealCount, chars.length);
 
-    const letters = Array.from(first);
-    const shown = Math.min(revealCount, letters.length);
-    const masked =
-      letters.slice(0, shown).join('') +
-      letters
-        .slice(shown)
-        .map(ch =>
-          /[A-Za-zА-Яа-яЁёІіЇїЄєҐґ\u0400-\u04FF]/.test(ch) ? '_' : ch,
-        )
-        .join('');
-    return masked + rest;
+    // ← ТУТ ГЛАВНОЕ ИЗМЕНЕНИЕ: добавили 0-9
+    const maskableRegex = /[0-9A-Za-zА-Яа-яЁёІіЇїЄєҐґ\u0400-\u04FF]/;
+
+    const masked = chars
+      .map((ch, idx) =>
+        idx < shown
+          ? ch
+          : (maskableRegex.test(ch) ? '_' : ch),
+      )
+      .join('');
+
+    return masked;
   }, [card, revealCount]);
 
   const countText = useMemo(() => {
@@ -216,9 +264,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
 
       {/* Header */}
       <div className="px-6 pt-2 pb-4 flex items-center justify-between text-neutral-200">
-        <div className="flex items-center gap-2">
-          <div className="text-sm font-medium">Карточки ▾</div>
-        </div>
+        <div className="flex items-center gap-2" />
         <div className="text-sm opacity-80">{countText}</div>
         <div className="text-sm opacity-90 truncate">
           {title || episodeId}
@@ -229,7 +275,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
       <div className="px-6 flex justify-center">
         <div
           className="relative rounded-3xl bg-[#2a3344]/50 border border-[#1f2a3a] shadow-inner p-4 md:p-6 overflow-hidden w-full max-w-4xl"
-          style={{ minHeight: '54vh' }} // карточка увеличена примерно на 50%
+          style={{ minHeight: '54vh' }}
           onClick={onBoardClick}
           role="button"
           tabIndex={0}
@@ -246,11 +292,11 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
             onClick={e => {
               e.stopPropagation();
               if (!card) return;
-              const firstWordLen =
-                (card.ru_meaning || '')
-                  .trim()
-                  .split(/\s+/)[0]?.length || 0;
-              setRevealCount(c => Math.min(firstWordLen, c + 1));
+              const t = (card.ru_meaning || '').trim();
+              if (!t) return;
+              const chars = Array.from(t);
+              if (!chars.length) return;
+              setRevealCount(c => Math.min(chars.length, c + 1));
             }}
             title="Показать подсказку"
           >
@@ -263,16 +309,45 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
           </button>
 
           {/* правые иконки сверху */}
-          <div className="no-flip absolute right-4 top-4 flex items-center gap-4 text-neutral-300">
-            <button className="hover:opacity-90" title="Произнести">
+          <div className="no-flip absolute right-4 top-4 flex items-center gap-3 text-neutral-300">
+            {/* звук */}
+            <button
+              className="hover:opacity-90"
+              title="Произнести"
+              onClick={e => {
+                e.stopPropagation();
+                if (!card?.audio_url) return;
+                try {
+                  const audio = new Audio(card.audio_url);
+                  audio.play().catch(() => { });
+                } catch { }
+              }}
+            >
               🔊
             </button>
+
+            {/* транскрипция */}
+            {card && (
+              <button
+                className={`hover:opacity-90 text-xs px-2 py-1 rounded-full border ${showTranslit
+                    ? 'border-emerald-400 text-emerald-300 bg-emerald-900/20'
+                    : 'border-slate-500 text-neutral-200 bg-black/20'
+                  }`}
+                title="Показать транскрипцию"
+                onClick={e => {
+                  e.stopPropagation();
+                  setShowTranslit(s => !s);
+                }}
+              >
+                abc
+              </button>
+            )}
+
+            {/* избранное */}
             {card && (
               <button
                 className="hover:opacity-90 text-lg"
-                title={
-                  isFav ? 'Убрать из избранного' : 'В избранное'
-                }
+                title={isFav ? 'Убрать из избранного' : 'В избранное'}
                 onClick={e => {
                   e.stopPropagation();
                   toggleFav(card.ge_text);
@@ -290,14 +365,23 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
           >
             {card ? (
               !flip ? (
-                <div
-                  className="text-4xl md:text-5xl lg:text-6xl text-neutral-100 select-none text-center"
-                  style={{
-                    fontFamily:
-                      "'Noto Sans Georgian', 'DejaVu Sans', system-ui, sans-serif",
-                  }}
-                >
-                  {card.ge_text}
+                <div className="flex flex-col items-center justify-center text-center">
+                  <div
+                    className="text-4xl md:text-5xl lg:text-6xl text-neutral-100 select-none"
+                    style={{
+                      fontFamily:
+                        "'Noto Sans Georgian', 'DejaVu Sans', system-ui, sans-serif",
+                    }}
+                  >
+                    {card.ge_text}
+                  </div>
+
+                  {/* транскрипция под словом, только на лицевой стороне */}
+                  {showTranslit && (
+                    <div className="mt-4 text-lg md:text-xl text-emerald-300/90 select-none">
+                      {geToTranslit(card.ge_text)}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-2xl md:text-3xl lg:text-4xl text-neutral-100 select-none max-w-2xl text-center">
@@ -314,7 +398,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
       {/* Bottom bar — по ширине карточки */}
       <div className="mt-4 px-6 pb-6 flex justify-center">
         <div className="rounded-3xl bg-[#0b1120] border border-[#1f2435] px-4 py-3 flex items-center w-full max-w-4xl">
-          {/* стрелки по центру всей панели */}
+          {/* стрелки по центру */}
           <div className="flex-1 flex justify-center">
             <div className="flex items-center gap-4">
               <button
@@ -324,7 +408,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
                 }}
                 className="w-14 h-14 rounded-full bg-[#253048] border border-[#334155] text-neutral-200 hover:bg-[#2b3753] focus:ring-2 focus:ring-blue-400 text-xl"
                 aria-label="Назад"
-                disabled={!total || idx === 0}
+                disabled={!total}
                 title="Назад"
               >
                 ←
@@ -336,7 +420,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
                 }}
                 className="w-14 h-14 rounded-full bg-[#253048] border border-[#334155] text-neutral-200 hover:bg-[#2b3753] focus:ring-2 focus:ring-blue-400 text-xl"
                 aria-label="Вперёд"
-                disabled={!total || idx === total - 1}
+                disabled={!total}
                 title="Вперёд"
               >
                 →
@@ -344,7 +428,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
             </div>
           </div>
 
-          {/* правый угол панели — перемешать и автопролистивание */}
+          {/* правый угол панели — перемешать и автопролистывание */}
           <div className="flex items-center gap-3">
             <button
               className="w-11 h-11 rounded-full bg-[#1f2937] border border-[#334155] flex items-center justify-center text-lg hover:bg-[#273549]"

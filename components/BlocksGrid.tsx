@@ -76,14 +76,28 @@ function createEmptyBoard(): CellColor[][] {
   );
 }
 
-function makePiece(idSuffix: number): Piece {
-  const shape = SHAPES[randomInt(SHAPES.length)];
-  const color = COLORS[randomInt(COLORS.length)];
-  return { id: `p_${shape.id}_${idSuffix}_${Date.now()}`, shape, color };
-}
-
 function makeBag(): Piece[] {
-  return [makePiece(1), makePiece(2), makePiece(3)];
+  const indices = SHAPES.map((_, i) => i);
+
+  // перемешиваем индексы фигур
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+
+  // берём первые три (или меньше, если фигур меньше 3)
+  const chosen = indices.slice(0, Math.min(3, indices.length));
+
+  const now = Date.now();
+  return chosen.map((shapeIdx, idx) => {
+    const shape = SHAPES[shapeIdx];
+    const color = COLORS[randomInt(COLORS.length)];
+    return {
+      id: `p_${shape.id}_${now}_${idx}`,
+      shape,
+      color,
+    };
+  });
 }
 
 function canPlace(board: CellColor[][], shape: Shape, baseRow: number, baseCol: number): boolean {
