@@ -2,129 +2,149 @@
   "id": "ep3",
   "title": "Урок 3",
   "letters": [
-    "ა",
-    "ი",
-    "ე",
-    "ს",
-    "ო",
-    "რ",
-    "ლ",
-    "ნ",
-    "კ",
-    "მ",
-    "დ",
-    "თ",
     "გ",
-    "ტ"
+    "ვ",
+    "მ",
+    "შ"
   ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "ორი",
-      "reading": "ori",
-      "ru_meaning": "2"
+      "ge_text": "ვარდი",
+      "reading": "vardi",
+      "ru_meaning": "роза"
     },
     {
       "type": "word",
-      "ge_text": "თარო",
-      "reading": "taro",
-      "ru_meaning": "полка"
+      "ge_text": "რვა",
+      "reading": "rva",
+      "ru_meaning": "8"
     },
     {
       "type": "word",
-      "ge_text": "ერთი",
-      "reading": "erti",
-      "ru_meaning": "1"
+      "ge_text": "მაგიდა",
+      "reading": "magida",
+      "ru_meaning": "стол"
     },
     {
       "type": "word",
-      "ge_text": "ხე",
-      "reading": "khe",
-      "ru_meaning": "дерево"
+      "ge_text": "მე ვარ",
+      "reading": "me var",
+      "ru_meaning": "я"
     },
     {
       "type": "word",
-      "ge_text": "ეს",
-      "reading": "es",
-      "ru_meaning": "это"
+      "ge_text": "აი ბევრი ბარათი",
+      "reading": "ai bevri barati",
+      "ru_meaning": "вот много карточек"
     },
     {
       "type": "word",
-      "ge_text": "არის",
-      "reading": "aris",
-      "ru_meaning": "есть"
+      "ge_text": "აი გოგოს ოთხი ბარათი",
+      "reading": "ai gogos otkhi barati",
+      "ru_meaning": "вот 4 карточки у девочки"
     },
     {
       "type": "word",
-      "ge_text": "რა",
-      "reading": "ra",
-      "ru_meaning": "что"
+      "ge_text": "ის არის მამა",
+      "reading": "is aris mama",
+      "ru_meaning": "это папа"
     },
     {
       "type": "word",
-      "ge_text": "დედა",
-      "reading": "deda",
-      "ru_meaning": "мама"
+      "ge_text": "აი დედის მაგიდა",
+      "reading": "ai dedis magida",
+      "ru_meaning": "вот стол мамы"
     },
     {
       "type": "word",
-      "ge_text": "და",
-      "reading": "da",
-      "ru_meaning": "и сестра"
+      "ge_text": "ბევრი",
+      "reading": "bevri",
+      "ru_meaning": "много"
     },
     {
       "type": "word",
-      "ge_text": "ბარათი",
-      "reading": "barati",
-      "ru_meaning": "карточка"
+      "ge_text": "გოგო",
+      "reading": "gogo",
+      "ru_meaning": "девочка"
     },
     {
       "type": "word",
-      "ge_text": "ბაბუა",
-      "reading": "babua",
-      "ru_meaning": "дедушка"
+      "ge_text": "მამა",
+      "reading": "mama",
+      "ru_meaning": "папа"
     },
     {
       "type": "word",
-      "ge_text": "ბებია",
-      "reading": "bebia",
-      "ru_meaning": "бабушка"
+      "ge_text": "სამი",
+      "reading": "sami",
+      "ru_meaning": "3"
     },
     {
       "type": "word",
-      "ge_text": "სად",
-      "reading": "sad",
-      "ru_meaning": "где"
+      "ge_text": "მეგობარი",
+      "reading": "megobari",
+      "ru_meaning": "друг"
     },
     {
       "type": "word",
-      "ge_text": "აი სოსოს ორი თარო",
-      "reading": "ai sosos ori taro",
-      "ru_meaning": "вот 2 полки Сосо"
+      "ge_text": "შოთи",
+      "reading": "shoti",
+      "ru_meaning": "хлеб"
     },
     {
       "type": "word",
-      "ge_text": "ერთი თარო",
-      "reading": "erti taro",
-      "ru_meaning": "1 полка"
+      "ge_text": "შორს",
+      "reading": "shors",
+      "ru_meaning": "далеко"
     },
     {
       "type": "word",
-      "ge_text": "ორი ხე",
-      "reading": "ori khe",
-      "ru_meaning": "2 дерева"
+      "ge_text": "შვიდი",
+      "reading": "shvidi",
+      "ru_meaning": "7"
     },
     {
       "type": "word",
-      "ge_text": "ეს არის ოთახი",
-      "reading": "es aris otakhi",
-      "ru_meaning": "это комната"
+      "ge_text": "აი რვა ვარდი",
+      "reading": "ai rva vardi",
+      "ru_meaning": "вот 8 роз"
     },
     {
       "type": "word",
-      "ge_text": "ეს ოთახია",
-      "reading": "es otakhia",
-      "ru_meaning": "это комната"
+      "ge_text": "ეს დათოს გოგოა",
+      "reading": "es datos gogoa",
+      "ru_meaning": "это девочка Дато"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს დედის ვარდია",
+      "reading": "es dedis vardia",
+      "ru_meaning": "это роза мамы"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ მამა",
+      "reading": "me var mama",
+      "ru_meaning": "я папа"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ დედა",
+      "reading": "me var deda",
+      "ru_meaning": "я мама"
+    },
+    {
+      "type": "word",
+      "ge_text": "დათო გიორგის მეგობარია",
+      "reading": "dato giorgis megobaria",
+      "ru_meaning": "Дато друг Гиорги"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი მამის მაგიდა",
+      "reading": "ai mamis magida",
+      "ru_meaning": "вот стол папы"
     }
   ]
 }

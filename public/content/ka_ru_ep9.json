@@ -4,134 +4,110 @@
   "cards": [
     {
       "type": "word",
-      "ge_text": "საღამო მშვიდობისა",
-      "ru_meaning": "добрый вечер",
+      "ge_text": "ტელეფონი",
+      "ru_meaning": "телефон",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეს ქართული სკოლაა",
-      "ru_meaning": "это грузинская школа",
+      "ge_text": "კატა",
+      "ru_meaning": "кошка",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მამა მაღაზიაშია",
-      "ru_meaning": "папа в магазине",
+      "ge_text": "სასტუმრო",
+      "ru_meaning": "отель",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ქართველი",
-      "ru_meaning": "грузин",
+      "ge_text": "წვენი",
+      "ru_meaning": "сок",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "სახლი",
-      "ru_meaning": "дом",
+      "ge_text": "წყალი",
+      "ru_meaning": "вода",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დილა",
-      "ru_meaning": "утро",
+      "ge_text": "მე მინდა",
+      "ru_meaning": "я хочу",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "სკოლა",
-      "ru_meaning": "школа",
+      "ge_text": "მე მინდა წვენი",
+      "ru_meaning": "я хочу сок",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "საქართველო",
-      "ru_meaning": "Грузия",
+      "ge_text": "მწვადი",
+      "ru_meaning": "шашлык",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ქართული",
-      "ru_meaning": "грузинский язык",
+      "ge_text": "მე ვარ სასტუმროში",
+      "ru_meaning": "я в отеле",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დღე",
-      "ru_meaning": "день",
+      "ge_text": "მე მინდა წყალი",
+      "ru_meaning": "я хочу воды",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ღამე",
-      "ru_meaning": "ночь",
+      "ge_text": "მე მიყვარს მწვადი",
+      "ru_meaning": "я люблю шашлык",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "საღამო",
-      "ru_meaning": "вечер",
+      "ge_text": "ჰალვა",
+      "ru_meaning": "халва",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მაღაზია",
-      "ru_meaning": "магазин",
+      "ge_text": "ჰამბურგერი",
+      "ru_meaning": "гамбургер",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დილა მშვიდობისა",
-      "ru_meaning": "доброе утро",
+      "ge_text": "ჭაჭა",
+      "ru_meaning": "чача",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ღამე მშვიდობისა",
-      "ru_meaning": "доброй ночи",
+      "ge_text": "ხაჭო",
+      "ru_meaning": "творог",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ საქართველოში",
-      "ru_meaning": "я в Грузии",
+      "ge_text": "ხაჭაპური",
+      "ru_meaning": "хачапури",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დედა სახლშია",
-      "ru_meaning": "мама дома",
+      "ge_text": "მე მინდა ჭაჭა",
+      "ru_meaning": "я хочу чачу",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ მაღაზიაში",
-      "ru_meaning": "я в магазине",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს კარგი დღეა",
-      "ru_meaning": "это хороший день",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "სახლები",
-      "ru_meaning": "дома",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ხეები",
-      "ru_meaning": "деревья",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მაგიდები",
-      "ru_meaning": "столы",
+      "ge_text": "მე არ მიყვარს ხაჭო",
+      "ru_meaning": "я не люблю творог",
       "audio_url": ""
     }
   ]

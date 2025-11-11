@@ -142,10 +142,10 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
     [episodeId, idx],
   );
 
-  // nav — зацикливание
+  // nav — ЗАЦИКЛИВАНИЕ
   const goNext = useCallback(() => {
     if (!total) return;
-    setIdx(i => (i + 1) % total);
+    setIdx(i => (i + 1) % total);      // после последней → на первую
     setFlip(false);
     setRevealCount(0);
     setShowTranslit(false);
@@ -153,7 +153,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
 
   const goPrev = useCallback(() => {
     if (!total) return;
-    setIdx(i => (i - 1 + total) % total);
+    setIdx(i => (i - 1 + total) % total); // с первой → на последнюю
     setFlip(false);
     setRevealCount(0);
     setShowTranslit(false);
@@ -177,7 +177,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
     return () => window.removeEventListener('keydown', onKey);
   }, [goNext, goPrev]);
 
-  // autoplay
+  // autoplay (не зацикливаем, а останавливаемся в конце)
   const autoplayRef = useRef<number | null>(null);
   useEffect(() => {
     if (!autoplay || !total) {
@@ -223,23 +223,23 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
     setShowTranslit(false);
   };
 
-  // HINT: посимвольно по всей фразе, включая цифры
+  // HINT: строго по ПЕРВОМУ СЛОВУ, по буквам
   const hintText = useMemo(() => {
     if (!card) return '';
     const t = (card.ru_meaning || '').trim();
     if (!t) return '';
 
-    const chars = Array.from(t);
-    const shown = Math.min(revealCount, chars.length);
+    const firstWord = t.split(/\s+/)[0] || '';
+    if (!firstWord) return '';
 
-    // ← ТУТ ГЛАВНОЕ ИЗМЕНЕНИЕ: добавили 0-9
-    const maskableRegex = /[0-9A-Za-zА-Яа-яЁёІіЇїЄєҐґ\u0400-\u04FF]/;
+    const letters = Array.from(firstWord);
+    const shown = Math.min(revealCount, letters.length);
 
-    const masked = chars
+    const masked = letters
       .map((ch, idx) =>
         idx < shown
           ? ch
-          : (maskableRegex.test(ch) ? '_' : ch),
+          : (/[A-Za-zА-Яа-яЁёІіЇїЄєҐґ\u0400-\u04FF]/.test(ch) ? '_' : ch),
       )
       .join('');
 
@@ -292,11 +292,12 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
             onClick={e => {
               e.stopPropagation();
               if (!card) return;
-              const t = (card.ru_meaning || '').trim();
-              if (!t) return;
-              const chars = Array.from(t);
-              if (!chars.length) return;
-              setRevealCount(c => Math.min(chars.length, c + 1));
+              const firstWordLen =
+                (card.ru_meaning || '')
+                  .trim()
+                  .split(/\s+/)[0]?.length || 0;
+              if (!firstWordLen) return;
+              setRevealCount(c => Math.min(firstWordLen, c + 1));
             }}
             title="Показать подсказку"
           >
@@ -310,13 +311,17 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
 
           {/* правые иконки сверху */}
           <div className="no-flip absolute right-4 top-4 flex items-center gap-3 text-neutral-300">
-            {/* звук */}
+            {/* звук: только mp3, без TTS */}
             <button
               className="hover:opacity-90"
               title="Произнести"
               onClick={e => {
                 e.stopPropagation();
-                if (!card?.audio_url) return;
+                if (!card) return;
+                if (!card.audio_url) {
+                  alert('У этого слова пока нет аудио. Когда добавим озвучку, здесь можно будет её проиграть.');
+                  return;
+                }
                 try {
                   const audio = new Audio(card.audio_url);
                   audio.play().catch(() => { });
@@ -326,7 +331,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
               🔊
             </button>
 
-            {/* транскрипция */}
+            {/* кнопка транскрипции */}
             {card && (
               <button
                 className={`hover:opacity-90 text-xs px-2 py-1 rounded-full border ${showTranslit
@@ -376,7 +381,7 @@ export default function StudyPage({ params }: { params: { episodeId: string } })
                     {card.ge_text}
                   </div>
 
-                  {/* транскрипция под словом, только на лицевой стороне */}
+                  {/* транскрипция под словом */}
                   {showTranslit && (
                     <div className="mt-4 text-lg md:text-xl text-emerald-300/90 select-none">
                       {geToTranslit(card.ge_text)}

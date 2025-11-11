@@ -1,100 +1,138 @@
 {
   "id": "ep6",
   "title": "Урок 6",
-  "letters": [
-    "ა",
-    "ი",
-    "ე",
-    "ს",
-    "ო",
-    "რ",
-    "ლ",
-    "ნ",
-    "კ",
-    "მ",
-    "დ",
-    "თ",
-    "გ",
-    "ტ",
-    "ბ",
-    "ვ",
-    "ხ",
-    "პ",
-    "ზ",
-    "ჩ",
-    "ც",
-    "ჯ",
-    "ფ",
-    "შ",
-    "ჰ",
-    "ღ"
-  ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "მეგობარი",
-      "reading": "megobari",
-      "ru_meaning": "друг"
+      "ge_text": "საღამო მშვიდობისა",
+      "ru_meaning": "добрый вечер",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "შოთი",
-      "reading": "shoti",
-      "ru_meaning": "хлеб"
+      "ge_text": "ეს ქართული სკოლაა",
+      "ru_meaning": "это грузинская школа",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "შორს",
-      "reading": "shors",
-      "ru_meaning": "далеко"
+      "ge_text": "მამა მაღაზიაშია",
+      "ru_meaning": "папа в магазине",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "შვიდი",
-      "reading": "shvidi",
-      "ru_meaning": "7"
+      "ge_text": "ქართველი",
+      "ru_meaning": "грузин",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "აი რვა ვარდი",
-      "reading": "ai rva vardi",
-      "ru_meaning": "вот 8 роз"
+      "ge_text": "სახლი",
+      "ru_meaning": "дом",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეს დათოს გოგოა",
-      "reading": "es datos gogoa",
-      "ru_meaning": "это девочка Дато"
+      "ge_text": "დილა",
+      "ru_meaning": "утро",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეს დედის ვარდია",
-      "reading": "es dedis vardia",
-      "ru_meaning": "это роза мамы"
+      "ge_text": "სკოლა",
+      "ru_meaning": "школа",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ მამა",
-      "reading": "me var mama",
-      "ru_meaning": "я папа"
+      "ge_text": "საქართველო",
+      "ru_meaning": "Грузия",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ დედა",
-      "reading": "me var deda",
-      "ru_meaning": "я мама"
+      "ge_text": "ქართული",
+      "ru_meaning": "грузинский язык",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დათო გიორგის მეგობარია",
-      "reading": "dato giorgis megobaria",
-      "ru_meaning": "Дато друг Гиорги"
+      "ge_text": "დღე",
+      "ru_meaning": "день",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "აი მამის მაგიდა",
-      "reading": "ai mamis magida",
-      "ru_meaning": "вот стол папы"
+      "ge_text": "ღამე",
+      "ru_meaning": "ночь",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "საღამო",
+      "ru_meaning": "вечер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მაღაზია",
+      "ru_meaning": "магазин",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "დილა მშვიდობისა",
+      "ru_meaning": "доброе утро",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ღამე მშვიდობისა",
+      "ru_meaning": "доброй ночи",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ საქართველოში",
+      "ru_meaning": "я в Грузии",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა სახლშია",
+      "ru_meaning": "мама дома",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ მაღაზიაში",
+      "ru_meaning": "я в магазине",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს კარგი დღეა",
+      "ru_meaning": "это хороший день",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სახლები",
+      "ru_meaning": "дома",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ხეები",
+      "ru_meaning": "деревья",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მაგიდები",
+      "ru_meaning": "столы",
+      "audio_url": ""
     }
   ]
 }

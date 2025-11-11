@@ -23,80 +23,97 @@
     "ზ",
     "ჩ",
     "ც",
-    "ჯ"
+    "ჯ",
+    "ფ",
+    "შ",
+    "ჰ",
+    "ღ",
+    "ყ",
+    "ქ",
+    "ც",
+    "ჭ",
+    "ძ",
+    "წ",
+    "ჟ"
   ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "ვარდი",
-      "reading": "vardi",
-      "ru_meaning": "роза"
+      "ge_text": "ხორცი",
+      "reading": "khortsi",
+      "ru_meaning": "мясо"
     },
     {
       "type": "word",
-      "ge_text": "რვა",
-      "reading": "rva",
-      "ru_meaning": "8"
+      "ge_text": "ცხრა",
+      "reading": "tskhra",
+      "ru_meaning": "9"
     },
     {
       "type": "word",
-      "ge_text": "მაგიდა",
-      "reading": "magida",
-      "ru_meaning": "стол"
+      "ge_text": "თევზი",
+      "reading": "tevzi",
+      "ru_meaning": "рыба"
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ",
-      "reading": "me var",
-      "ru_meaning": "я"
+      "ge_text": "ეზო",
+      "reading": "ezo",
+      "ru_meaning": "двор"
     },
     {
       "type": "word",
-      "ge_text": "აი ბევრი ბარათი",
-      "reading": "ai bevri barati",
-      "ru_meaning": "вот много карточек"
+      "ge_text": "გზა",
+      "reading": "gza",
+      "ru_meaning": "дорога"
     },
     {
       "type": "word",
-      "ge_text": "აი გოგოს ოთხი ბარათი",
-      "reading": "ai gogos otkhi barati",
-      "ru_meaning": "вот 4 карточки у девочки"
+      "ge_text": "აი ცხრა ქათამი და თევზი",
+      "reading": "ai tskhra katami da tevzi",
+      "ru_meaning": "вот 9 куриц и рыба"
     },
     {
       "type": "word",
-      "ge_text": "ის არის მამა",
-      "reading": "is aris mama",
-      "ru_meaning": "это папа"
+      "ge_text": "ეს არის ეზო",
+      "reading": "es aris ezo",
+      "ru_meaning": "это двор"
     },
     {
       "type": "word",
-      "ge_text": "აი დედის მაგიდა",
-      "reading": "ai dedis magida",
-      "ru_meaning": "вот стол мамы"
+      "ge_text": "დედა ოთახშია",
+      "reading": "deda otakhshia",
+      "ru_meaning": "мама в комнате"
     },
     {
       "type": "word",
-      "ge_text": "ბევრი",
-      "reading": "bevri",
-      "ru_meaning": "много"
+      "ge_text": "გოგო ეზოშია",
+      "reading": "gogo ezoshia",
+      "ru_meaning": "девочка во дворе"
     },
     {
       "type": "word",
-      "ge_text": "გოგო",
-      "reading": "gogo",
-      "ru_meaning": "девочка"
+      "ge_text": "დათო ბათუმშია",
+      "reading": "dato batumshia",
+      "ru_meaning": "Дато в Батуми"
     },
     {
       "type": "word",
-      "ge_text": "მამა",
-      "reading": "mama",
-      "ru_meaning": "папа"
+      "ge_text": "გოგო სკამზეა",
+      "reading": "gogo sk’amzea",
+      "ru_meaning": "девочка на стуле"
     },
     {
       "type": "word",
-      "ge_text": "სამი",
-      "reading": "sami",
-      "ru_meaning": "3"
+      "ge_text": "თევზი მაგიდაზეა",
+      "reading": "tevzi magidazea",
+      "ru_meaning": "рыба на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
+      "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
+      "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
     }
   ]
 }

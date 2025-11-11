@@ -1,119 +1,144 @@
 {
   "id": "ep8",
   "title": "Урок 8",
-  "letters": [
-    "ა",
-    "ი",
-    "ე",
-    "ს",
-    "ო",
-    "რ",
-    "ლ",
-    "ნ",
-    "კ",
-    "მ",
-    "დ",
-    "თ",
-    "გ",
-    "ტ",
-    "ბ",
-    "ვ",
-    "ხ",
-    "პ",
-    "ზ",
-    "ჩ",
-    "ც",
-    "ჯ",
-    "ფ",
-    "შ",
-    "ჰ",
-    "ღ",
-    "ყ",
-    "ქ",
-    "ც",
-    "ჭ",
-    "ძ",
-    "წ",
-    "ჟ"
-  ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "ხორცი",
-      "reading": "khortsi",
-      "ru_meaning": "мясо"
+      "ge_text": "მანქანა",
+      "ru_meaning": "машина",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ცხრა",
-      "reading": "tskhra",
-      "ru_meaning": "9"
+      "ge_text": "მენეჯერი",
+      "ru_meaning": "менеджер",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "თევზი",
-      "reading": "tevzi",
-      "ru_meaning": "рыба"
+      "ge_text": "ბანანი",
+      "ru_meaning": "банан",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეზო",
-      "reading": "ezo",
-      "ru_meaning": "двор"
+      "ge_text": "ანანასი",
+      "ru_meaning": "ананас",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "გზა",
-      "reading": "gza",
-      "ru_meaning": "дорога"
+      "ge_text": "ღვინო",
+      "ru_meaning": "вино",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "აი ცხრა ქათამი და თევზი",
-      "reading": "ai tskhra katami da tevzi",
-      "ru_meaning": "вот 9 куриц и рыба"
+      "ge_text": "მე მყავს მანქანა",
+      "ru_meaning": "у меня есть машина",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეს არის ეზო",
-      "reading": "es aris ezo",
-      "ru_meaning": "это двор"
+      "ge_text": "ჟურნალი",
+      "ru_meaning": "журнал",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დედა ოთახშია",
-      "reading": "deda otakhshia",
-      "ru_meaning": "мама в комнате"
+      "ge_text": "არაჟანი",
+      "ru_meaning": "сметана",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "გოგო ეზოშია",
-      "reading": "gogo ezoshia",
-      "ru_meaning": "девочка во дворе"
+      "ge_text": "მე მიყვარს არაჟანი",
+      "ru_meaning": "я люблю сметану",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დათო ბათუმშია",
-      "reading": "dato batumshia",
-      "ru_meaning": "Дато в Батуми"
+      "ge_text": "მე მაქვს ღვინო და ყველი",
+      "ru_meaning": "у меня есть вино и сыр",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "გოგო სკამზეა",
-      "reading": "gogo sk’amzea",
-      "ru_meaning": "девочка на стуле"
+      "ge_text": "ჩემი დედა მენეჯერია",
+      "ru_meaning": "моя мама менеджер",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "თევზი მაგიდაზეა",
-      "reading": "tevzi magidazea",
-      "ru_meaning": "рыба на столе"
+      "ge_text": "ფული",
+      "ru_meaning": "деньги",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
-      "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
-      "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
+      "ge_text": "კაფე",
+      "ru_meaning": "кафе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ოფისი",
+      "ru_meaning": "офис",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "პური",
+      "ru_meaning": "хлеб",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "პარკი",
+      "ru_meaning": "парк",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "პროფესორი",
+      "ru_meaning": "профессор",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს პური",
+      "ru_meaning": "у меня есть хлеб",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ის ოფისშია",
+      "ru_meaning": "он в офисе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მარი კაფეშია",
+      "ru_meaning": "Мари в кафе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სად არის ფული?",
+      "ru_meaning": "где деньги",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს პური ძვირია",
+      "ru_meaning": "этот хлеб дорогой",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი დედა პროფესორია",
+      "ru_meaning": "моя мама профессор",
+      "audio_url": ""
     }
   ]
 }

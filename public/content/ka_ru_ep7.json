@@ -1,158 +1,120 @@
 {
   "id": "ep7",
   "title": "Урок 7",
-  "letters": [
-    "ა",
-    "ი",
-    "ე",
-    "ს",
-    "ო",
-    "რ",
-    "ლ",
-    "ნ",
-    "კ",
-    "მ",
-    "დ",
-    "თ",
-    "გ",
-    "ტ",
-    "ბ",
-    "ვ",
-    "ხ",
-    "პ",
-    "ზ",
-    "ჩ",
-    "ც",
-    "ჯ",
-    "ფ",
-    "შ",
-    "ჰ",
-    "ღ",
-    "ყ",
-    "ქ",
-    "ც",
-    "ჭ"
-  ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "კაბა",
-      "reading": "k’aba",
-      "ru_meaning": "платье"
+      "ge_text": "ჩაი",
+      "ru_meaning": "чай",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "კი",
-      "reading": "k’i",
-      "ru_meaning": "да"
+      "ge_text": "ჩემი",
+      "ru_meaning": "мой",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "კარგი",
-      "reading": "k’argi",
-      "ru_meaning": "хорошо, хороший"
+      "ge_text": "ჩურჩხელა",
+      "ru_meaning": "чурчхела",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "სკამი",
-      "reading": "sk’ami",
-      "ru_meaning": "стул"
+      "ge_text": "ყავა",
+      "ru_meaning": "кофе",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "კიევი",
-      "reading": "k’ievi",
-      "ru_meaning": "Киев"
+      "ge_text": "ყველი",
+      "ru_meaning": "сыр",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მოსკოვი",
-      "reading": "mosk’ovi",
-      "ru_meaning": "Москва"
+      "ge_text": "მე მყავს",
+      "ru_meaning": "у меня есть",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ქათამი",
-      "reading": "katami",
-      "ru_meaning": "курица"
+      "ge_text": "მე მიყვარს",
+      "ru_meaning": "я люблю",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს",
-      "reading": "me makvs",
-      "ru_meaning": "у меня есть"
+      "ge_text": "ეს ჩემი დედაა",
+      "ru_meaning": "это моя мама",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მქვია",
-      "reading": "me mkvia",
-      "ru_meaning": "меня зовут"
+      "ge_text": "მე მიყვარს ყავა და ყველი",
+      "ru_meaning": "я люблю кофе и сыр",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ექვსი",
-      "reading": "ekvsi",
-      "ru_meaning": "шесть"
+      "ge_text": "მე მყავს დედა და და",
+      "ru_meaning": "у меня есть мама и сестра",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "შაქარი",
-      "reading": "shakari",
-      "ru_meaning": "сахар"
+      "ge_text": "მე არ მიყვარს ჩაი",
+      "ru_meaning": "я не люблю чай",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "რა გქვია?",
-      "reading": "ra gkvia?",
-      "ru_meaning": "как тебя зовут"
+      "ge_text": "ყა ყე ყი ყო ყუ",
+      "ru_meaning": "ка кэ ки ко ку",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მქვია დათო",
-      "reading": "me mkvia dato",
-      "ru_meaning": "меня зовут Дато"
+      "ge_text": "გამარჯობა",
+      "ru_meaning": "здравствуйте",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს ექვსი კაბა",
-      "reading": "me makvs ekvsi k’aba",
-      "ru_meaning": "у меня 6 платьев"
+      "ge_text": "გაუმარჯოს",
+      "ru_meaning": "Да здравствует",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს მაგიდა",
-      "reading": "me makvs magida",
-      "ru_meaning": "у меня есть стол"
+      "ge_text": "ძმა",
+      "ru_meaning": "брат",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს შაქარი",
-      "reading": "me makvs shakari",
-      "ru_meaning": "у меня есть сахар"
+      "ge_text": "რძე",
+      "ru_meaning": "молоко",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეს კარგი გოგოა",
-      "reading": "es k’argi gogoa",
-      "ru_meaning": "это хорошая девочка"
+      "ge_text": "ძვირი",
+      "ru_meaning": "дорогой",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ კარგი დედა",
-      "reading": "me var k’argi deda",
-      "ru_meaning": "я хорошая мама"
+      "ge_text": "მე მიყვარს ჩემი ძმა",
+      "ru_meaning": "я люблю своего брата",
+      "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "აი სამი სკამი",
-      "reading": "ai sami sk’ami",
-      "ru_meaning": "вот 3 стула"
-    },
-    {
-      "type": "word",
-      "ge_text": "კა ქა კი ქი კე ქე კუ ქუ კო ქო",
-      "reading": "k’a ka k’i ki k’e ke k’u ku k’o ko",
-      "ru_meaning": "ка ки кэ ку ко"
+      "ge_text": "მე მიყვარს რძე",
+      "ru_meaning": "я люблю молоко",
+      "audio_url": ""
     }
   ]
 }

@@ -110,9 +110,10 @@ export async function loadNewLettersPerEpisode(): Promise<Record<string, string[
 export async function loadEpisode(id: string): Promise<Episode | null> {
   if (id === 'all') {
     const all: Episode[] = [];
-    for (let n = 1; n <= 12; n++) {
-      const ep = loadSingleEp(`ep${n}`);
-      if (ep) all.push({ ...ep, id: `ep${n}` });
+    const ids = listEpisodeIdsFromFiles(); // вместо for (1..12)
+    for (const eid of ids) {
+      const ep = loadSingleEp(eid);
+      if (ep) all.push({ ...ep, id: eid });
     }
     if (!all.length) return null;
     return {
@@ -121,6 +122,7 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
       cards: all.flatMap(e => e.cards),
     };
   }
+
   if (id === 'favorites') {
     const all = await loadEpisode('all');
     if (!all) return null;
@@ -148,26 +150,27 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
   return null;
 }
 
-/** Список эпизодов (как у тебя сейчас) */
+/** Список эпизодов: обычные + спец (избранное, все слова) */
 export async function listEpisodes(): Promise<Array<{ id: string; title: string }>> {
-  // здесь оставь ту реализацию, которая у тебя уже есть, например:
-  const merged = [
-    { id: 'ep1', title: '1' },
-    { id: 'ep2', title: '2' },
-    { id: 'ep3', title: '3' },
-    { id: 'ep4', title: '4' },
-    { id: 'ep5', title: '5' },
-    { id: 'ep6', title: '6' },
-    { id: 'ep7', title: '7' },
-    { id: 'ep8', title: '8' },
-    { id: 'ep9', title: '9' },
-    { id: 'ep10', title: '10' },
-    { id: 'ep11', title: '11' },
-    { id: 'ep12', title: '12' },
-  ];
   const specials = [
     { id: 'favorites', title: '⭐ Избранное' },
     { id: 'all', title: 'Все слова' },
   ];
-  return [...merged, ...specials];
+
+  try {
+    const raw = fs.readFileSync(path.join(CONTENT_DIR, 'episodes.json'), 'utf8');
+    const data = JSON.parse(raw) as Array<{ id: string; title: string }>;
+    // episodes.json сейчас содержит только ep1–ep9 → просто дописываем спец-эпизоды
+    return [...data, ...specials];
+  } catch {
+    // запасной вариант — если вдруг episodes.json сломается
+    const ids = listEpisodeIdsFromFiles();
+    const eps = ids.map(id => ({
+      id,
+      title: `Урок ${parseInt(id.replace('ep', ''), 10)}`,
+    }));
+    return [...eps, ...specials];
+  }
 }
+
+

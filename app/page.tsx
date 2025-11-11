@@ -7,6 +7,46 @@ import TopBar from '@/components/TopBar';
 
 type Ep = { id: string; title: string; best?: number };
 
+const letterTranslit: Record<string, string> = {
+  'ა': 'a',
+  'ბ': 'b',
+  'გ': 'g',
+  'დ': 'd',
+  'ე': 'e',
+  'ვ': 'v',
+  'ზ': 'z',
+  'თ': 't',
+  'ი': 'i',
+  'კ': "k'",
+  'ლ': 'l',
+  'მ': 'm',
+  'ნ': 'n',
+  'ო': 'o',
+  'პ': "p'",
+  'ჟ': 'zh',
+  'რ': 'r',
+  'ს': 's',
+  'ტ': "t'",
+  'უ': 'u',
+  'ფ': 'p',
+  'ქ': 'k',
+  'ღ': 'gh',
+  'ყ': "q'",
+  'შ': 'sh',
+  'ჩ': 'ch',
+  'ც': 'ts',
+  'ძ': 'dz',
+  'წ': "ts'",
+  'ჭ': "ch'",
+  'ხ': 'kh',
+  'ჯ': 'j',
+  'ჰ': 'h',
+};
+
+function geLetterToTranslit(ch: string): string {
+  return letterTranslit[ch] ?? '';
+}
+
 export default function HomePage() {
   const [eps, setEps] = useState<Ep[]>([]);
   const [progress, setProgress] = useState<Record<string, number>>({});
@@ -45,8 +85,8 @@ export default function HomePage() {
       <TopBar />
 
       {/* сетка эпизодов */}
-      <section className="max-w-5xl mx-auto mt-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="max-w-3xl mx-auto mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-1 gap-y-0 justify-items-center">
           {normalEpisodes.map((ep, i) => {
             const best = progress[ep.id] ?? 0;
             const letters = lettersByEp[ep.id] ?? [];
@@ -54,18 +94,31 @@ export default function HomePage() {
 
             return (
               <Link key={ep.id} href={`/study/${ep.id}`} legacyBehavior>
-                <a className="relative aspect-square rounded-2xl bg-slate-900 border border-white/10 flex flex-col items-center justify-center gap-1 hover:border-blue-400/70 hover:bg-slate-900/80 transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
-                  <div className="text-3xl font-semibold text-white mb-1">
-                    {i + 1}
+                <a className="relative w-full aspect-square rounded-2xl bg-slate-900 border border-white/10 flex flex-col items-center justify-center gap-1 hover:border-blue-400/70 hover:bg-slate-900/80 transition-colors shadow-[0_10px_20px_rgba(0,0,0,0.45)]">
+
+                  <div className="absolute top-3 left-4 text-lg font-semibold text-white/80">
+                    Урок {i + 1}
                   </div>
 
-                  {/* буквы */}
-                  <div className="flex flex-wrap justify-center gap-1 text-xl text-amber-300 mb-1 min-h-[1.75rem]">
-                    {letters.map(ch => (
-                      <span key={ch} className="px-1 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">
-                        {ch}
-                      </span>
-                    ))}
+                  {/* буквы с транскрипцией */}
+                  <div className="flex flex-wrap justify-center gap-2 mb-1 min-h-[2.2rem]">
+                    {letters.map(ch => {
+                      const tr = geLetterToTranslit(ch);
+                      return (
+                        <div
+                          key={ch}
+                          className="flex flex-col items-center text-amber-300 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]"
+                        >
+                          <span className="text-3xl leading-tight">{ch}</span>
+                          {tr && (
+                            <span className="text-sm text-amber-200/90 leading-tight mt-1 tracking-wide">
+                              {tr}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+
                     {!letters.length && (
                       <span className="text-xs text-neutral-500">
                         без новых букв
@@ -73,9 +126,12 @@ export default function HomePage() {
                     )}
                   </div>
 
-                  <div className="text-[11px] text-neutral-400">
-                    {unlocked ? `Рекорд: ${best}` : 'Новый эпизод'}
-                  </div>
+                  {best > 0 && (
+                    <div className="text-[11px] text-neutral-400">
+                      {best}
+                    </div>
+                  )}
+
                 </a>
               </Link>
             );
@@ -84,7 +140,7 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все слова */}
-      <section className="mt-8 flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
+      <section className="mt-6 flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
         {specials.map(ep => {
           const isFav = ep.id === 'favorites';
           const cleanTitle = ep.title.replace(/^⭐\s*/, '');
@@ -102,7 +158,7 @@ export default function HomePage() {
 
       {/* кот Deda слева у поля */}
       <div
-        className="absolute bottom-10 left-[10%] z-10"
+        className="absolute bottom-8 left-[14%] z-10"
         onClick={() => {
           const meow = new Audio('/sounds/meow.mp3');
           meow.volume = 0.5;
@@ -113,7 +169,7 @@ export default function HomePage() {
         <img
           src="/images/deda-cat.png"
           alt="Кот Deda, читает книгу"
-          className="w-[330px] drop-shadow-[0_12px_30px_rgba(0,0,0,0.6)] animate-cloud"
+          className="w-[320px] drop-shadow-[0_12px_30px_rgba(0,0,0,0.6)] animate-cloud"
         />
       </div>
     </main>

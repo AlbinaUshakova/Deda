@@ -4,10 +4,11 @@
   "letters": [
     "ა",
     "ი",
-    "ე",
     "ს",
     "ო",
-    "რ"
+    "თ",
+    "ხ",
+    "უ"
   ],
   "cards": [
     {
@@ -81,6 +82,36 @@
       "ge_text": "ხუთი",
       "reading": "khuti",
       "ru_meaning": "5"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ათასი ია",
+      "reading": "ai atasi ia",
+      "ru_meaning": "вот 1000 фиалок"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი იას საათი",
+      "reading": "ai ias saati",
+      "ru_meaning": "вот часы Ии"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი თათიას ათი თხა",
+      "reading": "ai tatias ati tkha",
+      "ru_meaning": "вот 10 коз Татии"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სოსოს ოთახი",
+      "reading": "ai sosos otakhi",
+      "ru_meaning": "вот комната Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ხუთი უთო",
+      "reading": "ai khuti uto",
+      "ru_meaning": "вот 5 утюгов"
     }
   ]
 }
