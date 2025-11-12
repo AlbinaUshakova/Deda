@@ -27,8 +27,14 @@ function readEpisodeJson(file: string): Episode | null {
 }
 
 function loadSingleEp(id: string): Episode | null {
+  // ожидаем файлы вида ka_ru_epN.json
   const file = `ka_ru_${id}.json`;
   return readEpisodeJson(file);
+}
+
+// спец-разделы, которые не epN (например: start_talking → ka_ru_start_talking.json)
+function loadSpecial(name: string): Episode | null {
+  return readEpisodeJson(`ka_ru_${name}.json`);
 }
 
 function mergeEpisodes(newId: string, title: string, eps: (Episode | null)[]): Episode | null {
@@ -41,7 +47,7 @@ function mergeEpisodes(newId: string, title: string, eps: (Episode | null)[]): E
   };
 }
 
-/** Вспомогательная: список epN из файлов ka_ru_epN.json */
+/** Вспомогательная: id epN, найденные в /public/content */
 function listEpisodeIdsFromFiles(): string[] {
   const files = fs.readdirSync(CONTENT_DIR);
   return files
@@ -58,23 +64,15 @@ function listEpisodeIdsFromFiles(): string[] {
 }
 
 /**
- * Анализирует ВСЕ текущие эпизоды и возвращает только "новые"
- * грузинские буквы по сравнению с предыдущими эпизодами.
- *
- * Пример результата:
- * {
- *   ep1: ['ა','ბ','გ'],
- *   ep2: ['დ','ე'],
- *   ep3: ['ვ', ...],
- *   ...
- * }
+ * Возвращает только "новые" грузинские буквы для каждого эпизода
+ * (по сравнению с предыдущими).
  */
 export async function loadNewLettersPerEpisode(): Promise<Record<string, string[]>> {
   const ids = listEpisodeIdsFromFiles();
   const seen = new Set<string>();
   const result: Record<string, string[]> = {};
 
-  const isGeorgianLetter = (ch: string) => /[\u10D0-\u10FF]/.test(ch); // диапазон грузинских букв
+  const isGeorgianLetter = (ch: string) => /[\u10D0-\u10FF]/.test(ch);
 
   for (const id of ids) {
     const ep = loadSingleEp(id);
@@ -95,10 +93,7 @@ export async function loadNewLettersPerEpisode(): Promise<Record<string, string[
       }
     }
 
-    const arr = Array.from(local);
-    // Для красоты можно отсортировать по юникоду / локали
-    arr.sort((a, b) => a.localeCompare(b, 'ka'));
-
+    const arr = Array.from(local).sort((a, b) => a.localeCompare(b, 'ka'));
     result[id] = arr;
     arr.forEach(ch => seen.add(ch));
   }
@@ -106,12 +101,12 @@ export async function loadNewLettersPerEpisode(): Promise<Record<string, string[
   return result;
 }
 
-/** Загрузка одного эпизода (оставляем как было) */
+/** Загрузка одного эпизода/раздела */
 export async function loadEpisode(id: string): Promise<Episode | null> {
   if (id === 'all') {
     const all: Episode[] = [];
-    const ids = listEpisodeIdsFromFiles(); // вместо for (1..12)
-    for (const eid of ids) {
+    // Собираем все доступные epN из файлов, без жёсткого цикла на 12
+    for (const eid of listEpisodeIdsFromFiles()) {
       const ep = loadSingleEp(eid);
       if (ep) all.push({ ...ep, id: eid });
     }
@@ -133,6 +128,13 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
     };
   }
 
+  // ✅ спец-раздел “Начни говорить”
+  if (id === 'start_talking') {
+    const sp = loadSpecial('start_talking'); // читает ka_en_start_talking.json
+    return sp ? { ...sp, id: 'start_talking' } : null;
+  }
+
+  // При необходимости оставляем склейки
   if (id === 'ep1_2') {
     return mergeEpisodes('ep1_2', 'Эпизод 1–2', [loadSingleEp('ep1'), loadSingleEp('ep2')]);
   }
@@ -147,30 +149,31 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
     return loadSingleEp(id);
   }
 
+  // 🌟 Фоллбэк: пробуем загрузить любой кастомный id как ka_ru_${id}.json
+  const direct = loadSingleEp(id);
+  if (direct) return direct;
+
   return null;
 }
 
-/** Список эпизодов: обычные + спец (избранное, все слова) */
+/** Список эпизодов на карту */
 export async function listEpisodes(): Promise<Array<{ id: string; title: string }>> {
+  // Жёстко показываем только 1–9 (как ты и оставила)
+  const merged = [
+    { id: 'ep1', title: '1' },
+    { id: 'ep2', title: '2' },
+    { id: 'ep3', title: '3' },
+    { id: 'ep4', title: '4' },
+    { id: 'ep5', title: '5' },
+    { id: 'ep6', title: '6' },
+    { id: 'ep7', title: '7' },
+    { id: 'ep8', title: '8' },
+    { id: 'ep9', title: '9' },
+  ];
   const specials = [
     { id: 'favorites', title: '⭐ Избранное' },
     { id: 'all', title: 'Все слова' },
+    { id: 'start_talking_en', title: '🗣 Начни говорить' },
   ];
-
-  try {
-    const raw = fs.readFileSync(path.join(CONTENT_DIR, 'episodes.json'), 'utf8');
-    const data = JSON.parse(raw) as Array<{ id: string; title: string }>;
-    // episodes.json сейчас содержит только ep1–ep9 → просто дописываем спец-эпизоды
-    return [...data, ...specials];
-  } catch {
-    // запасной вариант — если вдруг episodes.json сломается
-    const ids = listEpisodeIdsFromFiles();
-    const eps = ids.map(id => ({
-      id,
-      title: `Урок ${parseInt(id.replace('ep', ''), 10)}`,
-    }));
-    return [...eps, ...specials];
-  }
+  return [...merged, ...specials];
 }
-
-
