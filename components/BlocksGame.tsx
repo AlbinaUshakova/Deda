@@ -18,7 +18,8 @@ type Question = {
 
 type Mode = 'question' | 'pieces' | 'gameOver';
 
-const LEFT_COLUMN_WIDTH = 220;
+// чуть расширяем левую колонку, чтобы длинное поле помещалось красиво
+const LEFT_COLUMN_WIDTH = 260;
 const LEFT_COLUMN_HEIGHT = 'min(72vh, 640px)';
 
 function normalizeRu(str: string) {
@@ -26,11 +27,7 @@ function normalizeRu(str: string) {
 }
 
 /**
- * Нормализация числовых форм:
- * - "2" → "два"
- * - "два" → "2"
- * - "100" ↔ "сто", "123" ↔ "сто двадцать три", "тысяча" ↔ "1000"
- * Работает в диапазоне 0–1000.
+ * Нормализация числовых форм
  */
 function normalizeNumberForms(str: string): string {
   const smallNumbers: Record<number, string> = {
@@ -93,7 +90,6 @@ function normalizeNumberForms(str: string): string {
       return `${smallNumbers[hundreds]} ${normalizeDigitsToWords(String(rest))}`;
     }
 
-    // 1000
     return 'тысяча';
   };
 
@@ -126,10 +122,8 @@ function normalizeNumberForms(str: string): string {
     return String(result);
   };
 
-  // если строка — число → в слова
   if (/^\d+$/.test(str)) return normalizeDigitsToWords(str);
 
-  // если строка — слова → пробуем собрать число
   const numVersion = normalizeWordsToDigits(str);
   if (numVersion !== str) return numVersion;
 
@@ -137,10 +131,7 @@ function normalizeNumberForms(str: string): string {
 }
 
 /**
- * Строим один "цикл" слов:
- *  - каждое слово появляется 1 раз
- *  - "сложные" (из hardSet) добавляются ещё раз → всего 2
- * Потом всё перемешиваем.
+ * Строим один "цикл" слов
  */
 function buildCycle(total: number, hardSet: Set<number>): number[] {
   if (total <= 0) return [];
@@ -155,7 +146,6 @@ function buildCycle(total: number, hardSet: Set<number>): number[] {
 
   const combined = [...base, ...extra];
 
-  // перемешивание Фишера–Йетса
   for (let i = combined.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [combined[i], combined[j]] = [combined[j], combined[i]];
@@ -167,7 +157,6 @@ function buildCycle(total: number, hardSet: Set<number>): number[] {
 export default function BlocksGame({ words }: BlocksGameProps) {
   const hasWords = useMemo(() => words && words.length > 0, [words]);
 
-  // режим: слева показываем задание / фигуры / "нет ходов"
   const [mode, setMode] = useState<Mode>('question');
   const [roundId, setRoundId] = useState(0);
 
@@ -175,24 +164,16 @@ export default function BlocksGame({ words }: BlocksGameProps) {
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState(false);
 
-  // количество неверных попыток для текущего слова
   const [attempts, setAttempts] = useState(0);
-  // показываем ли правильный ответ после 3 ошибок (ответ в инпуте)
   const [showCorrect, setShowCorrect] = useState(false);
 
-  // плавная видимость фигур
   const [showPalette, setShowPalette] = useState(false);
-
-  // Жёсткий флаг: пока true — задание НЕЛЬЗЯ показывать (мы в "нет ходов"),
-  // сбрасываем только после "Сыграть снова"
   const [hardGameOver, setHardGameOver] = useState(false);
 
-  // планировщик слов
   const [currentWordIndex, setCurrentWordIndex] = useState<number | null>(null);
   const [hardSet, setHardSet] = useState<Set<number>>(() => new Set());
   const [queue, setQueue] = useState<number[]>([]);
 
-  // helper: перейти к следующему слову в очереди
   const gotoNextFromQueue = (markHard: boolean) => {
     if (!hasWords) {
       setQuestion(null);
@@ -204,7 +185,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     setHardSet(prevHard => {
       const newHard = new Set(prevHard);
 
-      // помечаем текущее слово как "сложное", если нужно
       if (markHard && currentWordIndex !== null) {
         newHard.add(currentWordIndex);
       }
@@ -212,7 +192,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
       setQueue(prevQueue => {
         let q = prevQueue;
 
-        // если очередь пустая — строим новый цикл с учётом сложных слов
         if (!q.length) {
           q = buildCycle(words.length, newHard);
         }
@@ -240,7 +219,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     });
   };
 
-  // при смене слов/эпизода — полностью пересобираем цикл
   useEffect(() => {
     if (hasWords) {
       const newHard = new Set<number>();
@@ -267,7 +245,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
       setAttempts(0);
       setShowCorrect(false);
 
-      // при смене эпизода логично сбросить game over / раунды
       setHardGameOver(false);
       setMode('question');
       setRoundId(0);
@@ -280,7 +257,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasWords, words]);
 
-  // анимация фигур: включаем только в режиме pieces
   useEffect(() => {
     if (mode === 'pieces') {
       const t = setTimeout(() => setShowPalette(true), 400);
@@ -289,7 +265,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     setShowPalette(false);
   }, [mode]);
 
-  // вычисляем, считается ли текущий ответ правильным
   const isCurrentAnswerCorrect = useMemo(() => {
     if (!question) return false;
     const nu = normalizeRu(answer);
@@ -307,15 +282,12 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     );
   }, [answer, question]);
 
-  // отправка ответа (по Enter)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (mode !== 'question' || !question || hardGameOver) return;
 
-    // если уже показали правильный ответ в инпуте —
-    // Enter означает "перейти к следующему слову" (сложное слово)
     if (showCorrect) {
-      gotoNextFromQueue(true); // помечаем как сложное
+      gotoNextFromQueue(true);
       return;
     }
 
@@ -333,25 +305,21 @@ export default function BlocksGame({ words }: BlocksGameProps) {
       userAlt === correctAlt;
 
     if (isCorrect) {
-      // верный ответ → стартуем раунд фигур
       setError(false);
       setAnswer('');
       setAttempts(0);
       setShowCorrect(false);
 
-      setMode('pieces'); // задание плавно уезжает вниз
+      setMode('pieces');
       setRoundId(prev => (prev > 0 ? prev + 1 : 1));
-      // следующее задание появится только через handleRoundFinished
     } else {
-      // неверный ответ
       setAttempts(prev => {
         const next = prev + 1;
 
         if (next >= 3) {
-          // после 3-й ошибки показываем правильный ответ прямо в поле ввода
           setShowCorrect(true);
           setError(false);
-          setAnswer(question.ru); // подставляем правильный ответ в инпут
+          setAnswer(question.ru);
         } else {
           setError(true);
         }
@@ -361,61 +329,47 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     }
   };
 
-  // "Обновить" — пропуск слова: без фигур, слово считается сложным
   const handleSkipQuestion = () => {
     if (!hasWords || hardGameOver) return;
-    gotoNextFromQueue(true); // пропуск → сложное слово
+    gotoNextFromQueue(true);
   };
 
-  // все 3 фигуры раунда поставлены → следующее задание
   const handleRoundFinished = () => {
     if (!hasWords) return;
-    if (hardGameOver) return; // если уже "нет ходов", игнорируем
+    if (hardGameOver) return;
 
-    // новый шаг цикла: показываем следующее задание
-    setMode('question'); // задание выезжает снизу вверх
-    gotoNextFromQueue(false); // обычный переход, не помечаем как сложное
-  };
-
-  // поле сообщило, что ходов больше нет
-  const handleGameOver = () => {
-    // цикл "задание–фигуры–задание" обрывается
-    setMode('gameOver');
-    setHardGameOver(true); // с этого момента задания запрещены до рестарта
-  };
-
-  // нажали "Сыграть снова"
-  const handleRestartRequested = () => {
-    // запускаем НОВЫЙ цикл фигур, но слова идём дальше по очереди
-    setHardGameOver(false); // снова разрешаем задания
     setMode('question');
-    setRoundId(0); // чтобы следующий верный ответ дал новый раунд фигур
-    gotoNextFromQueue(false); // берём следующее по очереди, без пометки "сложное"
+    gotoNextFromQueue(false);
+  };
+
+  const handleGameOver = () => {
+    setMode('gameOver');
+    setHardGameOver(true);
+  };
+
+  const handleRestartRequested = () => {
+    setHardGameOver(false);
+    setMode('question');
+    setRoundId(0);
+    gotoNextFromQueue(false);
   };
 
   const isQuestionVisible = mode === 'question';
   const isGameOver = mode === 'gameOver';
-
-  // Рендерить панель задания можно только если:
-  //  - мы НЕ в режиме gameOver
-  //  - и hardGameOver == false (нет "жёсткого" геймовера)
   const shouldRenderQuestionPanel = !isGameOver && !hardGameOver;
 
   return (
-    <div className="flex w-full justify_center">
+    <div className="flex w-full justify_center mt-[-60px]">
       <div className="flex w-full max-w-5xl items-start gap-10 py-16 mx-6">
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
-          className="shrink-0"
+          className="shrink-0 ml-[-35px]"   // ← добавили отступ влево
           style={{ width: LEFT_COLUMN_WIDTH }}
         >
-          {/* mt-8 — опускаем левую область так,
-              чтобы верх слова совпал с верхней границей игрового поля */}
           <div
             className="relative mt-8"
             style={{ height: LEFT_COLUMN_HEIGHT }}
           >
-            {/* ПАНЕЛЬ ЗАДАНИЯ */}
             {shouldRenderQuestionPanel && (
               <div
                 className={
@@ -425,13 +379,12 @@ export default function BlocksGame({ words }: BlocksGameProps) {
                     : 'opacity-0 translate-y-16 pointer-events-none')
                 }
               >
-                {/* Текст задания привязан к верхней границе окна */}
-                <div className="flex flex-col items-start justify-start h-full px-2 pt-1">
+                <div className="flex flex-col items-start justify-start h-full px-2 pt-12">
                   {hasWords && question && (
                     <>
                       <div className="text-2xl mb-6">{question.ge}</div>
 
-                      {/* ввод + Enter */}
+                      {/* ВВОД + Enter — УВЕЛИЧЕННОЕ ПОЛЕ */}
                       <form onSubmit={handleSubmit} className="mb-2 w-full">
                         <input
                           value={answer}
@@ -444,19 +397,18 @@ export default function BlocksGame({ words }: BlocksGameProps) {
                           className={
                             'px-5 py-3 rounded-xl border outline-none text-2xl tracking-wide transition-all duration-200 placeholder:text-base placeholder:text-neutral-400 ' +
                             (error && !showCorrect
-                              ? 'border-red-500 bg-red-900/20 text-white'
+                              ? 'border-green-300 bg-green-700/10 text-white'
                               : !error && isCurrentAnswerCorrect
-                                ? 'border-green-500 bg-green-900/20 text-white'
+                                ? 'border-green-300 bg-green-400/5 text-white'
                                 : 'border-[#64748b] bg-[#0b1120]/60 focus:border-blue-400 text-white')
                           }
                           style={{
                             width: '100%',
-                            maxWidth: '380px',
+                            maxWidth: '460px', // было 380px — теперь поле длиннее
                           }}
                         />
                       </form>
 
-                      {/* кнопка "Обновить" */}
                       <button
                         type="button"
                         onClick={handleSkipQuestion}
@@ -467,14 +419,11 @@ export default function BlocksGame({ words }: BlocksGameProps) {
                         <span>Обновить</span>
                       </button>
 
-                      {/* ошибка */}
                       {error && !showCorrect && (
                         <div className="mt-2 text-xs text-red-400">
                           Неверно, попробуй ещё раз.
                         </div>
                       )}
-
-                      {/* когда showCorrect = true, правильный ответ уже в поле ввода */}
                     </>
                   )}
 
@@ -487,7 +436,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
               </div>
             )}
 
-            {/* СЛОТ ДЛЯ ФИГУР — центр по высоте, просто появление/исчезновение */}
             <div
               id="blocks-palette-slot"
               className={

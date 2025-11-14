@@ -41,28 +41,37 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   const hasWords = useMemo(() => words.length > 0, [words]);
 
   return (
-    <main className="min-h-screen bg-[#020617] text-neutral-50">
-      <TopBar />
+    <main className="relative min-h-screen bg-[#020617] text-neutral-50">
+      {/* TopBar теперь поверх игры */}
+      <div className="relative z-40">
+        <TopBar />
+      </div>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          {/* Оставляем только название эпизода */}
+        {/* Заголовок + кнопка — подняты по z-index */}
+        <div className="relative z-40 flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold mb-4">
             {title || episodeId}
           </h1>
 
-          <Link className="btn" href="/">
+          <Link
+            className="btn relative z-50"
+            href="/"
+          >
             На карту
           </Link>
         </div>
 
-        {hasWords ? (
-          <BlocksGame words={words} episodeId={episodeId} />
-        ) : (
-          <div className="text-neutral-400 mt-8">
-            В этом эпизоде пока нет слов для игры.
-          </div>
-        )}
+        {/* Игровой компонент ниже по слоям */}
+        <div className="relative z-10">
+          {hasWords ? (
+            <BlocksGame words={words} episodeId={episodeId} />
+          ) : (
+            <div className="text-neutral-400 mt-8">
+              В этом эпизоде пока нет слов для игры.
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );
