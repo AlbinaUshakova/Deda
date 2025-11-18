@@ -1,5 +1,4 @@
 'use client';
-import TopBar from '@/components/TopBar';
 import { getSettings, setSettings } from '@/lib/settings';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -14,7 +13,6 @@ export default function SettingsPage() {
   const save = () => setSettings({ studyLang, nativeLang });
   return (
     <main>
-      <TopBar />
       <div className="flex items-center justify-between mb-4">
         <h1 className="h1">Настройки языка</h1>
         <Link className="btn" href="/">На карту</Link>
@@ -22,14 +20,14 @@ export default function SettingsPage() {
       <div className="card p-4 max-w-md space-y-3">
         <div>
           <div className="text-sm mb-1">Выбираю алфавит для изучения</div>
-          <select value={studyLang} onChange={e=>setStudyLang(e.target.value)}>
+          <select value={studyLang} onChange={e => setStudyLang(e.target.value)}>
             <option value="KA">Грузинский</option>
             {/* future: KO, AR, JA... */}
           </select>
         </div>
         <div>
           <div className="text-sm mb-1">Мой родной язык</div>
-          <select value={nativeLang} onChange={e=>setNativeLang(e.target.value)}>
+          <select value={nativeLang} onChange={e => setNativeLang(e.target.value)}>
             <option value="RU">Русский</option>
             <option value="EN">English</option>
           </select>

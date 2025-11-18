@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { listEpisodes, loadNewLettersPerEpisode } from '@/lib/content';
-import TopBar from '@/components/TopBar';
 
 type Ep = { id: string; title: string; best?: number };
 
@@ -68,13 +67,14 @@ export default function HomePage() {
         const map: Record<string, number> = {};
         arr.forEach(x => (map[x.episodeId] = x.best ?? 0));
         setProgress(map);
-      } catch { }
+      } catch {}
     };
 
     loadProgress();
     const onUpd = () => loadProgress();
     window.addEventListener('deda:progress-updated' as any, onUpd);
-    return () => window.removeEventListener('deda:progress-updated' as any, onUpd);
+    return () =>
+      window.removeEventListener('deda:progress-updated' as any, onUpd);
   }, []);
 
   const normalEpisodes = eps.filter(ep => /^ep\d+$/.test(ep.id));
@@ -82,20 +82,16 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-8 relative overflow-hidden">
-      <TopBar />
-
       {/* сетка эпизодов */}
-      <section className="max-w-3xl mx-auto mt-4">
+      <section className="max-w-3xl mx-auto mt-2">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-1 gap-y-0 justify-items-center">
           {normalEpisodes.map((ep, i) => {
             const best = progress[ep.id] ?? 0;
             const letters = lettersByEp[ep.id] ?? [];
-            const unlocked = best > 0;
 
             return (
               <Link key={ep.id} href={`/study/${ep.id}`} legacyBehavior>
                 <a className="relative w-full aspect-square rounded-2xl bg-slate-900 border border-white/10 flex flex-col items-center justify-center gap-1 hover:border-blue-400/70 hover:bg-slate-900/80 transition-colors shadow-[0_10px_20px_rgba(0,0,0,0.45)]">
-
                   <div className="absolute top-3 left-4 text-lg font-semibold text-white/80">
                     Урок {i + 1}
                   </div>
@@ -131,7 +127,6 @@ export default function HomePage() {
                       {best}
                     </div>
                   )}
-
                 </a>
               </Link>
             );
@@ -162,7 +157,7 @@ export default function HomePage() {
         onClick={() => {
           const meow = new Audio('/sounds/meow.mp3');
           meow.volume = 0.5;
-          meow.play().catch(() => { });
+          meow.play().catch(() => {});
         }}
         style={{ cursor: 'pointer' }}
       >

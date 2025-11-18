@@ -1,7 +1,6 @@
 'use client';
 import { useMemo } from 'react';
 import Link from 'next/link';
-import TopBar from '@/components/TopBar';
 import FlashcardDeck from '@/components/FlashcardDeck';
 
 export default function StudyClient({
@@ -35,7 +34,6 @@ export default function StudyClient({
 
   return (
     <main className="min-h-screen bg-[#020617] text-neutral-50">
-      <TopBar />
 
       <div className="max-w-5xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">

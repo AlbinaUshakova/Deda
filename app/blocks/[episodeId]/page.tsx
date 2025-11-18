@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { loadEpisode } from '@/lib/content';
 import BlocksGame from '@/components/BlocksGame';
-import TopBar from '@/components/TopBar';
 
 type Word = { ge: string; ru: string; audio?: string };
 
@@ -27,7 +26,6 @@ export default function BlocksPage({ params }: { params: { episodeId: string } }
 
   return (
     <main>
-      <TopBar />
       <div className="flex items-center justify-between mb-4">
         <h1 className="h1">Блоки (как в Quizlet) — {title || params.episodeId}</h1>
         <Link className="btn" href="/">На карту</Link>

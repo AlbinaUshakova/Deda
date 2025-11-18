@@ -69,3 +69,8 @@ a {
 .animate-cloud {
     animation: cloudBob 6s ease-in-out infinite;
 }
+
+body {
+    background-color: var(--deda-bg, #020617);
+    color: var(--deda-text, #f9fafb);
+}
