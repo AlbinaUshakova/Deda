@@ -3,12 +3,15 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import BlocksGrid from './BlocksGrid';
+import { upsertProgress } from '@/lib/supabase';
 
 type Word = { ge: string; ru: string; audio?: string };
 
 type BlocksGameProps = {
   words: Word[];
   episodeId?: string;
+  // рекорд уровня, который пришёл с карты
+  initialBest?: number;
 };
 
 type Question = {
@@ -154,11 +157,16 @@ function buildCycle(total: number, hardSet: Set<number>): number[] {
   return combined;
 }
 
-export default function BlocksGame({ words }: BlocksGameProps) {
+export default function BlocksGame({
+  words,
+  episodeId,
+  initialBest = 0,
+}: BlocksGameProps) {
   const hasWords = useMemo(() => words && words.length > 0, [words]);
 
   const [mode, setMode] = useState<Mode>('question');
   const [roundId, setRoundId] = useState(0);
+  const [sessionBest, setSessionBest] = useState(0);   // ← НОВЫЙ СТЕЙТ
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
@@ -173,6 +181,12 @@ export default function BlocksGame({ words }: BlocksGameProps) {
   const [currentWordIndex, setCurrentWordIndex] = useState<number | null>(null);
   const [hardSet, setHardSet] = useState<Set<number>>(() => new Set());
   const [queue, setQueue] = useState<number[]>([]);
+
+  // рекорд уровня (тот же, что на карте)
+  const [bestScore, setBestScore] = useState(initialBest);
+  useEffect(() => {
+    setBestScore(initialBest);
+  }, [initialBest]);
 
   const gotoNextFromQueue = (markHard: boolean) => {
     if (!hasWords) {
@@ -345,6 +359,11 @@ export default function BlocksGame({ words }: BlocksGameProps) {
   const handleGameOver = () => {
     setMode('gameOver');
     setHardGameOver(true);
+
+    // если знаем episodeId, шлём рекорд
+    if (sessionBest > 0 && episodeId) {
+      upsertProgress(episodeId, sessionBest).catch(console.error);
+    }
   };
 
   const handleRestartRequested = () => {
@@ -352,6 +371,17 @@ export default function BlocksGame({ words }: BlocksGameProps) {
     setMode('question');
     setRoundId(0);
     gotoNextFromQueue(false);
+  };
+
+  // когда из BlocksGrid приходит новый рекорд — обновляем прогресс
+  const handleBestScoreChange = async (newBest: number) => {
+    setBestScore(newBest);
+    if (!episodeId) return;
+    try {
+      await upsertProgress(episodeId, newBest);
+    } catch (e) {
+      console.error('upsertProgress error', e);
+    }
   };
 
   const isQuestionVisible = mode === 'question';
@@ -363,7 +393,7 @@ export default function BlocksGame({ words }: BlocksGameProps) {
       <div className="flex w-full max-w-5xl items-start gap-10 py-16 mx-6">
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
-          className="shrink-0 ml-[-35px]"   // ← добавили отступ влево
+          className="shrink-0 ml-[-35px]"
           style={{ width: LEFT_COLUMN_WIDTH }}
         >
           <div
@@ -384,7 +414,6 @@ export default function BlocksGame({ words }: BlocksGameProps) {
                     <>
                       <div className="text-2xl mb-6">{question.ge}</div>
 
-                      {/* ВВОД + Enter — УВЕЛИЧЕННОЕ ПОЛЕ */}
                       <form onSubmit={handleSubmit} className="mb-2 w-full">
                         <input
                           value={answer}
@@ -404,7 +433,7 @@ export default function BlocksGame({ words }: BlocksGameProps) {
                           }
                           style={{
                             width: '100%',
-                            maxWidth: '460px', // было 380px — теперь поле длиннее
+                            maxWidth: '460px',
                           }}
                         />
                       </form>
@@ -455,6 +484,8 @@ export default function BlocksGame({ words }: BlocksGameProps) {
             onRoundFinished={handleRoundFinished}
             onRestartRequested={handleRestartRequested}
             onGameOver={handleGameOver}
+            initialBestScore={bestScore}
+            onBestScoreChange={setSessionBest}   // ← СЮДА ЛЕТИТ РЕКОРД ПАРТИИ
           />
         </div>
       </div>

@@ -21,6 +21,10 @@ type BlocksGridProps = {
   onRoundFinished: () => void;
   onRestartRequested: () => void;
   onGameOver: () => void;
+  // стартовый рекорд уровня (например, с карты)
+  initialBestScore?: number;           // ← делаем опциональным
+  // колбэк, когда рекорд обновился
+  onBestScoreChange?: (best: number) => void;
 };
 
 type ClearedCell = {
@@ -85,10 +89,10 @@ function makeBag(): Piece[] {
     [indices[i], indices[j]] = [indices[j], indices[i]];
   }
 
-  // берём первые три (или меньше, если фигур меньше 3)
+  // берём первые три (или меньше)
   const chosen = indices.slice(0, Math.min(3, indices.length));
-
   const now = Date.now();
+
   return chosen.map((shapeIdx, idx) => {
     const shape = SHAPES[shapeIdx];
     const color = COLORS[randomInt(COLORS.length)];
@@ -106,6 +110,7 @@ function canPlace(board: CellColor[][], shape: Shape, baseRow: number, baseCol: 
     const c = baseCol + cell.c;
     if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) return false;
     if (board[r][c] !== null) return false;
+    return true;
   }
   return true;
 }
@@ -131,6 +136,7 @@ function clearLines(board: CellColor[][]) {
   let next = board.map(row => [...row]);
   const clearedCellsRaw: { r: number; c: number }[] = [];
 
+  // строки
   for (let r = 0; r < BOARD_SIZE; r++) {
     if (next[r].every(c => c !== null)) {
       cleared++;
@@ -141,6 +147,7 @@ function clearLines(board: CellColor[][]) {
     }
   }
 
+  // столбцы
   for (let c = 0; c < BOARD_SIZE; c++) {
     let full = true;
     for (let r = 0; r < BOARD_SIZE; r++) {
@@ -165,16 +172,13 @@ function hasAnyMove(board: CellColor[][], pieces: Piece[]): boolean {
   for (const piece of pieces) {
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
-        if (canPlace(board, piece.shape, r, c)) {
-          return true;
-        }
+        if (canPlace(board, piece.shape, r, c)) return true;
       }
     }
   }
   return false;
 }
 
-// поиск ближайшей валидной позиции вокруг примерной клетки
 function findNearestValidPos(
   board: CellColor[][],
   shape: Shape,
@@ -187,7 +191,7 @@ function findNearestValidPos(
   }
 
   let best: HoverPos = null;
-  let bestDist = Number.POSITIVE_INFINITY;
+  let bestDist = Infinity;
 
   for (let dr = -radius; dr <= radius; dr++) {
     for (let dc = -radius; dc <= radius; dc++) {
@@ -203,7 +207,6 @@ function findNearestValidPos(
       }
     }
   }
-
   return best;
 }
 
@@ -212,14 +215,18 @@ export default function BlocksGrid({
   onRoundFinished,
   onRestartRequested,
   onGameOver,
+  initialBestScore = 0,          // ← дефолт, если проп не передан
+  onBestScoreChange,
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
   const [bag, setBag] = useState<Piece[]>([]);
   const [drag, setDrag] = useState<DragState>(null);
   const [hover, setHover] = useState<HoverPos>(null);
 
+  // текущие набранные линии
   const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
+  // рекорд уровня
+  const [bestScore, setBestScore] = useState(initialBestScore);
   const [gameOver, setGameOver] = useState(false);
 
   const [clearedCells, setClearedCells] = useState<ClearedCell[]>([]);
@@ -230,6 +237,11 @@ export default function BlocksGrid({
   const [paletteContainer, setPaletteContainer] = useState<HTMLElement | null>(
     null,
   );
+
+  // если initialBestScore изменился (например, после загрузки) — синхронизируем
+  useEffect(() => {
+    setBestScore(initialBestScore || 0);
+  }, [initialBestScore]);
 
   useEffect(() => {
     const el = document.getElementById('blocks-palette-slot');
@@ -251,6 +263,7 @@ export default function BlocksGrid({
   // новый раунд → новый набор фигур
   useEffect(() => {
     if (roundId <= 0) return;
+
     const newBag = makeBag();
     if (!hasAnyMove(board, newBag)) {
       setBag([]);
@@ -277,8 +290,8 @@ export default function BlocksGrid({
         return;
       }
 
-      const currentPiece = drag?.piece;
-      if (!currentPiece) {
+      const piece = drag.piece;
+      if (!piece) {
         setHover(null);
         return;
       }
@@ -287,18 +300,15 @@ export default function BlocksGrid({
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
 
-      const maxCol = Math.max(...currentPiece.shape.cells.map(c => c.c)) + 1;
-      const maxRow = Math.max(...currentPiece.shape.cells.map(c => c.r)) + 1;
+      const maxCol = Math.max(...piece.shape.cells.map(c => c.c)) + 1;
+      const maxRow = Math.max(...piece.shape.cells.map(c => c.r)) + 1;
 
-      const baseColFloat = relX / cellSize - maxCol / 2;
-      const baseRowFloat = relY / cellSize - maxRow / 2;
-
-      const baseCol = Math.round(baseColFloat);
-      const baseRow = Math.round(baseRowFloat);
+      const baseCol = Math.round(relX / cellSize - maxCol / 2);
+      const baseRow = Math.round(relY / cellSize - maxRow / 2);
 
       const nearest = findNearestValidPos(
         board,
-        currentPiece.shape,
+        piece.shape,
         baseRow,
         baseCol,
         2,
@@ -324,11 +334,18 @@ export default function BlocksGrid({
           let placed = placePiece(board, piece.shape, row, col, piece.color);
           const { board: clearedBoard, cleared, clearedCellsRaw } =
             clearLines(placed);
-          const newScore = score + piece.shape.cells.length + cleared * 10;
+
+          // считаем только линии
+          const gainedLines = cleared;
+          const newScore = score + gainedLines;
 
           setBoard(clearedBoard);
           setScore(newScore);
-          setBestScore(prevBest => (newScore > prevBest ? newScore : prevBest));
+          setBestScore(prev => {
+            const updated = newScore > prev ? newScore : prev;
+            if (onBestScoreChange) onBestScoreChange(updated);
+            return updated;
+          });
 
           if (cleared > 0 && clearedCellsRaw.length) {
             const withColors: ClearedCell[] = clearedCellsRaw.map(cell => ({
@@ -372,7 +389,17 @@ export default function BlocksGrid({
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
     };
-  }, [drag, board, cellSize, gameOver, hover, score, onRoundFinished, onGameOver]);
+  }, [
+    drag,
+    board,
+    hover,
+    score,
+    cellSize,
+    gameOver,
+    onRoundFinished,
+    onGameOver,
+    onBestScoreChange,
+  ]);
 
   const dragPiece = drag?.piece ?? null;
 

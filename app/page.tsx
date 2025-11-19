@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { listEpisodes, loadNewLettersPerEpisode } from '@/lib/content';
+import { loadProgressMap } from '@/lib/supabase';
 
 type Ep = { id: string; title: string; best?: number };
 
@@ -52,29 +53,28 @@ export default function HomePage() {
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
-    (async () => {
+    const init = async () => {
       const data = await listEpisodes();
       setEps(data);
 
       const letters = await loadNewLettersPerEpisode();
       setLettersByEp(letters);
-    })();
 
-    const loadProgress = () => {
-      try {
-        const raw = localStorage.getItem('deda_progress');
-        const arr: any[] = raw ? JSON.parse(raw) : [];
-        const map: Record<string, number> = {};
-        arr.forEach(x => (map[x.episodeId] = x.best ?? 0));
-        setProgress(map);
-      } catch {}
+      const map = await loadProgressMap();
+      setProgress(map);
     };
 
-    loadProgress();
-    const onUpd = () => loadProgress();
-    window.addEventListener('deda:progress-updated' as any, onUpd);
-    return () =>
-      window.removeEventListener('deda:progress-updated' as any, onUpd);
+    init();
+
+    const onUpd = async () => {
+      const map = await loadProgressMap();
+      setProgress(map);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('deda:progress-updated' as any, onUpd);
+      return () => window.removeEventListener('deda:progress-updated' as any, onUpd);
+    }
   }, []);
 
   const normalEpisodes = eps.filter(ep => /^ep\d+$/.test(ep.id));
@@ -123,10 +123,12 @@ export default function HomePage() {
                   </div>
 
                   {best > 0 && (
-                    <div className="text-[11px] text-neutral-400">
-                      {best}
+                    <div className="absolute bottom-3 right-4 flex items-center gap-1 text-xs text-amber-300">
+                      <span>🏆</span>
+                      <span>{best}</span>
                     </div>
                   )}
+
                 </a>
               </Link>
             );
@@ -157,7 +159,7 @@ export default function HomePage() {
         onClick={() => {
           const meow = new Audio('/sounds/meow.mp3');
           meow.volume = 0.5;
-          meow.play().catch(() => {});
+          meow.play().catch(() => { });
         }}
         style={{ cursor: 'pointer' }}
       >
