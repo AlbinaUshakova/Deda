@@ -21,9 +21,7 @@ type BlocksGridProps = {
   onRoundFinished: () => void;
   onRestartRequested: () => void;
   onGameOver: () => void;
-  // стартовый рекорд уровня (например, с карты)
-  initialBestScore?: number;           // ← делаем опциональным
-  // колбэк, когда рекорд обновился
+  initialBestScore?: number;
   onBestScoreChange?: (best: number) => void;
 };
 
@@ -83,13 +81,11 @@ function createEmptyBoard(): CellColor[][] {
 function makeBag(): Piece[] {
   const indices = SHAPES.map((_, i) => i);
 
-  // перемешиваем индексы фигур
   for (let i = indices.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [indices[i], indices[j]] = [indices[j], indices[i]];
   }
 
-  // берём первые три (или меньше)
   const chosen = indices.slice(0, Math.min(3, indices.length));
   const now = Date.now();
 
@@ -104,13 +100,18 @@ function makeBag(): Piece[] {
   });
 }
 
-function canPlace(board: CellColor[][], shape: Shape, baseRow: number, baseCol: number): boolean {
+// проверка, можно ли поставить фигуру в конкретное место
+function canPlace(
+  board: CellColor[][],
+  shape: Shape,
+  baseRow: number,
+  baseCol: number,
+): boolean {
   for (const cell of shape.cells) {
     const r = baseRow + cell.r;
     const c = baseCol + cell.c;
     if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) return false;
     if (board[r][c] !== null) return false;
-    return true;
   }
   return true;
 }
@@ -215,7 +216,7 @@ export default function BlocksGrid({
   onRoundFinished,
   onRestartRequested,
   onGameOver,
-  initialBestScore = 0,          // ← дефолт, если проп не передан
+  initialBestScore = 0,
   onBestScoreChange,
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
@@ -223,9 +224,7 @@ export default function BlocksGrid({
   const [drag, setDrag] = useState<DragState>(null);
   const [hover, setHover] = useState<HoverPos>(null);
 
-  // текущие набранные линии
   const [score, setScore] = useState(0);
-  // рекорд уровня
   const [bestScore, setBestScore] = useState(initialBestScore);
   const [gameOver, setGameOver] = useState(false);
 
@@ -238,7 +237,6 @@ export default function BlocksGrid({
     null,
   );
 
-  // если initialBestScore изменился (например, после загрузки) — синхронизируем
   useEffect(() => {
     setBestScore(initialBestScore || 0);
   }, [initialBestScore]);
@@ -260,18 +258,20 @@ export default function BlocksGrid({
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // новый раунд → новый набор фигур
+  // новый раунд: меняем только набор фигур, поле и счёт сохраняем
   useEffect(() => {
     if (roundId <= 0) return;
 
     const newBag = makeBag();
+    setBag(newBag); // просто показываем фигуры
+
     if (!hasAnyMove(board, newBag)) {
-      setBag([]);
-      setGameOver(true);
-      onGameOver();
+      setTimeout(() => {
+        setGameOver(true);
+        // onGameOver();  // не трогаем цикл вопросов
+      }, 2000);
     } else {
       setGameOver(false);
-      setBag(newBag);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundId]);
@@ -332,17 +332,19 @@ export default function BlocksGrid({
 
         if (canPlace(board, piece.shape, row, col)) {
           let placed = placePiece(board, piece.shape, row, col, piece.color);
-          const { board: clearedBoard, cleared, clearedCellsRaw } =
-            clearLines(placed);
+          const {
+            board: clearedBoard,
+            cleared,
+            clearedCellsRaw,
+          } = clearLines(placed);
 
-          // считаем только линии
           const gainedLines = cleared;
           const newScore = score + gainedLines;
 
           setBoard(clearedBoard);
           setScore(newScore);
-          setBestScore(prev => {
-            const updated = newScore > prev ? newScore : prev;
+          setBestScore(prevBest => {
+            const updated = newScore > prevBest ? newScore : prevBest;
             if (onBestScoreChange) onBestScoreChange(updated);
             return updated;
           });
@@ -360,19 +362,20 @@ export default function BlocksGrid({
 
           setBag(oldBag => {
             const rest = oldBag.filter(p => p.id !== piece.id);
+            setHover(null);
 
             if (rest.length > 0) {
               if (!hasAnyMove(clearedBoard, rest)) {
-                setGameOver(true);
-                setHover(null);
-                onGameOver();
-                return [];
+                setTimeout(() => {
+                  setGameOver(true);
+                  // onGameOver();
+                }, 2000);
+                return rest;
               }
-            } else {
-              onRoundFinished();
+              return rest;
             }
 
-            setHover(null);
+            onRoundFinished();
             return rest;
           });
         } else {
@@ -433,21 +436,26 @@ export default function BlocksGrid({
     <div className="flex justify-center w-full py-2">
       <div className="flex w-full max-w-6xl justify-center">
         <div
-          className="flex flex-col items-stretch"
+          className="flex flex-col items-stretch relative"
           style={{ width: BOARD_PIXEL_SIZE }}
         >
           {/* счёт + рекорд */}
-          <div className="flex items-center justify-between mb-3 text-neutral-300 px-3">
-            <div
-              className="font-bold text-white leading-none"
-              style={{ fontSize: `${cellSize * 0.4}px` }}
-            >
-              {score}
+          <div className="flex items-center justify-between mb-3 text-neutral-300 px-3 w-full">
+            {/* левый край — текущий счёт */}
+            <div className="flex items-center gap-3">
+              <div
+                className="font-bold text-white leading-none"
+                style={{ fontSize: `${cellSize * 0.45}px` }}
+              >
+                {score}
+              </div>
             </div>
-            <div className="flex items-center gap-1">
+
+            {/* правый край — рекорд */}
+            <div className="flex items-center gap-2">
               <span
                 className="text-yellow-300"
-                style={{ fontSize: `${cellSize * 0.4}px` }}
+                style={{ fontSize: `${cellSize * 0.38}px` }}
               >
                 🏆
               </span>
@@ -531,6 +539,22 @@ export default function BlocksGrid({
               </div>
             )}
           </div>
+
+          {/* кот внизу слева — файл: public/images/deda-cat_3.png */}
+          <img
+            src="/images/deda-cat.png"
+            alt="deda cat"
+            draggable={false}
+            className="pointer-events-none select-none"
+            style={{
+              position: 'absolute',
+              left: -cellSize * 4.5,   // сдвигаем влево за пределы игрового поля
+              bottom: -cellSize * 0.6, // опускаем немного вниз для натуральной посадки
+              width: cellSize * 4.4,   // увеличиваем примерно в 2 раза
+              height: 'auto',
+              zIndex: 60,
+            }}
+          />
         </div>
       </div>
 

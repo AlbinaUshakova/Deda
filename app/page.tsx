@@ -3,7 +3,11 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { listEpisodes, loadNewLettersPerEpisode } from '@/lib/content';
-import { loadProgressMap } from '@/lib/supabase';
+import {
+  loadProgressMap,
+  getLocalProgress,
+  type ProgressMap,
+} from '@/lib/supabase';
 
 type Ep = { id: string; title: string; best?: number };
 
@@ -49,7 +53,17 @@ function geLetterToTranslit(ch: string): string {
 
 export default function HomePage() {
   const [eps, setEps] = useState<Ep[]>([]);
-  const [progress, setProgress] = useState<Record<string, number>>({});
+  const [progress, setProgress] = useState<ProgressMap>(() => {
+    // стартуем сразу с локального прогресса, без ожидания сети
+    if (typeof window === 'undefined') return {};
+
+    const local = getLocalProgress();
+    const map: ProgressMap = {};
+    for (const row of local) {
+      map[row.episodeId] = Math.max(map[row.episodeId] ?? 0, row.best);
+    }
+    return map;
+  });
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
@@ -60,20 +74,36 @@ export default function HomePage() {
       const letters = await loadNewLettersPerEpisode();
       setLettersByEp(letters);
 
-      const map = await loadProgressMap();
-      setProgress(map);
+      // тянем merged-прогресс (локалка+сервер) и мёрджим поверх текущего
+      const merged = await loadProgressMap();
+      setProgress(prev => {
+        const next: ProgressMap = { ...prev };
+        for (const [ep, best] of Object.entries(merged)) {
+          const current = next[ep] ?? 0;
+          next[ep] = Math.max(current, best as number);
+        }
+        return next;
+      });
     };
 
     init();
 
     const onUpd = async () => {
-      const map = await loadProgressMap();
-      setProgress(map);
+      const merged = await loadProgressMap();
+      setProgress(prev => {
+        const next: ProgressMap = { ...prev };
+        for (const [ep, best] of Object.entries(merged)) {
+          const current = next[ep] ?? 0;
+          next[ep] = Math.max(current, best as number);
+        }
+        return next;
+      });
     };
 
     if (typeof window !== 'undefined') {
       window.addEventListener('deda:progress-updated' as any, onUpd);
-      return () => window.removeEventListener('deda:progress-updated' as any, onUpd);
+      return () =>
+        window.removeEventListener('deda:progress-updated' as any, onUpd);
     }
   }, []);
 
@@ -128,7 +158,6 @@ export default function HomePage() {
                       <span>{best}</span>
                     </div>
                   )}
-
                 </a>
               </Link>
             );

@@ -18,7 +18,7 @@
       "type": "word",
       "ge_text": "ის",
       "reading": "is",
-      "ru_meaning": "he / she / it"
+      "ru_meaning": "he,she,it"
     },
     {
       "type": "word",
@@ -30,7 +30,7 @@
       "type": "word",
       "ge_text": "თქვენ",
       "reading": "tkven",
-      "ru_meaning": "you (plural/formal)"
+      "ru_meaning": "you"
     },
     {
       "type": "word",
@@ -55,24 +55,6 @@
       "ge_text": "არის",
       "reading": "aris",
       "ru_meaning": "is"
-    },
-    {
-      "type": "word",
-      "ge_text": "ვართ",
-      "reading": "vart",
-      "ru_meaning": "are (we)"
-    },
-    {
-      "type": "word",
-      "ge_text": "ხართ",
-      "reading": "khart",
-      "ru_meaning": "are (you pl.)"
-    },
-    {
-      "type": "word",
-      "ge_text": "არიან",
-      "reading": "arian",
-      "ru_meaning": "are (they)"
     },
     {
       "type": "word",

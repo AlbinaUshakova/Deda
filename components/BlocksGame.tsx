@@ -133,6 +133,56 @@ function normalizeNumberForms(str: string): string {
   return str;
 }
 
+// --- добавляем утилиту: пытаемся распарсить числовую фразу в цифры (например "два" -> "2")
+function parseNumberWordToDigits(str: string): string | null {
+  const smallNumbers: Record<string, number> = {
+    'ноль': 0, 'один': 1, 'два': 2, 'три': 3, 'четыре': 4, 'пять': 5,
+    'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9, 'десять': 10,
+    'одиннадцать': 11, 'двенадцать': 12, 'тринадцать': 13, 'четырнадцать': 14,
+    'пятнадцать': 15, 'шестнадцать': 16, 'семнадцать': 17, 'восемнадцать': 18,
+    'девятнадцать': 19, 'двадцать': 20, 'тридцать': 30, 'сорок': 40,
+    'пятьдесят': 50, 'шестьдесят': 60, 'семьдесят': 70, 'восемьдесят': 80,
+    'девяносто': 90, 'сто': 100, 'двести': 200, 'триста': 300, 'четыреста': 400,
+    'пятьсот': 500, 'шестьсот': 600, 'семьсот': 700, 'восемьсот': 800,
+    'девятьсот': 900, 'тысяча': 1000,
+  };
+
+  const words = str
+    .toLowerCase()
+    .replace(/[^а-яё\s-]/g, ' ')
+    .replace(/-+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (!words.length) return null;
+
+  let result = 0;
+  let temp = 0;
+  let matched = false;
+
+  for (const w of words) {
+    const val = smallNumbers[w];
+    if (val === undefined) {
+      // если встретили слово, которое не входит в числительные — прекращаем
+      return null;
+    }
+    matched = true;
+
+    if (val === 1000) {
+      result += (temp || 1) * 1000;
+      temp = 0;
+    } else if (val >= 100) {
+      temp += val;
+    } else {
+      temp += val;
+    }
+  }
+
+  result += temp;
+  if (!matched) return null;
+  return String(result);
+}
+
 /**
  * Строим один "цикл" слов
  */
@@ -166,7 +216,6 @@ export default function BlocksGame({
 
   const [mode, setMode] = useState<Mode>('question');
   const [roundId, setRoundId] = useState(0);
-  const [sessionBest, setSessionBest] = useState(0);   // ← НОВЫЙ СТЕЙТ
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
@@ -285,15 +334,16 @@ export default function BlocksGame({
     if (!nu) return false;
     const nc = normalizeRu(question.ru);
 
-    const userAlt = normalizeNumberForms(nu);
-    const correctAlt = normalizeNumberForms(nc);
+    // сначала пытаемся привести оба варианта к числовой форме (если это число/слово)
+    const pu = parseNumberWordToDigits(nu) ?? (/^\d+$/.test(nu) ? nu : null);
+    const pc = parseNumberWordToDigits(nc) ?? (/^\d+$/.test(nc) ? nc : null);
 
-    return (
-      nu === nc ||
-      userAlt === nc ||
-      nu === correctAlt ||
-      userAlt === correctAlt
-    );
+    if (pu && pc) {
+      return pu === pc;
+    }
+
+    // иначе обычное точное совпадение (учитывая уже lowercased/trimmed в normalizeRu)
+    return nu === nc;
   }, [answer, question]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -309,14 +359,11 @@ export default function BlocksGame({
     const normCorrect = normalizeRu(question.ru);
     if (!normUser) return;
 
-    const userAlt = normalizeNumberForms(normUser);
-    const correctAlt = normalizeNumberForms(normCorrect);
+    // приводим к числовому представлению, если возможно
+    const userNum = parseNumberWordToDigits(normUser) ?? (/^\d+$/.test(normUser) ? normUser : null);
+    const correctNum = parseNumberWordToDigits(normCorrect) ?? (/^\d+$/.test(normCorrect) ? normCorrect : null);
 
-    const isCorrect =
-      normUser === normCorrect ||
-      userAlt === normCorrect ||
-      normUser === correctAlt ||
-      userAlt === correctAlt;
+    const isCorrect = (userNum && correctNum) ? userNum === correctNum : normUser === normCorrect;
 
     if (isCorrect) {
       setError(false);
@@ -359,11 +406,7 @@ export default function BlocksGame({
   const handleGameOver = () => {
     setMode('gameOver');
     setHardGameOver(true);
-
-    // если знаем episodeId, шлём рекорд
-    if (sessionBest > 0 && episodeId) {
-      upsertProgress(episodeId, sessionBest).catch(console.error);
-    }
+    // прогресс уже сохранён при обновлении рекорда
   };
 
   const handleRestartRequested = () => {
@@ -373,15 +416,11 @@ export default function BlocksGame({
     gotoNextFromQueue(false);
   };
 
-  // когда из BlocksGrid приходит новый рекорд — обновляем прогресс
-  const handleBestScoreChange = async (newBest: number) => {
+  // когда из BlocksGrid приходит новый рекорд — обновляем прогресс и карту
+  const handleBestScoreChange = (newBest: number) => {
     setBestScore(newBest);
     if (!episodeId) return;
-    try {
-      await upsertProgress(episodeId, newBest);
-    } catch (e) {
-      console.error('upsertProgress error', e);
-    }
+    upsertProgress(episodeId, newBest).catch(console.error);
   };
 
   const isQuestionVisible = mode === 'question';
@@ -485,7 +524,7 @@ export default function BlocksGame({
             onRestartRequested={handleRestartRequested}
             onGameOver={handleGameOver}
             initialBestScore={bestScore}
-            onBestScoreChange={setSessionBest}   // ← СЮДА ЛЕТИТ РЕКОРД ПАРТИИ
+            onBestScoreChange={handleBestScoreChange}
           />
         </div>
       </div>
