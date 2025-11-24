@@ -58,6 +58,66 @@ const SHAPES: Shape[] = [
       { r: 1, c: 0 }, { r: 1, c: 1 },
     ],
   },
+  {
+    id: 'plus5',
+    cells: [
+      { r: 0, c: 1 },
+      { r: 1, c: 0 }, { r: 1, c: 1 }, { r: 1, c: 2 },
+      { r: 2, c: 1 },
+    ],
+  },
+  {
+    id: 'U5',
+    cells: [
+      { r: 0, c: 0 }, { r: 0, c: 2 },
+      { r: 1, c: 0 }, { r: 1, c: 1 }, { r: 1, c: 2 },
+    ],
+  },
+  {
+    id: 'T4',
+    cells: [
+      { r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 },
+      { r: 1, c: 1 },
+    ],
+  },
+  {
+    id: 'zigzag4',
+    cells: [
+      { r: 0, c: 0 }, { r: 0, c: 1 },
+      { r: 1, c: 1 }, { r: 1, c: 2 },
+    ],
+  },
+  {
+    id: 'single1',
+    cells: [
+      { r: 0, c: 0 },
+    ],
+  },
+  {
+    id: 'vline4',
+    cells: [
+      { r: 0, c: 0 },
+      { r: 1, c: 0 },
+      { r: 2, c: 0 },
+      { r: 3, c: 0 },
+    ],
+  },
+  {
+    id: 'vline3',
+    cells: [
+      { r: 0, c: 0 },
+      { r: 1, c: 0 },
+      { r: 2, c: 0 },
+    ],
+  },
+  {
+    id: 'hook5',
+    cells: [
+      { r: 0, c: 0 },
+      { r: 1, c: 0 },
+      { r: 2, c: 0 }, { r: 2, c: 1 }, { r: 2, c: 2 },
+    ],
+  },
 ];
 
 const COLORS = [
@@ -542,15 +602,15 @@ export default function BlocksGrid({
 
           {/* кот внизу слева — файл: public/images/deda-cat_3.png */}
           <img
-            src="/images/deda-cat.png"
+            src="/images/deda-cat_6.png"
             alt="deda cat"
             draggable={false}
             className="pointer-events-none select-none"
             style={{
               position: 'absolute',
-              left: -cellSize * 4.5,   // сдвигаем влево за пределы игрового поля
-              bottom: -cellSize * 0.6, // опускаем немного вниз для натуральной посадки
-              width: cellSize * 4.4,   // увеличиваем примерно в 2 раза
+              left: -cellSize * -1.0,   // влево вправо
+              bottom: -cellSize * -7.6, // вверх вниз
+              width: cellSize * 2.0,   // размер
               height: 'auto',
               zIndex: 60,
             }}

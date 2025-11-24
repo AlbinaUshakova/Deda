@@ -66,11 +66,11 @@ export default function FlashcardDeck({
 
   // стили круглых кнопок
   const chipBase =
-    'w-11 h-11 rounded-full border flex items-center justify-center text-sm';
+    'w-16 h-16 rounded-full flex items-center justify-center text-base font-semibold transition transform duration-200';
   const chipPassive =
-    'border-slate-600/60 bg-black/30 hover:bg-black/40 text-neutral-200';
+    'bg-transparent border border-slate-600/60 text-neutral-100 hover:bg-white/5';
   const chipActive =
-    'border-indigo-400 bg-indigo-500/20 text-indigo-200';
+    'bg-transparent border border-indigo-400 text-indigo-300';
 
   // загрузка избранного
   useEffect(() => {
@@ -240,7 +240,7 @@ export default function FlashcardDeck({
             <>
               {/* Подсказка */}
               <button
-                className="absolute left-4 top-4 z-10 rounded-full border border-slate-600/60 bg-black/30 px-3 py-1 text-xs text-neutral-200 hover:bg-black/40"
+                className="absolute left-4 top-4 z-10 rounded-full border border-slate-600/60 bg-transparent px-3 py-2 text-base md:text-lg text-neutral-100 hover:bg-white/5 transition-transform duration-200"
                 onClick={e => {
                   e.stopPropagation();
                   const t = (card?.ru_meaning || '').trim();
@@ -259,7 +259,7 @@ export default function FlashcardDeck({
               {/* Справа сверху: звук, избранное, транслит */}
               <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
                 <button
-                  className="rounded-full border border-slate-600/60 bg-black/30 px-2 py-1 text-xs text-neutral-200 hover:bg-black/40"
+                  className="w-14 h-14 rounded-full border border-slate-600/60 bg-transparent flex items-center justify-center text-xl md:text-2xl text-neutral-100 hover:bg-white/5 transition-transform duration-200"
                   onClick={e => {
                     e.stopPropagation();
                     if (!card!.audio_url) return;
@@ -272,7 +272,7 @@ export default function FlashcardDeck({
                   🔊
                 </button>
                 <button
-                  className="rounded-full border border-slate-600/60 bg-black/30 px-2 py-1 text-xs text-neutral-200 hover:bg-black/40"
+                  className="w-14 h-14 rounded-full border border-slate-600/60 bg-transparent flex items-center justify-center text-xl md:text-2xl text-neutral-100 hover:bg-white/5 transition-transform duration-200"
                   onClick={e => {
                     e.stopPropagation();
                     toggleFav(card.ge_text);
@@ -282,9 +282,9 @@ export default function FlashcardDeck({
                   {isFav ? '⭐' : '☆'}
                 </button>
                 <button
-                  className={`rounded-full px-2 py-1 text-xs border ${showTranslit
-                      ? 'border-emerald-400 text-emerald-300 bg-emerald-900/20'
-                      : 'border-slate-600/60 text-neutral-200 bg-black/30 hover:bg-black/40'
+                  className={`w-14 h-14 rounded-full flex items-center justify-center text-lg md:text-xl border transition duration-200 ${showTranslit
+                    ? 'border-emerald-400 text-emerald-300 bg-transparent'
+                    : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
                     }`}
                   onClick={e => {
                     e.stopPropagation();
@@ -333,74 +333,81 @@ export default function FlashcardDeck({
               </div>
             )}
           </div>
+
+          {/* котик внизу слева (показывается на md+). Помещён внутри relative-контейнера карточки */}
+          <div
+            className="pointer-events-none absolute z-[60] hidden select-none md:block"
+            style={{
+              left: 'max(calc(50% - 640px), 8px)',
+              // ещё ниже — больше выступает за пределы карточки
+              bottom: -180, // увеличено, чтобы кот был глубже под карточкой
+              pointerEvents: 'none',
+            }}
+          >
+            <Image
+              src="/images/deda-cat_2.png"
+              alt="Deda cat"
+              width={300}
+              height={200}
+              priority
+            />
+          </div>
         </div>
 
         {/* Низ: стрелки и опции */}
         <div className="mt-4 flex items-center justify-between">
           <div className="w-24" />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-12"> {/* увеличено расстояние между стрелками */}
             <button
               onClick={onPrev}
               disabled={!hasCard}
-              className="h-14 w-14 rounded-full border border-slate-600/60 bg-[#0b1120]/60 text-lg text-neutral-200 hover:bg-[#111827] disabled:opacity-40"
+              className="h-16 w-16 rounded-full border border-slate-600/60 bg-transparent text-neutral-100 hover:scale-105 disabled:opacity-40 transition-transform duration-200 flex items-center justify-center"
               title="Назад"
+              aria-label="Назад"
             >
-              ←
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
+
             <button
               onClick={onNext}
               disabled={!hasCard}
-              className="h-14 w-14 rounded-full border border-slate-600/60 bg-[#0b1120]/60 text-lg text-neutral-200 hover:bg-[#111827] disabled:opacity-40"
+              className="h-16 w-16 rounded-full border border-slate-600/60 bg-transparent text-neutral-100 hover:scale-105 disabled:opacity-40 transition-transform duration-200 flex items-center justify-center"
               title="Вперёд"
+              aria-label="Вперёд"
             >
-              →
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </div>
-          <div className="flex items-center gap-2">
-            {/* авто */}
+          <div className="w-24 flex items-center justify-end gap-3">
+            {/* одинаковый базовый размер/вёрстка для обеих кнопок */}
             <button
               onClick={() => setAuto(a => !a)}
-              disabled={!visible.length}
-              className={`${chipBase} ${auto ? chipActive : chipPassive
-                }`}
-              title="Автопросмотр"
+              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${auto ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20' : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'}`}
+              title="Воспроизвести"
             >
-              {auto ? '⏸' : '▶︎'}
+              <img src="/icons/play1.png" alt="Auto" className="w-10 h-10 opacity-90" />
             </button>
 
-            {/* перемешать — подсветка как у авто */}
             <button
               onClick={() => {
-                setOrder(o => shuffleArr(o));
-                setIdx(0);
-                setFlipped(false);
-                setShowTranslit(false);
-                setRevealCount(0);
-                setShuffled(s => !s); // нажали — включилось, снова нажали — выключилось
+                setShuffled(s => {
+                  const next = !s;
+                  setOrder(next ? shuffleArr(order) : visible.map((_, i) => i));
+                  return next;
+                });
               }}
-              disabled={!visible.length}
-              className={`${chipBase} ${shuffled ? chipActive : chipPassive
-                }`}
+              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${shuffled ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20' : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'}`}
               title="Перемешать"
+              aria-pressed={shuffled}
             >
-              🔀
+              <img src="/icons/shuffle1.png" alt="Shuffle" className="w-10 h-10 opacity-90" />
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Котик слева снизу у карточки */}
-      <div
-        className="pointer-events-none absolute bottom-[-30px] z-[60] hidden select-none md:block"
-        style={{ left: 'max(calc(50% - 640px), 8px)' }}
-      >
-        <Image
-          src="/images/deda-cat_2.png"
-          alt="Deda cat"
-          width={260}
-          height={260}
-          priority
-        />
       </div>
     </div>
   );

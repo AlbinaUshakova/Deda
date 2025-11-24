@@ -1,7 +1,7 @@
 // src/components/BlocksGame.tsx
 'use client';
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import BlocksGrid from './BlocksGrid';
 import { upsertProgress } from '@/lib/supabase';
 
@@ -24,6 +24,14 @@ type Mode = 'question' | 'pieces' | 'gameOver';
 // чуть расширяем левую колонку, чтобы длинное поле помещалось красиво
 const LEFT_COLUMN_WIDTH = 260;
 const LEFT_COLUMN_HEIGHT = 'min(72vh, 640px)';
+
+// минимальная ширина — как раньше (почти вся колонка), максимум — как было в maxWidth
+const MIN_INPUT_WIDTH = LEFT_COLUMN_WIDTH - 20; // ~та же стартовая ширина
+const MAX_INPUT_WIDTH = 720;                    // как раньше maxWidth у инпута
+
+// ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
+const FAVORITES_KEY = 'deda_fav_ge';
+const OLD_FAVORITES_KEY = 'deda_favorite_words';
 
 function normalizeRu(str: string) {
   return str.trim().toLowerCase();
@@ -133,7 +141,7 @@ function normalizeNumberForms(str: string): string {
   return str;
 }
 
-// --- добавляем утилиту: пытаемся распарсить числовую фразу в цифры (например "два" -> "2")
+// --- пытаемся распарсить числовую фразу в цифры (например "два" -> "2")
 function parseNumberWordToDigits(str: string): string | null {
   const smallNumbers: Record<string, number> = {
     'ноль': 0, 'один': 1, 'два': 2, 'три': 3, 'четыре': 4, 'пять': 5,
@@ -183,6 +191,37 @@ function parseNumberWordToDigits(str: string): string | null {
   return String(result);
 }
 
+// нормализуем строку для сравнения: только буквы и цифры
+function normalizeForCompare(str: string): string {
+  const base = normalizeRu(str);
+  // оставляем только буквы и цифры (любые юникод-буквы + числа)
+  return base.replace(/[^\p{L}\p{N}]+/gu, '');
+}
+
+// сравнение ответов: сначала числовые формы, потом "только буквы/цифры"
+function isSameAnswer(userInput: string, correctAnswer: string): boolean {
+  const nu = normalizeRu(userInput);
+  const nc = normalizeRu(correctAnswer);
+
+  if (!nu) return false;
+
+  // 1) числа: "два" == "2", "двадцать пять" == "25"
+  const userNum =
+    parseNumberWordToDigits(nu) ?? (/^\d+$/.test(nu) ? nu : null);
+  const correctNum =
+    parseNumberWordToDigits(nc) ?? (/^\d+$/.test(nc) ? nc : null);
+
+  if (userNum && correctNum) {
+    return userNum === correctNum;
+  }
+
+  // 2) сравниваем только буквы/цифры, игнорируя запятые, точки, пробелы и т.п.
+  const cleanUser = normalizeForCompare(userInput);
+  const cleanCorrect = normalizeForCompare(correctAnswer);
+
+  return cleanUser === cleanCorrect;
+}
+
 /**
  * Строим один "цикл" слов
  */
@@ -212,6 +251,8 @@ export default function BlocksGame({
   episodeId,
   initialBest = 0,
 }: BlocksGameProps) {
+  const isFavoritesEpisode = episodeId === 'favorites';
+
   const hasWords = useMemo(() => words && words.length > 0, [words]);
 
   const [mode, setMode] = useState<Mode>('question');
@@ -231,11 +272,105 @@ export default function BlocksGame({
   const [hardSet, setHardSet] = useState<Set<number>>(() => new Set());
   const [queue, setQueue] = useState<number[]>([]);
 
+  // ожидание показа правильного ответа после 3-й ошибки
+  const [isRevealing, setIsRevealing] = useState(false);
+  const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ИЗБРАННЫЕ СЛОВА (по грузинскому слову)
+  const [favoriteWords, setFavoriteWords] = useState<Set<string>>(
+    () => new Set(),
+  );
+
+  // измеритель ширины ввода и ширина инпута
+  const measureRef = useRef<HTMLSpanElement | null>(null);
+  const [inputWidth, setInputWidth] = useState<number>(MIN_INPUT_WIDTH);
+
   // рекорд уровня (тот же, что на карте)
   const [bestScore, setBestScore] = useState(initialBest);
   useEffect(() => {
     setBestScore(initialBest);
   }, [initialBest]);
+
+  // helper: очистить таймер показа правильного ответа
+  const clearRevealTimer = () => {
+    if (revealTimeoutRef.current) {
+      clearTimeout(revealTimeoutRef.current);
+      revealTimeoutRef.current = null;
+    }
+    setIsRevealing(false);
+  };
+
+  // очистка таймера при размонтировании
+  useEffect(() => {
+    return () => {
+      clearRevealTimer();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // загрузка избранных слов из localStorage (мерджим старый и новый ключ)
+  useEffect(() => {
+    try {
+      const rawNew = window.localStorage.getItem(FAVORITES_KEY);
+      const rawOld = window.localStorage.getItem(OLD_FAVORITES_KEY);
+
+      const merged = new Set<string>();
+
+      if (rawNew) {
+        const arr: string[] = JSON.parse(rawNew);
+        arr.forEach(ge => merged.add(ge));
+      }
+
+      if (rawOld) {
+        const arrOld: string[] = JSON.parse(rawOld);
+        arrOld.forEach(ge => merged.add(ge));
+      }
+
+      if (merged.size > 0) {
+        setFavoriteWords(merged);
+        // сразу сохраняем в новый ключ и можно забыть про старый
+        window.localStorage.setItem(
+          FAVORITES_KEY,
+          JSON.stringify(Array.from(merged)),
+        );
+        window.localStorage.removeItem(OLD_FAVORITES_KEY);
+      }
+    } catch (e) {
+      console.error('Failed to load favorites', e);
+    }
+  }, []);
+
+  // обновляем ширину инпута при вводе текста
+  useEffect(() => {
+    if (!measureRef.current) return;
+    const w = measureRef.current.offsetWidth;
+    const clamped = Math.min(
+      Math.max(w, MIN_INPUT_WIDTH),
+      MAX_INPUT_WIDTH,
+    );
+    setInputWidth(clamped);
+  }, [answer]);
+
+  // переключение избранного для конкретного грузинского слова
+  const toggleFavorite = (ge: string) => {
+    setFavoriteWords(prev => {
+      const next = new Set(prev);
+      if (next.has(ge)) {
+        next.delete(ge);
+      } else {
+        next.add(ge);
+      }
+      try {
+        window.localStorage.setItem(
+          FAVORITES_KEY,
+          JSON.stringify(Array.from(next)),
+        );
+      } catch (e) {
+        console.error('Failed to save favorites', e);
+      }
+      return next;
+    });
+  };
 
   const gotoNextFromQueue = (markHard: boolean) => {
     if (!hasWords) {
@@ -274,6 +409,7 @@ export default function BlocksGame({
         setError(false);
         setAttempts(0);
         setShowCorrect(false);
+        clearRevealTimer();
 
         return rest;
       });
@@ -307,6 +443,7 @@ export default function BlocksGame({
       setError(false);
       setAttempts(0);
       setShowCorrect(false);
+      clearRevealTimer();
 
       setHardGameOver(false);
       setMode('question');
@@ -330,42 +467,27 @@ export default function BlocksGame({
 
   const isCurrentAnswerCorrect = useMemo(() => {
     if (!question) return false;
-    const nu = normalizeRu(answer);
-    if (!nu) return false;
-    const nc = normalizeRu(question.ru);
-
-    // сначала пытаемся привести оба варианта к числовой форме (если это число/слово)
-    const pu = parseNumberWordToDigits(nu) ?? (/^\d+$/.test(nu) ? nu : null);
-    const pc = parseNumberWordToDigits(nc) ?? (/^\d+$/.test(nc) ? nc : null);
-
-    if (pu && pc) {
-      return pu === pc;
-    }
-
-    // иначе обычное точное совпадение (учитывая уже lowercased/trimmed в normalizeRu)
-    return nu === nc;
+    return isSameAnswer(answer, question.ru);
   }, [answer, question]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (mode !== 'question' || !question || hardGameOver) return;
 
+    // если уже ждём автопоказ правильного ответа — игнорируем ввод
+    if (isRevealing) return;
+
     if (showCorrect) {
       gotoNextFromQueue(true);
       return;
     }
 
-    const normUser = normalizeRu(answer);
-    const normCorrect = normalizeRu(question.ru);
-    if (!normUser) return;
+    if (!normalizeRu(answer)) return;
 
-    // приводим к числовому представлению, если возможно
-    const userNum = parseNumberWordToDigits(normUser) ?? (/^\d+$/.test(normUser) ? normUser : null);
-    const correctNum = parseNumberWordToDigits(normCorrect) ?? (/^\d+$/.test(normCorrect) ? normCorrect : null);
-
-    const isCorrect = (userNum && correctNum) ? userNum === correctNum : normUser === normCorrect;
+    const isCorrect = isSameAnswer(answer, question.ru);
 
     if (isCorrect) {
+      clearRevealTimer();
       setError(false);
       setAnswer('');
       setAttempts(0);
@@ -378,9 +500,22 @@ export default function BlocksGame({
         const next = prev + 1;
 
         if (next >= 3) {
-          setShowCorrect(true);
-          setError(false);
-          setAnswer(question.ru);
+          // третья ошибка — поле остаётся красным 4 секунды,
+          // затем автоматически показываем правильный ответ
+          if (!isRevealing && !showCorrect) {
+            setError(true);
+            setIsRevealing(true);
+
+            revealTimeoutRef.current = setTimeout(() => {
+              setShowCorrect(true);
+              if (question) {
+                setAnswer(question.ru);
+              }
+              setError(false);
+              setIsRevealing(false);
+              revealTimeoutRef.current = null;
+            }, 2000);
+          }
         } else {
           setError(true);
         }
@@ -427,6 +562,11 @@ export default function BlocksGame({
   const isGameOver = mode === 'gameOver';
   const shouldRenderQuestionPanel = !isGameOver && !hardGameOver;
 
+  // текущий флаг избранности для показываемого слова
+  const currentGe = question?.ge ?? null;
+  const isCurrentFavorite =
+    currentGe != null ? favoriteWords.has(currentGe) : false;
+
   return (
     <div className="flex w-full justify_center mt-[-60px]">
       <div className="flex w-full max-w-5xl items-start gap-10 py-16 mx-6">
@@ -451,30 +591,64 @@ export default function BlocksGame({
                 <div className="flex flex-col items-start justify-start h-full px-2 pt-12">
                   {hasWords && question && (
                     <>
-                      <div className="text-2xl mb-6">{question.ge}</div>
+                      {/* строка с грузинским словом и кнопкой избранного */}
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="text-2xl">{question.ge}</div>
+
+                        {!isFavoritesEpisode && (
+                          <button
+                            type="button"
+                            onClick={() => toggleFavorite(question.ge)}
+                            className={
+                              'text-2xl transition ' +
+                              (isCurrentFavorite
+                                ? 'text-yellow-300 hover:text-yellow-400'
+                                : 'text-slate-400 hover:text-slate-200')
+                            }
+                            title={
+                              isCurrentFavorite
+                                ? 'Убрать из избранного'
+                                : 'Добавить в избранное'
+                            }
+                          >
+                            {isCurrentFavorite ? '★' : '☆'}
+                          </button>
+                        )}
+                      </div>
 
                       <form onSubmit={handleSubmit} className="mb-2 w-full">
-                        <input
-                          value={answer}
-                          onChange={e => {
-                            setAnswer(e.target.value);
-                            if (error) setError(false);
-                          }}
-                          placeholder="введите перевод"
-                          readOnly={showCorrect}
-                          className={
-                            'px-5 py-3 rounded-xl border outline-none text-2xl tracking-wide transition-all duration-200 placeholder:text-base placeholder:text-neutral-400 ' +
-                            (error && !showCorrect
-                              ? 'border-green-300 bg-green-700/10 text-white'
-                              : !error && isCurrentAnswerCorrect
-                                ? 'border-green-300 bg-green-400/5 text-white'
-                                : 'border-[#64748b] bg-[#0b1120]/60 focus:border-blue-400 text-white')
-                          }
-                          style={{
-                            width: '100%',
-                            maxWidth: '460px',
-                          }}
-                        />
+                        <div className="relative inline-block">
+                          <input
+                            value={answer}
+                            onChange={e => {
+                              setAnswer(e.target.value);
+                              if (error) setError(false);
+                            }}
+                            placeholder="введите перевод"
+                            readOnly={showCorrect}
+                            className={
+                              'px-6 py-4 rounded-xl border outline-none text-xl md:text-2xl tracking-wide transition-all duration-200 placeholder:text-lg placeholder:text-neutral-400 ' +
+                              (error && !showCorrect
+                                ? 'border-red-400 bg-red-700/10 text-white'
+                                : !error && isCurrentAnswerCorrect
+                                  ? 'border-green-300 bg-green-400/5 text-white'
+                                  : 'border-[#64748b] bg-[#0b1120]/60 focus:border-blue-400 text-white')
+                            }
+                            style={{
+                              width: inputWidth,
+                              maxWidth: MAX_INPUT_WIDTH,
+                              transition: 'width 120ms ease',
+                            }}
+                          />
+
+                          {/* невидимый измеритель текста */}
+                          <span
+                            ref={measureRef}
+                            className="absolute invisible whitespace-pre px-6 py-4 text-xl md:text-2xl tracking-wide"
+                          >
+                            {answer || 'введите перевод'}
+                          </span>
+                        </div>
                       </form>
 
                       <button
@@ -489,7 +663,9 @@ export default function BlocksGame({
 
                       {error && !showCorrect && (
                         <div className="mt-2 text-xs text-red-400">
-                          Неверно, попробуй ещё раз.
+                          {attempts >= 3
+                            ? 'Неверно, сейчас покажем верный ответ.'
+                            : 'Неверно, попробуй ещё раз.'}
                         </div>
                       )}
                     </>
@@ -508,9 +684,7 @@ export default function BlocksGame({
               id="blocks-palette-slot"
               className={
                 'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ' +
-                (showPalette
-                  ? 'opacity-100'
-                  : 'opacity-0 pointer-events-none')
+                (showPalette ? 'opacity-100' : 'opacity-0 pointer-events-none')
               }
             />
           </div>
