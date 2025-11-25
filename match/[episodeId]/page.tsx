@@ -26,7 +26,7 @@ export default function MatchPage({ params }: { params: { episodeId: string } })
     <main>
       <div className="flex items-center justify-between mb-4">
         <h1 className="h1">Совпадения — {title || params.episodeId}</h1>
-        <Link className="btn" href="/">На карту</Link>
+        <Link className="btn" href="/">Главная</Link>
       </div>
       {words ? <MatchGame words={words} /> : <div className="text-neutral-400">Загрузка…</div>}
     </main>

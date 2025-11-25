@@ -156,7 +156,7 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
   return null;
 }
 
-/** Список эпизодов на карту */
+/** Список эпизодов на главной */
 export async function listEpisodes(): Promise<Array<{ id: string; title: string }>> {
   // Жёстко показываем только 1–9 (как ты и оставила)
   const merged = [

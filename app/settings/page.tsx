@@ -15,7 +15,7 @@ export default function SettingsPage() {
     <main>
       <div className="flex items-center justify-between mb-4">
         <h1 className="h1">Настройки языка</h1>
-        <Link className="btn" href="/">На карту</Link>
+        <Link className="btn" href="/">Главная</Link>
       </div>
       <div className="card p-4 max-w-md space-y-3">
         <div>

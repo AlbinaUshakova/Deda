@@ -10,7 +10,10 @@ const BOARD_PIXEL_SIZE = 'min(72vh, 640px)';
 
 type CellColor = string | null;
 type ShapeCell = { r: number; c: number };
-type Shape = { id: string; cells: ShapeCell[] };
+
+type Difficulty = 'easy' | 'medium' | 'hard';
+
+type Shape = { id: string; cells: ShapeCell[]; difficulty: Difficulty };
 type Piece = { id: string; shape: Shape; color: string };
 
 type HoverPos = { row: number; col: number } | null;
@@ -33,68 +36,119 @@ type ClearedCell = {
 };
 
 const SHAPES: Shape[] = [
-  { id: 'line4', cells: [{ r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 }, { r: 0, c: 3 }] },
-  { id: 'L3', cells: [{ r: 0, c: 0 }, { r: 1, c: 0 }, { r: 1, c: 1 }] },
+  {
+    id: 'line4',
+    difficulty: 'easy',
+    cells: [
+      { r: 0, c: 0 },
+      { r: 0, c: 1 },
+      { r: 0, c: 2 },
+      { r: 0, c: 3 },
+    ],
+  },
+  {
+    id: 'L3',
+    difficulty: 'easy',
+    cells: [
+      { r: 0, c: 0 },
+      { r: 1, c: 0 },
+      { r: 1, c: 1 },
+    ],
+  },
   {
     id: 'square3',
+    difficulty: 'medium',
     cells: [
-      { r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 },
-      { r: 1, c: 0 }, { r: 1, c: 1 }, { r: 1, c: 2 },
-      { r: 2, c: 0 }, { r: 2, c: 1 }, { r: 2, c: 2 },
+      { r: 0, c: 0 },
+      { r: 0, c: 1 },
+      { r: 0, c: 2 },
+      { r: 1, c: 0 },
+      { r: 1, c: 1 },
+      { r: 1, c: 2 },
+      { r: 2, c: 0 },
+      { r: 2, c: 1 },
+      { r: 2, c: 2 },
     ],
   },
   {
     id: 'bigL',
+    difficulty: 'hard',
     cells: [
-      { r: 0, c: 0 }, { r: 1, c: 0 }, { r: 2, c: 0 },
+      { r: 0, c: 0 },
+      { r: 1, c: 0 },
+      { r: 2, c: 0 },
       { r: 2, c: 1 },
     ],
   },
-  { id: 'line3', cells: [{ r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 }] },
+  {
+    id: 'line3',
+    difficulty: 'easy',
+    cells: [
+      { r: 0, c: 0 },
+      { r: 0, c: 1 },
+      { r: 0, c: 2 },
+    ],
+  },
   {
     id: 'square2',
+    difficulty: 'easy',
     cells: [
-      { r: 0, c: 0 }, { r: 0, c: 1 },
-      { r: 1, c: 0 }, { r: 1, c: 1 },
+      { r: 0, c: 0 },
+      { r: 0, c: 1 },
+      { r: 1, c: 0 },
+      { r: 1, c: 1 },
     ],
   },
   {
     id: 'plus5',
+    difficulty: 'medium',
     cells: [
       { r: 0, c: 1 },
-      { r: 1, c: 0 }, { r: 1, c: 1 }, { r: 1, c: 2 },
+      { r: 1, c: 0 },
+      { r: 1, c: 1 },
+      { r: 1, c: 2 },
       { r: 2, c: 1 },
     ],
   },
   {
     id: 'U5',
+    difficulty: 'hard',
     cells: [
-      { r: 0, c: 0 }, { r: 0, c: 2 },
-      { r: 1, c: 0 }, { r: 1, c: 1 }, { r: 1, c: 2 },
+      { r: 0, c: 0 },
+      { r: 0, c: 2 },
+      { r: 1, c: 0 },
+      { r: 1, c: 1 },
+      { r: 1, c: 2 },
     ],
   },
   {
     id: 'T4',
+    difficulty: 'medium',
     cells: [
-      { r: 0, c: 0 }, { r: 0, c: 1 }, { r: 0, c: 2 },
+      { r: 0, c: 0 },
+      { r: 0, c: 1 },
+      { r: 0, c: 2 },
       { r: 1, c: 1 },
     ],
   },
   {
     id: 'zigzag4',
+    difficulty: 'medium',
     cells: [
-      { r: 0, c: 0 }, { r: 0, c: 1 },
-      { r: 1, c: 1 }, { r: 1, c: 2 },
+      { r: 0, c: 0 },
+      { r: 0, c: 1 },
+      { r: 1, c: 1 },
+      { r: 1, c: 2 },
     ],
   },
   {
     id: 'single1',
-    cells: [
-      { r: 0, c: 0 },
-    ],
+    difficulty: 'easy',
+    cells: [{ r: 0, c: 0 }],
   },
   {
     id: 'vline4',
+    difficulty: 'medium',
     cells: [
       { r: 0, c: 0 },
       { r: 1, c: 0 },
@@ -104,25 +158,25 @@ const SHAPES: Shape[] = [
   },
   {
     id: 'vline3',
+    difficulty: 'easy',
     cells: [
       { r: 0, c: 0 },
       { r: 1, c: 0 },
       { r: 2, c: 0 },
     ],
   },
-  {
-    id: 'hook5',
-    cells: [
-      { r: 0, c: 0 },
-      { r: 1, c: 0 },
-      { r: 2, c: 0 }, { r: 2, c: 1 }, { r: 2, c: 2 },
-    ],
-  },
 ];
 
 const COLORS = [
-  '#38bdf8', '#f97373', '#4ade80', '#a855f7',
-  '#facc15', '#fb923c', '#ef4444', '#06b6d4', '#f472b6',
+  '#38bdf8',
+  '#f97373',
+  '#4ade80',
+  '#a855f7',
+  '#facc15',
+  '#fb923c',
+  '#ef4444',
+  '#06b6d4',
+  '#f472b6',
 ];
 
 function randomInt(max: number): number {
@@ -138,29 +192,20 @@ function createEmptyBoard(): CellColor[][] {
   );
 }
 
-function makeBag(): Piece[] {
-  const indices = SHAPES.map((_, i) => i);
+function getBoardFillRatio(board: CellColor[][]): number {
+  const total = BOARD_SIZE * BOARD_SIZE;
+  let filled = 0;
 
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      if (board[r][c] !== null) filled++;
+    }
   }
 
-  const chosen = indices.slice(0, Math.min(3, indices.length));
-  const now = Date.now();
-
-  return chosen.map((shapeIdx, idx) => {
-    const shape = SHAPES[shapeIdx];
-    const color = COLORS[randomInt(COLORS.length)];
-    return {
-      id: `p_${shape.id}_${now}_${idx}`,
-      shape,
-      color,
-    };
-  });
+  return filled / total;
 }
 
-// проверка, можно ли поставить фигуру в конкретное место
+// можно ли поставить фигуру в конкретное место
 function canPlace(
   board: CellColor[][],
   shape: Shape,
@@ -176,6 +221,7 @@ function canPlace(
   return true;
 }
 
+// физически кладём фигуру на поле
 function placePiece(
   board: CellColor[][],
   shape: Shape,
@@ -190,6 +236,109 @@ function placePiece(
     next[r][c] = color;
   }
   return next;
+}
+
+// фигура вообще где-то помещается на текущем поле?
+function shapeHasAnyMove(board: CellColor[][], shape: Shape): boolean {
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      if (canPlace(board, shape, r, c)) return true;
+    }
+  }
+  return false;
+}
+
+// ровно 3 разных фигуры
+// минимум одна точно ставится
+// остальные могут быть «заглушками» и усложнять игру
+function makeBag(board: CellColor[][]): Piece[] {
+  const fill = getBoardFillRatio(board);
+
+  // фигуры, которые вообще можно куда-то поставить
+  const availableShapes = SHAPES.filter(shape =>
+    shapeHasAnyMove(board, shape),
+  );
+
+  // если нет ни одной доступной фигуры — честный game over
+  if (availableShapes.length === 0) {
+    return [];
+  }
+
+  // веса сложностей в зависимости от заполненности
+  let weights: { easy: number; medium: number; hard: number };
+
+  if (fill < 0.25) {
+    weights = { easy: 6, medium: 3, hard: 1 };
+  } else if (fill < 0.6) {
+    weights = { easy: 4, medium: 3, hard: 2 };
+  } else {
+    weights = { easy: 8, medium: 1, hard: 0 };
+  }
+
+  const shapeWeight = (shape: Shape) =>
+    shape.difficulty === 'easy'
+      ? weights.easy
+      : shape.difficulty === 'medium'
+        ? weights.medium
+        : weights.hard;
+
+  // --- 1. выбираем ОДНУ гарантированно ставящуюся фигуру (из availableShapes) ---
+
+  const poolAvailable: Shape[] = [];
+  for (const s of availableShapes) {
+    const w = Math.max(shapeWeight(s), 1);
+    for (let i = 0; i < w; i++) {
+      poolAvailable.push(s);
+    }
+  }
+
+  const guaranteedShape =
+    poolAvailable.length > 0
+      ? poolAvailable[randomInt(poolAvailable.length)]
+      : availableShapes[randomInt(availableShapes.length)];
+
+  const pickedShapes: Shape[] = [guaranteedShape];
+  const usedIds = new Set<string>([guaranteedShape.id]);
+
+  // --- 2. добираем до 3 разных фигур из ВСЕХ SHAPES (могут не влезать) ---
+
+  const poolAll: Shape[] = [];
+  for (const s of SHAPES) {
+    const w = Math.max(shapeWeight(s), 1);
+    for (let i = 0; i < w; i++) {
+      poolAll.push(s);
+    }
+  }
+
+  // тасуем общий пул
+  for (let i = poolAll.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [poolAll[i], poolAll[j]] = [poolAll[j], poolAll[i]];
+  }
+
+  for (const s of poolAll) {
+    if (pickedShapes.length >= 3) break;
+    if (usedIds.has(s.id)) continue; // только разные фигуры
+    pickedShapes.push(s);
+    usedIds.add(s.id);
+  }
+
+  // safety: если вдруг ещё не набрали 3 (например, мало фигур в SHAPES)
+  if (pickedShapes.length < 3) {
+    for (const s of SHAPES) {
+      if (pickedShapes.length >= 3) break;
+      if (usedIds.has(s.id)) continue;
+      pickedShapes.push(s);
+      usedIds.add(s.id);
+    }
+  }
+
+  const now = Date.now();
+  return pickedShapes.map((shape, idx) => ({
+    id: `p_${shape.id}_${now}_${idx}`,
+    shape,
+    color: randomColor(),
+  }));
 }
 
 function clearLines(board: CellColor[][]) {
@@ -318,17 +467,17 @@ export default function BlocksGrid({
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // новый раунд: меняем только набор фигур, поле и счёт сохраняем
+  // новый раунд: подбираем мешок
   useEffect(() => {
     if (roundId <= 0) return;
 
-    const newBag = makeBag();
-    setBag(newBag); // просто показываем фигуры
+    const newBag = makeBag(board);
+    setBag(newBag);
 
-    if (!hasAnyMove(board, newBag)) {
+    if (newBag.length === 0 || !hasAnyMove(board, newBag)) {
       setTimeout(() => {
         setGameOver(true);
-        // onGameOver();  // не трогаем цикл вопросов
+        // onGameOver();
       }, 2000);
     } else {
       setGameOver(false);
@@ -391,7 +540,7 @@ export default function BlocksGrid({
         const piece = prev.piece;
 
         if (canPlace(board, piece.shape, row, col)) {
-          let placed = placePiece(board, piece.shape, row, col, piece.color);
+          const placed = placePiece(board, piece.shape, row, col, piece.color);
           const {
             board: clearedBoard,
             cleared,
@@ -501,7 +650,6 @@ export default function BlocksGrid({
         >
           {/* счёт + рекорд */}
           <div className="flex items-center justify-between mb-3 text-neutral-300 px-3 w-full">
-            {/* левый край — текущий счёт */}
             <div className="flex items-center gap-3">
               <div
                 className="font-bold text-white leading-none"
@@ -511,7 +659,6 @@ export default function BlocksGrid({
               </div>
             </div>
 
-            {/* правый край — рекорд */}
             <div className="flex items-center gap-2">
               <span
                 className="text-yellow-300"
@@ -600,7 +747,7 @@ export default function BlocksGrid({
             )}
           </div>
 
-          {/* кот внизу слева — файл: public/images/deda-cat_3.png */}
+          {/* кот */}
           <img
             src="/images/deda-cat_6.png"
             alt="deda cat"
@@ -608,9 +755,9 @@ export default function BlocksGrid({
             className="pointer-events-none select-none"
             style={{
               position: 'absolute',
-              left: -cellSize * -1.0,   // влево вправо
-              bottom: -cellSize * -7.6, // вверх вниз
-              width: cellSize * 2.0,   // размер
+              left: -cellSize * -1.0,
+              bottom: -cellSize * -7.6,
+              width: cellSize * 2.0,
               height: 'auto',
               zIndex: 60,
             }}
@@ -637,12 +784,10 @@ export default function BlocksGrid({
           <div className="flex flex-col justify-center items-center h-full">
             <div className="flex flex-col items-center gap-[72px]">
               {bag.map(piece => {
-                const widthCells = Math.max(
-                  ...piece.shape.cells.map(c => c.c),
-                ) + 1;
-                const heightCells = Math.max(
-                  ...piece.shape.cells.map(c => c.r),
-                ) + 1;
+                const widthCells =
+                  Math.max(...piece.shape.cells.map(c => c.c)) + 1;
+                const heightCells =
+                  Math.max(...piece.shape.cells.map(c => c.r)) + 1;
                 const isDragging = dragPiece?.id === piece.id;
 
                 const previewCellSize = cellSize * PREVIEW_SCALE;
@@ -658,10 +803,7 @@ export default function BlocksGrid({
                       opacity: isDragging ? 0.2 : 1,
                     }}
                   >
-                    <PieceSVG
-                      piece={piece}
-                      cellSize={previewCellSize}
-                    />
+                    <PieceSVG piece={piece} cellSize={previewCellSize} />
                   </div>
                 );
               })}

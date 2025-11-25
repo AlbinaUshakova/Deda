@@ -43,7 +43,7 @@ export default function StudyClient({
 
           <div className="flex gap-2">
             <Link className="btn" href="/">
-              На карту
+              Главная
             </Link>
             <Link className="btn" href={`/play/${episodeId}`}>
               Играть

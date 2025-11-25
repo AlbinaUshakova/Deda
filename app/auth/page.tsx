@@ -16,7 +16,7 @@ export default function AuthPage() {
   };
   return (
     <main>
-      <div className="flex items-center justify-between mb-4"><h1 className="h1">Вход</h1><Link className="btn" href="/">На карту</Link></div>
+      <div className="flex items-center justify-between mb-4"><h1 className="h1">Вход</h1><Link className="btn" href="/">Главная</Link></div>
       {online ? (
         <div className="card p-4 max-w-md">
           <label className="block text-sm mb-2">Email</label>

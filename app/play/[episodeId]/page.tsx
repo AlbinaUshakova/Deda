@@ -81,7 +81,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
           </h1>
 
           <Link className="btn relative z-50" href="/">
-            На карту
+            Главная
           </Link>
         </div>
 
