@@ -1,4 +1,3 @@
-// app/play/[episodeId]/page.tsx
 'use client';
 
 import Link from 'next/link';
@@ -14,14 +13,12 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
 
   const [title, setTitle] = useState<string>('');
   const [words, setWords] = useState<Word[]>([]);
-  // раньше было: number | null — теперь просто число с дефолтом 0
   const [initialBest, setInitialBest] = useState<number>(0);
 
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      // 1) грузим эпизод
       const ep = await loadEpisode(episodeId);
       if (cancelled) return;
 
@@ -34,16 +31,33 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
 
       setTitle(ep.title || episodeId);
 
-      const ws: Word[] = ep.cards
-        .filter((c: any) => c.type === 'word' || c.type === 'phrase')
-        .map((c: any) => ({
-          ge: c.ge_text,
-          ru: c.ru_meaning,
-          audio: c.audio_url,
-        }));
+      // читаем topic из query
+      let topic: string | null = null;
+      if (typeof window !== 'undefined') {
+        const sp = new URLSearchParams(window.location.search);
+        topic = sp.get('topic');
+      }
+
+      // берём только нужные карточки
+      let cards = ep.cards.filter(
+        (c: any) => c.type === 'word' || c.type === 'phrase',
+      ) as any[];
+
+      if (topic) {
+        const filtered = cards.filter(c => c.topic === topic);
+        if (filtered.length > 0) {
+          cards = filtered;
+        }
+      }
+
+      const ws: Word[] = cards.map((c: any) => ({
+        ge: c.ge_text,
+        ru: c.ru_meaning,
+        audio: c.audio_url,
+      }));
       setWords(ws);
 
-      // 2) мгновенный рекорд уровня из локального прогресса
+      // локальный рекорд
       let localBest = 0;
       if (typeof window !== 'undefined') {
         const local = getLocalProgress();
@@ -52,7 +66,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
       }
       setInitialBest(localBest);
 
-      // 3) рекорд из Supabase — тихо в фоне, без "Загрузка…"
+      // рекорд из Supabase
       try {
         const progressMap = await loadProgressMap();
         if (cancelled) return;

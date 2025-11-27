@@ -8,6 +8,7 @@ type UserInfo = {
     id: string;
     name: string | null;
     email: string | null;
+    avatarUrl: string | null; // ← добавили
 };
 
 export default function AuthStatus() {
@@ -16,7 +17,7 @@ export default function AuthStatus() {
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
 
-    // если supabase не сконфигурен – ведём себя как просто гостевой режим
+    // если supabase не сконфигурен – гостевой режим
     if (!supabase) {
         return (
             <div className="flex items-center gap-3 text-sm">
@@ -45,7 +46,7 @@ export default function AuthStatus() {
 
             const { data: profile, error } = await supabase
                 .from('profiles')
-                .select('display_name')
+                .select('display_name, avatar_url')
                 .eq('id', sessionUser.id)
                 .maybeSingle();
 
@@ -56,11 +57,13 @@ export default function AuthStatus() {
             }
 
             const displayName = (profile as any)?.display_name ?? null;
+            const avatarUrl = (profile as any)?.avatar_url ?? null;
 
             setUser({
                 id: sessionUser.id,
                 name: displayName,
                 email: sessionUser.email ?? null,
+                avatarUrl,
             });
             setLoading(false);
         }
@@ -115,7 +118,7 @@ export default function AuthStatus() {
         window.location.href = '/login';
     };
 
-    // пока идёт проверка – просто ничего не показываем, чтобы не торчал "Checking…"
+    // пока идёт проверка – ничего не показываем
     if (loading) {
         return null;
     }
@@ -144,9 +147,18 @@ export default function AuthStatus() {
                 onClick={() => setOpen(v => !v)}
                 className="flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-sm hover:bg-white/5 transition-colors"
             >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-700 text-xs font-semibold text-white">
-                    {avatarLetter}
-                </span>
+                {user.avatarUrl ? (
+                    <img
+                        src={user.avatarUrl}
+                        alt={label}
+                        className="h-7 w-7 rounded-full object-cover"
+                    />
+                ) : (
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-700 text-xs font-semibold text-white">
+                        {avatarLetter}
+                    </span>
+                )}
+
                 <span className="truncate max-w-[140px]">{label}</span>
             </button>
 

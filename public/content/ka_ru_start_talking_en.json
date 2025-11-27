@@ -4,615 +4,591 @@
   "cards": [
     {
       "type": "word",
-      "ge_text": "მე",
-      "reading": "me",
-      "ru_meaning": "I"
+      "ge_text": "მე ვარ აქ",
+      "reading": "me var ak",
+      "ru_meaning": "I am here",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "შენ",
-      "reading": "shen",
-      "ru_meaning": "you"
+      "ge_text": "შენ ხარ იქ",
+      "reading": "shen khar ik",
+      "ru_meaning": "You are there",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "ის",
-      "reading": "is",
-      "ru_meaning": "he,she,it"
+      "ge_text": "ის არის ახლოს",
+      "reading": "is aris akhlos",
+      "ru_meaning": "He/She is near",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "ჩვენ",
-      "reading": "chven",
-      "ru_meaning": "we"
+      "ge_text": "ჩვენ ვართ ერთად",
+      "reading": "chven vart ertad",
+      "ru_meaning": "We are together",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "თქვენ",
-      "reading": "tkven",
-      "ru_meaning": "you"
+      "ge_text": "თქვენ ხართ მარჯვნივ",
+      "reading": "tkven khart marjvniv",
+      "ru_meaning": "You are on the right",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "ისინი",
-      "reading": "isini",
-      "ru_meaning": "they"
+      "ge_text": "ისინი არიან მარცხნივ",
+      "reading": "isini arian martskhniv",
+      "ru_meaning": "They are on the left",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "ვარ",
-      "reading": "var",
-      "ru_meaning": "am"
+      "ge_text": "მე გზაში ვარ",
+      "reading": "me gzashi var",
+      "ru_meaning": "I am on the way",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "ხარ",
-      "reading": "khar",
-      "ru_meaning": "are"
+      "ge_text": "ვინ არის აქ?",
+      "reading": "vin aris ak?",
+      "ru_meaning": "Who is here?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "არის",
-      "reading": "aris",
-      "ru_meaning": "is"
+      "ge_text": "რა გინდა ახლა?",
+      "reading": "ra ginda akhla?",
+      "ru_meaning": "What do you want now?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ ექიმი",
-      "reading": "me var eqimi",
-      "ru_meaning": "I am a doctor"
+      "ge_text": "სად მივდივართ დღეს?",
+      "reading": "sad mivdivart dghes?",
+      "ru_meaning": "Where are we going today?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "შენ ხარ ექიმი",
-      "reading": "shen khar eqimi",
-      "ru_meaning": "You are a doctor"
+      "ge_text": "რატომ მოდის ის?",
+      "reading": "ratom modis is?",
+      "ru_meaning": "Why is he/she coming?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "ის არის ექიმი",
-      "reading": "is aris eqimi",
-      "ru_meaning": "He/She is a doctor"
+      "ge_text": "როდის გავიდეთ?",
+      "reading": "rodis gavidet?",
+      "ru_meaning": "When do we go out?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "ჩვენ ვართ ექიმები",
-      "reading": "chven vart eqimebi",
-      "ru_meaning": "We are doctors"
+      "ge_text": "როგორ ხართ?",
+      "reading": "rogor khart?",
+      "ru_meaning": "How are you?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "თქვენ ხართ ექიმები",
-      "reading": "tkven khart eqimebi",
-      "ru_meaning": "You are doctors"
+      "ge_text": "რომელი მაღაზიაა გახსნილი?",
+      "reading": "romeli magazia gakhsnilia?",
+      "ru_meaning": "Which shop is open?",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "ისინი არიან ექიმები",
-      "reading": "isini arian eqimebi",
-      "ru_meaning": "They are doctors"
+      "ge_text": "ვისი წიგნია?",
+      "reading": "visi tsignia?",
+      "ru_meaning": "Whose book is this?",
+      "topic": "questions"
     },
     {
       "type": "word",
-      "ge_text": "ვინ",
-      "reading": "vin",
-      "ru_meaning": "who"
+      "ge_text": "რამდენი ღირს?",
+      "reading": "ramdeni ghirs?",
+      "ru_meaning": "How much is it?",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "რა",
-      "reading": "ra",
-      "ru_meaning": "what"
+      "ge_text": "ზემოთ არაფერი არის",
+      "reading": "zemot araferi aris",
+      "ru_meaning": "There is nothing above",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "სად",
-      "reading": "sad",
-      "ru_meaning": "where"
+      "ge_text": "ქვეშ ბოთლი დევს",
+      "reading": "kvesh botli devs",
+      "ru_meaning": "There is a bottle under it",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "რატომ",
-      "reading": "ratom",
-      "ru_meaning": "why"
+      "ge_text": "შორს ცხოვრობს",
+      "reading": "shors tskhovrobs",
+      "ru_meaning": "He/She lives far away",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "როდის",
-      "reading": "rodis",
-      "ru_meaning": "when"
+      "ge_text": "გავიდეთ გარეთ",
+      "reading": "gavidet garet",
+      "ru_meaning": "Let's go outside",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "როგორ",
-      "reading": "rogor",
-      "ru_meaning": "how"
+      "ge_text": "აქ გააჩერეთ",
+      "reading": "ak gaacheret",
+      "ru_meaning": "Stop here",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "რომელი",
-      "reading": "romeli",
-      "ru_meaning": "which"
+      "ge_text": "სად გაჩერდები?",
+      "reading": "sad gacherdebi?",
+      "ru_meaning": "Where will you stop?",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "ვისი",
-      "reading": "visi",
-      "ru_meaning": "whose"
+      "ge_text": "დღეს ვმუშაობ",
+      "reading": "dghes vmushaob",
+      "ru_meaning": "I work today",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "აქ",
-      "reading": "ak",
-      "ru_meaning": "here"
+      "ge_text": "ხვალ გნახავ",
+      "reading": "khval gnakhav",
+      "ru_meaning": "I will see you tomorrow",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "იქ",
-      "reading": "ik",
-      "ru_meaning": "there"
+      "ge_text": "გუშინ ბევრი ვიმუშავე",
+      "reading": "gushin bevri vimushawe",
+      "ru_meaning": "Yesterday I worked a lot",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "მარჯვნივ",
-      "reading": "marjvniv",
-      "ru_meaning": "right / to the right"
+      "ge_text": "მოგვიანებით დაგირეკავ",
+      "reading": "mogvianebit dagirekav",
+      "ru_meaning": "I'll call later",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "მარცხნივ",
-      "reading": "martskhniv",
-      "ru_meaning": "left / to the left"
+      "ge_text": "ერთ წამში მოვალ",
+      "reading": "ert tsamshi moval",
+      "ru_meaning": "I’ll be there in a moment",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "ზემოთ",
-      "reading": "zemot",
-      "ru_meaning": "on / above"
+      "ge_text": "ადრე წავედი",
+      "reading": "adre tsavedi",
+      "ru_meaning": "I left early",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "ქვეშ",
-      "reading": "kvesh",
-      "ru_meaning": "under"
+      "ge_text": "შემდეგ მოვალ",
+      "reading": "shemdeg moval",
+      "ru_meaning": "I'll come later",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "შორს",
-      "reading": "shors",
-      "ru_meaning": "far"
+      "ge_text": "მაქვს დრო",
+      "reading": "makvs dro",
+      "ru_meaning": "I have time",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "ახლოს",
-      "reading": "akhlos",
-      "ru_meaning": "near"
+      "ge_text": "მინდა ყავა",
+      "reading": "minda qava",
+      "ru_meaning": "I want coffee",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "დღეს",
-      "reading": "dghes",
-      "ru_meaning": "today"
+      "ge_text": "ვიცი ეს ადამიანი",
+      "reading": "vitsi es adamiani",
+      "ru_meaning": "I know this person",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ხვალ",
-      "reading": "khval",
-      "ru_meaning": "tomorrow"
+      "ge_text": "ვაკეთებ საჭმელს",
+      "reading": "vaketeb sachmels",
+      "ru_meaning": "I'm making food",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "გუშინ",
-      "reading": "gushin",
-      "ru_meaning": "yesterday"
+      "ge_text": "ვიღებ წყალს",
+      "reading": "vigeb ts'q'als",
+      "ru_meaning": "I'm taking water",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "ახლა",
-      "reading": "akhla",
-      "ru_meaning": "now / right now"
+      "ge_text": "ვხმარობ ტელეფონს",
+      "reading": "vkhmarob telepons",
+      "ru_meaning": "I use a phone",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "მოგვიანებით",
-      "reading": "mogvianebit",
-      "ru_meaning": "later"
+      "ge_text": "ვყიდულობ ეს",
+      "reading": "vqidulob es",
+      "ru_meaning": "I'm buying this",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "ადრე",
-      "reading": "adre",
-      "ru_meaning": "before (earlier)"
+      "ge_text": "მაჩვენეთ, რა",
+      "reading": "machvenet, ra",
+      "ru_meaning": "Show me, please",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "შემდეგ",
-      "reading": "shemdeg",
-      "ru_meaning": "after / then"
+      "ge_text": "შემიძლია დაგეხმარო?",
+      "reading": "shemidzlia dagekhmaro?",
+      "ru_meaning": "Can I help you?",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "რომელ დროს?",
-      "reading": "romel dros?",
-      "ru_meaning": "what time?"
+      "ge_text": "მოიცადე ცოტახნით",
+      "reading": "moitsade tsotakhnit",
+      "ru_meaning": "Wait a bit",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "რამდენ ხანს?",
-      "reading": "ramden khans?",
-      "ru_meaning": "how long?"
+      "ge_text": "ვტოვებ ჩანთას აქ",
+      "reading": "vtoveb chantas ak",
+      "ru_meaning": "I leave the bag here",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "რომელ საათამდე?",
-      "reading": "romel saatamde?",
-      "ru_meaning": "until what time?"
+      "ge_text": "ვინახავ ფულს",
+      "reading": "vinakhav pulss",
+      "ru_meaning": "I keep money",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "მაქვს",
-      "reading": "makvs",
-      "ru_meaning": "have"
+      "ge_text": "ვჩერდები აქ",
+      "reading": "vcherdebi ak",
+      "ru_meaning": "I stop here",
+      "topic": "location_movement"
     },
     {
       "type": "word",
-      "ge_text": "მინდა",
-      "reading": "minda",
-      "ru_meaning": "want"
+      "ge_text": "გასვლა მინდა",
+      "reading": "gasvla minda",
+      "ru_meaning": "I want to exit",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "ვიცი",
-      "reading": "vitsi",
-      "ru_meaning": "know"
+      "ge_text": "გამოვალ მალე",
+      "reading": "gamoval male",
+      "ru_meaning": "I'll come out soon",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "ვაკეთებ",
-      "reading": "vaketeb",
-      "ru_meaning": "do / make"
+      "ge_text": "ვხვდები ყველაფერს",
+      "reading": "vkhvdebi yvelapers",
+      "ru_meaning": "I understand everything",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ვიღებ",
-      "reading": "vigeb",
-      "ru_meaning": "take / get"
+      "ge_text": "ვლაპარაკობ ინგლისურად",
+      "reading": "vlaparakob inglisurad",
+      "ru_meaning": "I speak English",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "ვხმარობ",
-      "reading": "vkhmarob",
-      "ru_meaning": "use"
+      "ge_text": "ვამბობ სიმართლეს",
+      "reading": "vambob simartles",
+      "ru_meaning": "I say the truth",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ვმუშაობ",
-      "reading": "vmushaob",
-      "ru_meaning": "work"
+      "ge_text": "ვკითხულობ წიგნს",
+      "reading": "vkitkhulob tsigns",
+      "ru_meaning": "I read a book",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "ვყიდულობ",
-      "reading": "vqidulob",
-      "ru_meaning": "buy"
+      "ge_text": "ვწერ ნოტს",
+      "reading": "vtser nots",
+      "ru_meaning": "I write a note",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "მივდივარ",
-      "reading": "mivdivar",
-      "ru_meaning": "go"
+      "ge_text": "ვხედავ შენს სახლს",
+      "reading": "vkhedav shens sakhls",
+      "ru_meaning": "I see your house",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "მოდის",
-      "reading": "modis",
-      "ru_meaning": "come"
+      "ge_text": "ვიყურები ზემოთ",
+      "reading": "viqurebi zemot",
+      "ru_meaning": "I look up",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "ვტოვებ",
-      "reading": "vtoveb",
-      "ru_meaning": "leave"
+      "ge_text": "ვაჩვენებ ფოტოს",
+      "reading": "vachveneb fotos",
+      "ru_meaning": "I show the photo",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "ვინახავ",
-      "reading": "vinakhav",
-      "ru_meaning": "keep"
+      "ge_text": "ვჭამ ცოტას",
+      "reading": "vcham tsotas",
+      "ru_meaning": "I eat a little",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "ვჩერდები",
-      "reading": "vcherdebi",
-      "ru_meaning": "stop"
+      "ge_text": "სვამ წყალს",
+      "reading": "svam ts'q'als",
+      "ru_meaning": "I drink water",
+      "topic": "daily_actions"
     },
     {
       "type": "word",
-      "ge_text": "გასვლა",
-      "reading": "gasvla",
-      "ru_meaning": "exit / go out"
+      "ge_text": "მიყვარს დიდი ქალაქი",
+      "reading": "miqvars didi qalaqi",
+      "ru_meaning": "I love a big city",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "გამოვალ",
-      "reading": "gamoval",
-      "ru_meaning": "come through"
+      "ge_text": "მახსოვს ეს დღე",
+      "reading": "makhsovs es dghe",
+      "ru_meaning": "I remember this day",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ვხვდები",
-      "reading": "vkhvdebi",
-      "ru_meaning": "understand"
+      "ge_text": "ვივიწყებ problémას",
+      "reading": "vivitsqeb problems",
+      "ru_meaning": "I forget the problem",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ვლაპარაკობ",
-      "reading": "vlaparakob",
-      "ru_meaning": "speak"
+      "ge_text": "ცალ-ცალკე თუ ერთად?",
+      "reading": "tsal-tsalke tu ertad?",
+      "ru_meaning": "Separately or together?",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "ვამბობ",
-      "reading": "vambob",
-      "ru_meaning": "say"
+      "ge_text": "მეტი არ მინდა",
+      "reading": "meti ar minda",
+      "ru_meaning": "I don't want more",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "ვკითხავ",
-      "reading": "vkitkhav",
-      "ru_meaning": "ask"
+      "ge_text": "სხვა ვარიანტი გაქვთ?",
+      "reading": "skhva varianti gakvt?",
+      "ru_meaning": "Do you have another option?",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "ვკითხულობ",
-      "reading": "vkitkhulob",
-      "ru_meaning": "read"
+      "ge_text": "იგივე მომეცით",
+      "reading": "igive mometsit",
+      "ru_meaning": "Give me the same",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "ვწერ",
-      "reading": "vtser",
-      "ru_meaning": "write"
+      "ge_text": "დიახ, გთხოვ",
+      "reading": "diakh, gtxov",
+      "ru_meaning": "Yes, please",
+      "topic": "politeness"
     },
     {
       "type": "word",
-      "ge_text": "ვხედავ",
-      "reading": "vkhedav",
-      "ru_meaning": "see"
+      "ge_text": "არა, მადლობა",
+      "reading": "ara, madloba",
+      "ru_meaning": "No, thanks",
+      "topic": "politeness"
     },
     {
       "type": "word",
-      "ge_text": "ვიყურები",
-      "reading": "viq'urebi",
-      "ru_meaning": "look"
+      "ge_text": "შეიძლება დავჯდე?",
+      "reading": "sheidzleba davjdde?",
+      "ru_meaning": "May I sit?",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "ვაჩვენებ",
-      "reading": "vachveneb",
-      "ru_meaning": "show"
+      "ge_text": "უკაცრავად",
+      "reading": "uk'atsravad",
+      "ru_meaning": "Excuse me / sorry",
+      "topic": "politeness"
     },
     {
       "type": "word",
-      "ge_text": "ვჭამ",
-      "reading": "vcham",
-      "ru_meaning": "eat"
+      "ge_text": "არაფერი",
+      "reading": "araferi",
+      "ru_meaning": "It's nothing / no problem",
+      "topic": "politeness"
     },
     {
       "type": "word",
-      "ge_text": "სვამ",
-      "reading": "svam",
-      "ru_meaning": "drink"
+      "ge_text": "მშვიდობით!",
+      "reading": "mshvidobit!",
+      "ru_meaning": "Goodbye!",
+      "topic": "politeness"
     },
     {
       "type": "word",
-      "ge_text": "მიყვარს",
-      "reading": "miqvars",
-      "ru_meaning": "like / love"
+      "ge_text": "მართლა?",
+      "reading": "martla?",
+      "ru_meaning": "Really?",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "მახსოვს",
-      "reading": "makhsovs",
-      "ru_meaning": "remember"
+      "ge_text": "კარგია!",
+      "reading": "kargia!",
+      "ru_meaning": "Nice!",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ვივიწყებ",
-      "reading": "vivitsqeb",
-      "ru_meaning": "forget"
+      "ge_text": "არაუშავს",
+      "reading": "araushavs",
+      "ru_meaning": "It's okay",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
-      "ge_text": "ერთად",
-      "reading": "ertad",
-      "ru_meaning": "together"
-    },
-    {
-      "type": "word",
-      "ge_text": "ცალ-ცალკე",
-      "reading": "tsal-tsalke",
-      "ru_meaning": "separately"
-    },
-    {
-      "type": "word",
-      "ge_text": "ბევრი",
-      "reading": "bevri",
-      "ru_meaning": "a lot / many"
-    },
-    {
-      "type": "word",
-      "ge_text": "ცოტა",
-      "reading": "tsota",
-      "ru_meaning": "little / few"
-    },
-    {
-      "type": "word",
-      "ge_text": "მეტი",
-      "reading": "meti",
-      "ru_meaning": "more"
-    },
-    {
-      "type": "word",
-      "ge_text": "დიდი",
-      "reading": "didi",
-      "ru_meaning": "big"
-    },
-    {
-      "type": "word",
-      "ge_text": "საშუალო",
-      "reading": "sashualo",
-      "ru_meaning": "medium"
-    },
-    {
-      "type": "word",
-      "ge_text": "პატარა",
-      "reading": "patara",
-      "ru_meaning": "small"
-    },
-    {
-      "type": "word",
-      "ge_text": "სხვა",
-      "reading": "skhva",
-      "ru_meaning": "another / other"
-    },
-    {
-      "type": "word",
-      "ge_text": "იგივე",
-      "reading": "igive",
-      "ru_meaning": "same"
-    },
-    {
-      "type": "word",
-      "ge_text": "გახსნილი",
-      "reading": "gakhsnili",
-      "ru_meaning": "open"
-    },
-    {
-      "type": "word",
-      "ge_text": "დახურული",
-      "reading": "dakhuruli",
-      "ru_meaning": "closed"
-    },
-    {
-      "type": "word",
-      "ge_text": "დიახ / არა",
-      "reading": "diakh / ara",
-      "ru_meaning": "yes / no"
-    },
-    {
-      "type": "word",
-      "ge_text": "გმადლობ",
-      "reading": "gmadlob",
-      "ru_meaning": "thanks"
-    },
-    {
-      "type": "word",
-      "ge_text": "გთხოვ",
-      "reading": "gtxov",
-      "ru_meaning": "please"
-    },
-    {
-      "type": "word",
-      "ge_text": "შეიძლება",
-      "reading": "sheidzleba",
-      "ru_meaning": "maybe / may / can be"
-    },
-    {
-      "type": "word",
-      "ge_text": "მშვიდობით",
-      "reading": "mshvidobit",
-      "ru_meaning": "goodbye"
-    },
-    {
-      "type": "word",
-      "ge_text": "არა?",
-      "reading": "ara?",
-      "ru_meaning": "ain’t it?"
+      "ge_text": "მეგონა…",
+      "reading": "megona…",
+      "ru_meaning": "I thought…",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
       "ge_text": "ღმერთო ჩემო!",
       "reading": "ghmerto chemo!",
-      "ru_meaning": "good Lord!"
+      "ru_meaning": "Oh my God!",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
       "ge_text": "როგორ არ გრცხვენია!",
       "reading": "rogor ar grtskhvenia!",
-      "ru_meaning": "shame on you!"
+      "ru_meaning": "Shame on you!",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
       "ge_text": "დამავიწყდა!",
       "reading": "damavitskda!",
-      "ru_meaning": "I’ll be damned!"
+      "ru_meaning": "I forgot!",
+      "topic": "feelings_reactions"
     },
     {
       "type": "word",
       "ge_text": "დიდი მადლობა",
       "reading": "didi madloba",
-      "ru_meaning": "much obliged"
+      "ru_meaning": "Thank you very much",
+      "topic": "politeness"
     },
     {
       "type": "word",
-      "ge_text": "მოვხედოთ...",
-      "reading": "movkhedot",
-      "ru_meaning": "let’s see"
+      "ge_text": "მოვხედოთ შემდეგ",
+      "reading": "movkhedot shemdeg",
+      "ru_meaning": "Let's see next",
+      "topic": "time"
     },
     {
       "type": "word",
-      "ge_text": "პირველი",
-      "reading": "pirveli",
-      "ru_meaning": "the first"
+      "ge_text": "პირველი ვარ რიგში",
+      "reading": "pirveli var rigshi",
+      "ru_meaning": "I am first in line",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "ბოლო",
-      "reading": "bolo",
-      "ru_meaning": "the last"
+      "ge_text": "ბოლო ვარ",
+      "reading": "bolo var",
+      "ru_meaning": "I’m the last",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "შემდეგი",
-      "reading": "shemdegi",
-      "ru_meaning": "the next"
+      "ge_text": "შემდეგი შენ ხარ",
+      "reading": "shemdegi shen khar",
+      "ru_meaning": "You are next",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "წინა",
-      "reading": "tsina",
-      "ru_meaning": "previous"
+      "ge_text": "წინა იყო უკეთესი",
+      "reading": "tsina iko uketesi",
+      "ru_meaning": "The previous one was better",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "დასვენება",
-      "reading": "dasveneba",
-      "ru_meaning": "the rest"
+      "ge_text": "დასვენება მინდა",
+      "reading": "dasveneba minda",
+      "ru_meaning": "I want a rest",
+      "topic": "needs_offers"
     },
     {
       "type": "word",
-      "ge_text": "მაღაზია გახსნილია",
-      "reading": "magazia gakhsnilia",
-      "ru_meaning": "the shop is open"
+      "ge_text": "მაღაზია გახსნილია?",
+      "reading": "magazia gakhsnilia?",
+      "ru_meaning": "Is the shop open?",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
-      "ge_text": "მაღაზია დახურულია",
-      "reading": "magazia dakhurulia",
-      "ru_meaning": "the shop is closed"
-    },
-    {
-      "type": "word",
-      "ge_text": "კაფე გახსნილია?",
-      "reading": "kafe gakhsnilia?",
-      "ru_meaning": "is the cafe open?"
+      "ge_text": "კაფე დახურულია?",
+      "reading": "kafe dakhurulia?",
+      "ru_meaning": "Is the cafe closed?",
+      "topic": "shopping_places"
     },
     {
       "type": "word",
       "ge_text": "დღეს მუშაობთ?",
       "reading": "dghes mushobt?",
-      "ru_meaning": "are you open today?"
+      "ru_meaning": "Are you open today?",
+      "topic": "shopping_places"
     }
   ]
 }

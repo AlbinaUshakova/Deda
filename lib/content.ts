@@ -113,7 +113,7 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
     if (!all.length) return null;
     return {
       id: 'all',
-      title: 'Все слова',
+      title: 'Все уроки',
       cards: all.flatMap(e => e.cards),
     };
   }
@@ -129,9 +129,9 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
   }
 
   // ✅ спец-раздел “Начни говорить”
-  if (id === 'start_talking') {
-    const sp = loadSpecial('start_talking'); // читает ka_en_start_talking.json
-    return sp ? { ...sp, id: 'start_talking' } : null;
+  if (id === 'start_talking_en') {
+    const sp = loadSpecial('start_talking_en'); // читает ka_en_start_talking.json
+    return sp ? { ...sp, id: 'start_talking_en' } : null;
   }
 
   // При необходимости оставляем склейки
@@ -172,7 +172,7 @@ export async function listEpisodes(): Promise<Array<{ id: string; title: string 
   ];
   const specials = [
     { id: 'favorites', title: '⭐ Избранное' },
-    { id: 'all', title: 'Все слова' },
+    { id: 'all', title: 'Все уроки' },
     { id: 'start_talking_en', title: '🗣 Начни говорить' },
   ];
   return [...merged, ...specials];

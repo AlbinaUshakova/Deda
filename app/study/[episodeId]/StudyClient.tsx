@@ -1,5 +1,6 @@
 'use client';
-import { useMemo } from 'react';
+
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import FlashcardDeck from '@/components/FlashcardDeck';
 
@@ -32,9 +33,16 @@ export default function StudyClient({
 
   const hasWords = words.length > 0;
 
+  // выбранная тема для кнопки "Играть"
+  const [topicForPlay, setTopicForPlay] = useState<string | null>(null);
+
+  const playHref =
+    topicForPlay && hasWords
+      ? `/play/${episodeId}?topic=${encodeURIComponent(topicForPlay)}`
+      : `/play/${episodeId}`;
+
   return (
     <main className="min-h-screen bg-[#020617] text-neutral-50">
-
       <div className="max-w-5xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold mb-4">
@@ -45,14 +53,18 @@ export default function StudyClient({
             <Link className="btn" href="/">
               Главная
             </Link>
-            <Link className="btn" href={`/play/${episodeId}`}>
+            <Link className="btn" href={playHref}>
               Играть
             </Link>
           </div>
         </div>
 
         {hasWords ? (
-          <FlashcardDeck cards={words} nativeLang="RU" />
+          <FlashcardDeck
+            cards={words}
+            lessonTitle={ep.title || episodeId}
+            onTopicChange={setTopicForPlay}
+          />
         ) : (
           <div className="text-neutral-400 mt-8">
             В этом эпизоде пока нет слов для карточек.

@@ -165,7 +165,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Избранное и Все слова */}
+      {/* Избранное и Все уроки */}
       <section className="mt-6 flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
         {specials.map(ep => {
           const isFav = ep.id === 'favorites';

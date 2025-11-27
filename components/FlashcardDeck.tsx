@@ -11,9 +11,47 @@ type Card = {
   ru_meaning?: string;
   audio_url?: string;
   type?: 'word' | 'letter';
+  level?: number; // 1–3 сложность (используем, если нет topic)
+  topic?: string; // тема фразы (location_movement, questions и т.п.)
 };
 
 const LS_FAV = 'deda_fav_ge';
+
+// конфиг для тем (подписи и описания)
+const TOPIC_CONFIG: Record<string, { label: string; description: string }> = {
+  location_movement: {
+    label: 'Где / Куда',
+    description: 'Фразы про местоположение и движение: здесь, там, идём, остановка.',
+  },
+  questions: {
+    label: 'Вопросы',
+    description: 'Кто? Что? Где? Когда? Почему? — базовые вопросительные фразы.',
+  },
+  time: {
+    label: 'Время',
+    description: 'Сегодня, завтра, вчера, позже — ориентация во времени.',
+  },
+  daily_actions: {
+    label: 'Дело/быт',
+    description: 'Повседневные действия: работаю, читаю, готовлю, пользуюсь чем-то.',
+  },
+  needs_offers: {
+    label: 'Хочу / можно',
+    description: 'Хочу, могу, можно, помочь, подождать — выражение потребностей.',
+  },
+  shopping_places: {
+    label: 'Магазин / кафе',
+    description: 'Цена, открыто ли, очередь, варианты — всё про сервис и покупки.',
+  },
+  feelings_reactions: {
+    label: 'Чувства / реакция',
+    description: 'Нравится, помню, понимаю, забыла, правда? супер! — эмоции и мнение.',
+  },
+  politeness: {
+    label: 'Вежливость',
+    description: 'Спасибо, пожалуйста, извините, до свидания — вежливые формулы.',
+  },
+};
 
 function shuffleArr<T>(arr: T[]) {
   const a = arr.slice();
@@ -37,26 +75,31 @@ function geToTranslit(text: string): string {
 export default function FlashcardDeck({
   cards,
   lessonTitle,
+  onTopicChange,
 }: {
   cards: Card[];
   lessonTitle?: string;
+  onTopicChange?: (topic: string | null) => void;
 }) {
-  // определяем, что мы на странице избранного
   const [isFavoritesPage, setIsFavoritesPage] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setIsFavoritesPage(/\/study\/favorites\/?$/.test(window.location.pathname));
   }, []);
 
-  // состояние
   const [idx, setIdx] = useState(0);
   const [order, setOrder] = useState<number[]>([]);
   const [flipped, setFlipped] = useState(false);
 
-  // избранное (ключ — ge_text)
+  // фильтр по сложности (используем только если нет topic)
+  const [levelFilter, setLevelFilter] = useState<number | null>(null);
+  const [levelInfo, setLevelInfo] = useState<number | null>(null);
+
+  // фильтр по теме
+  const [topicFilter, setTopicFilter] = useState<string | null>(null);
+
   const [favMap, setFavMap] = useState<Record<string, true>>({});
 
-  // транскрипция / подсказка / авто / перемешано
   const [showTranslit, setShowTranslit] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
   const [auto, setAuto] = useState(false);
@@ -64,15 +107,42 @@ export default function FlashcardDeck({
 
   const autoRef = useRef<number | null>(null);
 
-  // стили круглых кнопок
   const chipBase =
-    'w-16 h-16 rounded-full flex items-center justify-center text-base font-semibold transition transform duration-200';
+    'h-8 px-3 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold transition transform duration-200';
   const chipPassive =
-    'bg-transparent border border-slate-600/60 text-neutral-100 hover:bg-white/5';
+    'bg-transparent border border-slate-600/60 text-neutral-300 hover:bg-white/5';
   const chipActive =
     'bg-transparent border border-indigo-400 text-indigo-300';
 
-  // загрузка избранного
+  const hasTopics = useMemo(
+    () => cards.some(c => !!c.topic),
+    [cards],
+  );
+
+  const hasLevels = useMemo(
+    () => !hasTopics && cards.some(c => typeof c.level === 'number'),
+    [cards, hasTopics],
+  );
+
+  const topics = useMemo(() => {
+    if (!hasTopics) return [] as string[];
+    const set = new Set<string>();
+    cards.forEach(c => {
+      if (c.topic) set.add(c.topic);
+    });
+    return Array.from(set);
+  }, [cards, hasTopics]);
+
+  // говорим наружу, какая тема выбрана (или null)
+  useEffect(() => {
+    if (!onTopicChange) return;
+    if (!hasTopics) {
+      onTopicChange(null);
+    } else {
+      onTopicChange(topicFilter);
+    }
+  }, [topicFilter, hasTopics, onTopicChange]);
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(LS_FAV);
@@ -85,14 +155,18 @@ export default function FlashcardDeck({
     } catch { }
   }, []);
 
-  // список видимых карточек:
-  // - на favorites — только отмеченные
-  // - везде остальное — без фильтра
   const visible = useMemo(() => {
-    return isFavoritesPage ? cards.filter(c => !!favMap[c.ge_text]) : cards;
-  }, [cards, favMap, isFavoritesPage]);
+    let base = isFavoritesPage ? cards.filter(c => !!favMap[c.ge_text]) : cards;
 
-  // сброс при смене набора/фильтра
+    if (hasTopics && topicFilter) {
+      base = base.filter(c => c.topic === topicFilter);
+    } else if (!hasTopics && hasLevels && levelFilter !== null) {
+      base = base.filter(c => (c.level ?? 1) === levelFilter);
+    }
+
+    return base;
+  }, [cards, favMap, isFavoritesPage, hasTopics, topicFilter, hasLevels, levelFilter]);
+
   useEffect(() => {
     setOrder(visible.map((_, i) => i));
     setIdx(0);
@@ -105,7 +179,6 @@ export default function FlashcardDeck({
   const card = visible[order[idx]];
   const hasCard = !!card;
 
-  // автоозвучка
   useEffect(() => {
     if (card?.audio_url && !flipped) {
       try {
@@ -130,7 +203,6 @@ export default function FlashcardDeck({
     setRevealCount(0);
   }, [visible.length]);
 
-  // избранное
   const persistFav = useCallback((map: Record<string, true>) => {
     try {
       localStorage.setItem(LS_FAV, JSON.stringify(Object.keys(map)));
@@ -150,7 +222,6 @@ export default function FlashcardDeck({
     [persistFav],
   );
 
-  // хоткеи
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') onPrev();
@@ -166,7 +237,6 @@ export default function FlashcardDeck({
     return () => window.removeEventListener('keydown', h);
   }, [onPrev, onNext, hasCard, card, toggleFav]);
 
-  // автопросмотр
   useEffect(() => {
     if (!auto || !visible.length) {
       if (autoRef.current !== null) {
@@ -189,7 +259,6 @@ export default function FlashcardDeck({
     };
   }, [auto, visible.length]);
 
-  // подсказка (посимвольно по всей фразе)
   const hintText = useMemo(() => {
     if (!card) return '';
     const t = (card.ru_meaning || '').trim();
@@ -209,6 +278,19 @@ export default function FlashcardDeck({
   const counter = total ? `${idx + 1} / ${total}` : '0 / 0';
   const isFav = !!(card && favMap[card.ge_text]);
 
+  const renderLevelDescription = (lvl: number | null) => {
+    if (lvl === 1) {
+      return 'L1 — супербазовые фразы: короткие, без сложной грамматики.';
+    }
+    if (lvl === 2) {
+      return 'L2 — простые фразы: полные предложения с объектами и обстоятельствами.';
+    }
+    if (lvl === 3) {
+      return 'L3 — фразы посложнее: обобщения, эмоции, более длинные конструкции.';
+    }
+    return '';
+  };
+
   return (
     <div className="relative w-full">
       {/* Верх: счётчик и заголовок */}
@@ -216,9 +298,79 @@ export default function FlashcardDeck({
         <div className="text-xs tracking-wide text-neutral-400">
           {counter}
         </div>
-        <div className="text-xl font-semibold text-neutral-200">
-          {lessonTitle}
-        </div>
+
+        {/* Фильтр по темам, если есть topic */}
+        {hasTopics && (
+          <>
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+              <button
+                className={`${chipBase} ${topicFilter === null ? chipActive : chipPassive}`}
+                onClick={() => {
+                  setTopicFilter(null);
+                  setLevelFilter(null);
+                  setLevelInfo(null);
+                }}
+              >
+                Все
+              </button>
+              {topics.map(topic => {
+                const cfg = TOPIC_CONFIG[topic];
+                return (
+                  <button
+                    key={topic}
+                    className={`${chipBase} ${topicFilter === topic ? chipActive : chipPassive}`}
+                    onClick={() => {
+                      setTopicFilter(prev => (prev === topic ? null : topic));
+                      setLevelFilter(null);
+                      setLevelInfo(null);
+                    }}
+                  >
+                    {cfg?.label ?? topic}
+                  </button>
+                );
+              })}
+            </div>
+            {topicFilter && (
+              <div className="mt-1 max-w-xl text-center text-[11px] md:text-xs text-neutral-400">
+                {TOPIC_CONFIG[topicFilter]?.description ?? 'Фразы по выбранной теме.'}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Фильтр по уровню сложности — только если нет тем, но есть level */}
+        {!hasTopics && hasLevels && (
+          <>
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+              <button
+                className={`${chipBase} ${levelFilter === null ? chipActive : chipPassive}`}
+                onClick={() => {
+                  setLevelFilter(null);
+                  setLevelInfo(null);
+                }}
+              >
+                Все
+              </button>
+              {[1, 2, 3].map(lvl => (
+                <button
+                  key={lvl}
+                  className={`${chipBase} ${levelFilter === lvl ? chipActive : chipPassive}`}
+                  onClick={() => {
+                    setLevelFilter(prev => (prev === lvl ? null : lvl));
+                    setLevelInfo(prev => (prev === lvl ? null : lvl));
+                  }}
+                >
+                  L{lvl}
+                </button>
+              ))}
+            </div>
+            {levelInfo !== null && (
+              <div className="mt-1 max-w-xl text-center text-[11px] md:text-xs text-neutral-400">
+                {renderLevelDescription(levelInfo)}
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Карточка */}
@@ -334,13 +486,12 @@ export default function FlashcardDeck({
             )}
           </div>
 
-          {/* котик внизу слева (показывается на md+). Помещён внутри relative-контейнера карточки */}
+          {/* котик внизу слева */}
           <div
             className="pointer-events-none absolute z-[60] hidden select-none md:block"
             style={{
               left: 'max(calc(50% - 640px), 8px)',
-              // ещё ниже — больше выступает за пределы карточки
-              bottom: -180, // увеличено, чтобы кот был глубже под карточкой
+              bottom: -180,
               pointerEvents: 'none',
             }}
           >
@@ -357,7 +508,7 @@ export default function FlashcardDeck({
         {/* Низ: стрелки и опции */}
         <div className="mt-4 flex items-center justify-between">
           <div className="w-24" />
-          <div className="flex items-center gap-12"> {/* увеличено расстояние между стрелками */}
+          <div className="flex items-center gap-12">
             <button
               onClick={onPrev}
               disabled={!hasCard}
@@ -383,10 +534,12 @@ export default function FlashcardDeck({
             </button>
           </div>
           <div className="w-24 flex items-center justify-end gap-3">
-            {/* одинаковый базовый размер/вёрстка для обеих кнопок */}
             <button
               onClick={() => setAuto(a => !a)}
-              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${auto ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20' : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'}`}
+              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${auto
+                ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20'
+                : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
+                }`}
               title="Воспроизвести"
             >
               <img src="/icons/play1.png" alt="Auto" className="w-10 h-10 opacity-90" />
@@ -400,7 +553,10 @@ export default function FlashcardDeck({
                   return next;
                 });
               }}
-              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${shuffled ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20' : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'}`}
+              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${shuffled
+                ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20'
+                : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
+                }`}
               title="Перемешать"
               aria-pressed={shuffled}
             >
