@@ -9,7 +9,6 @@ type Card = {
   ge_text: string;
   translit?: string;
   ru_meaning?: string;
-  audio_url?: string;
   type?: 'word' | 'letter';
   level?: number; // 1–3 сложность (используем, если нет topic)
   topic?: string; // тема фразы (location_movement, questions и т.п.)
@@ -178,14 +177,6 @@ export default function FlashcardDeck({
 
   const card = visible[order[idx]];
   const hasCard = !!card;
-
-  useEffect(() => {
-    if (card?.audio_url && !flipped) {
-      try {
-        new Audio(card.audio_url).play().catch(() => { });
-      } catch { }
-    }
-  }, [idx, flipped, card]);
 
   const onPrev = useCallback(() => {
     if (!visible.length) return;
@@ -392,7 +383,7 @@ export default function FlashcardDeck({
             <>
               {/* Подсказка */}
               <button
-                className="absolute left-4 top-4 z-10 rounded-full border border-slate-600/60 bg-transparent px-3 py-2 text-base md:text-lg text-neutral-100 hover:bg-white/5 transition-transform duration-200"
+                className="absolute left-4 top-4 z-10 rounded-full border border-slate-600/60 bg-transparent px-3 py-2 text-base md:text-lg text-neutral-100 hover:bg:white/5 transition-transform duration-200"
                 onClick={e => {
                   e.stopPropagation();
                   const t = (card?.ru_meaning || '').trim();
@@ -408,21 +399,8 @@ export default function FlashcardDeck({
                 💡 {revealCount === 0 ? 'подсказка' : hintText}
               </button>
 
-              {/* Справа сверху: звук, избранное, транслит */}
+              {/* Справа сверху: избранное, транслит */}
               <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
-                <button
-                  className="w-14 h-14 rounded-full border border-slate-600/60 bg-transparent flex items-center justify-center text-xl md:text-2xl text-neutral-100 hover:bg-white/5 transition-transform duration-200"
-                  onClick={e => {
-                    e.stopPropagation();
-                    if (!card!.audio_url) return;
-                    try {
-                      new Audio(card!.audio_url).play().catch(() => { });
-                    } catch { }
-                  }}
-                  title="Произнести"
-                >
-                  🔊
-                </button>
                 <button
                   className="w-14 h-14 rounded-full border border-slate-600/60 bg-transparent flex items-center justify-center text-xl md:text-2xl text-neutral-100 hover:bg-white/5 transition-transform duration-200"
                   onClick={e => {
@@ -478,7 +456,7 @@ export default function FlashcardDeck({
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-2">
+              <div className="flex flex-col items-center justify:center gap-2">
                 <div className="max-w-3xl text-[clamp(22px,3.6vw,38px)] leading-tight text-neutral-100">
                   {card.ru_meaning || '—'}
                 </div>
@@ -540,7 +518,7 @@ export default function FlashcardDeck({
                 ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20'
                 : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
                 }`}
-              title="Воспроизвести"
+              title="Автопрокрутка"
             >
               <img src="/icons/play1.png" alt="Auto" className="w-10 h-10 opacity-90" />
             </button>
