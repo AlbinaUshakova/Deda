@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import type { Route } from 'next';
 import FlashcardDeck from '@/components/FlashcardDeck';
 
 export default function StudyClient({
@@ -11,6 +12,9 @@ export default function StudyClient({
   episodeId: string;
   bundled: any;
 }) {
+  const normalizeGeorgianText = (text: string) =>
+    /[\u10D0-\u10FF]/.test(text) ? text.replace(/и/g, 'ი').replace(/И/g, 'ი') : text;
+
   // достаем данные эпизода
   let ep = bundled;
   if (typeof window !== 'undefined') {
@@ -19,7 +23,15 @@ export default function StudyClient({
       if (raw) {
         const parsed = JSON.parse(raw);
         const found = parsed.episodes.find((e: any) => e.id === episodeId);
-        if (found) ep = found;
+        if (found) {
+          ep = {
+            ...found,
+            cards: found.cards.map((c: any) => ({
+              ...c,
+              ge_text: normalizeGeorgianText(c.ge_text),
+            })),
+          };
+        }
       }
     } catch { }
   }
@@ -50,11 +62,17 @@ export default function StudyClient({
           </h1>
 
           <div className="flex gap-2">
-            <Link className="btn" href="/">
+            <Link
+              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm text-white/65 hover:bg-white/[0.04] hover:text-white/90 transition-all"
+              href="/"
+            >
               Главная
             </Link>
-            <Link className="btn" href={playHref}>
-              Играть
+            <Link
+              className="inline-flex items-center justify-center rounded-xl border border-emerald-300/50 bg-emerald-300/[0.07] px-4 py-2 text-sm text-white/90 shadow-[0_0_12px_rgba(80,255,200,0.18)] hover:bg-emerald-300/[0.1] hover:text-white hover:shadow-[0_0_16px_rgba(80,255,200,0.24)] transition-all"
+              href={playHref as Route}
+            >
+              Играть →
             </Link>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import type { Route } from 'next';
 import { useEffect, useState, useMemo } from 'react';
 import { loadEpisode } from '@/lib/content';
 import { loadProgressMap, getLocalProgress } from '@/lib/supabase';
@@ -85,27 +86,42 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   }, [episodeId]);
 
   const hasWords = useMemo(() => words.length > 0, [words]);
+  const studyHref = `/study/${episodeId}` as Route;
 
   return (
     <main className="relative min-h-screen bg-[#020617] text-neutral-50">
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        <div className="relative z-40 flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold mb-4">
+      <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-8">
+        <div className="relative z-40 mb-6 flex items-center justify-between gap-2 sm:gap-3">
+          <h1 className="mb-0 min-w-0 text-[clamp(1.55rem,3.2vw,2rem)] font-semibold leading-tight tracking-[-0.01em]">
             {title || episodeId}
           </h1>
-
-          <Link className="btn relative z-50" href="/">
-            Главная
-          </Link>
         </div>
 
-        <div className="relative z-10">
+        <div className="relative z-50">
           {hasWords ? (
-            <BlocksGame
-              words={words}
-              episodeId={episodeId}
-              initialBest={initialBest}
-            />
+            <>
+              <BlocksGame
+                words={words}
+                episodeId={episodeId}
+                initialBest={initialBest}
+                topActions={
+                  <>
+                    <Link
+                      className="inline-flex whitespace-nowrap items-center justify-center rounded-xl border border-white/15 bg-transparent px-[clamp(0.55rem,1.5vw,0.9rem)] py-[clamp(0.38rem,0.9vw,0.52rem)] text-[clamp(0.72rem,1.6vw,0.9rem)] text-white/70 transition-all duration-200 hover:bg-white/[0.05] hover:text-white"
+                      href="/"
+                    >
+                      Главная
+                    </Link>
+                    <Link
+                      className="inline-flex whitespace-nowrap items-center justify-center rounded-xl border border-emerald-300/45 bg-emerald-300/[0.09] px-[clamp(0.55rem,1.5vw,0.9rem)] py-[clamp(0.38rem,0.9vw,0.52rem)] text-[clamp(0.72rem,1.6vw,0.9rem)] text-emerald-200 shadow-[0_0_10px_rgba(80,255,200,0.12)] transition-all duration-200 hover:shadow-[0_0_14px_rgba(80,255,200,0.18)] hover:text-emerald-100"
+                      href={studyHref}
+                    >
+                      Карточки
+                    </Link>
+                  </>
+                }
+              />
+            </>
           ) : (
             <div className="text-neutral-400 mt-8">
               В этом эпизоде пока нет слов для игры.

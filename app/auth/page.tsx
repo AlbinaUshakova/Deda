@@ -1,13 +1,22 @@
 'use client';
 import { supabase } from '@/lib/supabase';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const online = !!supabase;
+
+  useEffect(() => {
+    if (!online) router.replace('/');
+  }, [online, router]);
+
+  if (!online) return null;
+
   const send = async () => {
     if (!supabase) return;
     setErr(null);
@@ -17,17 +26,13 @@ export default function AuthPage() {
   return (
     <main>
       <div className="flex items-center justify-between mb-4"><h1 className="h1">Вход</h1><Link className="btn" href="/">Главная</Link></div>
-      {online ? (
-        <div className="card p-4 max-w-md">
-          <label className="block text-sm mb-2">Email</label>
-          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
-          <button className="btn mt-3" onClick={send}>Получить магическую ссылку</button>
-          {sent && <div className="text-sm text-emerald-400 mt-2">Ссылка отправлена.</div>}
-          {err && <div className="text-sm text-red-400 mt-2">{err}</div>}
-        </div>
-      ) : (
-        <div className="card p-4"><p>Supabase не настроен. Доступен <span className="badge">офлайн‑режим</span>.</p><Link className="btn mt-2" href="/">Продолжить</Link></div>
-      )}
+      <div className="card p-4 max-w-md">
+        <label className="block text-sm mb-2">Email</label>
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+        <button className="btn mt-3" onClick={send}>Получить магическую ссылку</button>
+        {sent && <div className="text-sm text-emerald-400 mt-2">Ссылка отправлена.</div>}
+        {err && <div className="text-sm text-red-400 mt-2">{err}</div>}
+      </div>
     </main>
   );
 }

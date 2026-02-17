@@ -34,9 +34,15 @@ export default function ProfileDialog({ open, onClose }:{ open: boolean; onClose
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div className="card p-6 w-full max-w-lg" onClick={e=>e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-start justify-between mb-3">
           <div className="h2">Профиль</div>
-          <button className="btn" onClick={onClose}>Закрыть</button>
+          <button
+            aria-label="Закрыть"
+            className="mr-1 mt-0.5 h-8 w-8 rounded-md text-white/65 hover:text-white hover:bg-white/10 transition"
+            onClick={onClose}
+          >
+            ✕
+          </button>
         </div>
         <div className="text-sm text-neutral-400 mb-3">Результаты на этом устройстве</div>
         <div className="overflow-x-auto">

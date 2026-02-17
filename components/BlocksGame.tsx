@@ -12,6 +12,7 @@ type BlocksGameProps = {
   episodeId?: string;
   // рекорд уровня, который пришёл с карты
   initialBest?: number;
+  topActions?: React.ReactNode;
 };
 
 type Question = {
@@ -20,14 +21,7 @@ type Question = {
 };
 
 type Mode = 'question' | 'pieces' | 'gameOver';
-
-// чуть расширяем левую колонку, чтобы длинное поле помещалось красиво
-const LEFT_COLUMN_WIDTH = 260;
-const LEFT_COLUMN_HEIGHT = 'min(72vh, 640px)';
-
-// минимальная ширина — как раньше (почти вся колонка), максимум — как было в maxWidth
-const MIN_INPUT_WIDTH = LEFT_COLUMN_WIDTH - 20; // ~та же стартовая ширина
-const MAX_INPUT_WIDTH = 720;                    // как раньше maxWidth у инпута
+type AnswerState = 'idle' | 'wrong' | 'correct';
 
 // ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
 const FAVORITES_KEY = 'deda_fav_ge';
@@ -250,6 +244,7 @@ export default function BlocksGame({
   words,
   episodeId,
   initialBest = 0,
+  topActions,
 }: BlocksGameProps) {
   const isFavoritesEpisode = episodeId === 'favorites';
 
@@ -261,6 +256,7 @@ export default function BlocksGame({
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState(false);
+  const [answerState, setAnswerState] = useState<AnswerState>('idle');
 
   const [attempts, setAttempts] = useState(0);
   const [showCorrect, setShowCorrect] = useState(false);
@@ -275,15 +271,14 @@ export default function BlocksGame({
   // ожидание показа правильного ответа после 3-й ошибки
   const [isRevealing, setIsRevealing] = useState(false);
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const correctTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ИЗБРАННЫЕ СЛОВА (по грузинскому слову)
   const [favoriteWords, setFavoriteWords] = useState<Set<string>>(
     () => new Set(),
   );
 
-  // измеритель ширины ввода и ширина инпута
-  const measureRef = useRef<HTMLSpanElement | null>(null);
-  const [inputWidth, setInputWidth] = useState<number>(MIN_INPUT_WIDTH);
+  const answerRef = useRef<HTMLTextAreaElement | null>(null);
 
   // рекорд уровня (тот же, что на карте)
   const [bestScore, setBestScore] = useState(initialBest);
@@ -300,10 +295,18 @@ export default function BlocksGame({
     setIsRevealing(false);
   };
 
+  const clearCorrectTimer = () => {
+    if (correctTimeoutRef.current) {
+      clearTimeout(correctTimeoutRef.current);
+      correctTimeoutRef.current = null;
+    }
+  };
+
   // очистка таймера при размонтировании
   useEffect(() => {
     return () => {
       clearRevealTimer();
+      clearCorrectTimer();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -340,16 +343,11 @@ export default function BlocksGame({
     }
   }, []);
 
-  // обновляем ширину инпута при вводе текста
   useEffect(() => {
-    if (!measureRef.current) return;
-    const w = measureRef.current.offsetWidth;
-    const clamped = Math.min(
-      Math.max(w, MIN_INPUT_WIDTH),
-      MAX_INPUT_WIDTH,
-    );
-    setInputWidth(clamped);
-  }, [answer]);
+    if (!answerRef.current) return;
+    answerRef.current.style.height = 'auto';
+    answerRef.current.style.height = `${Math.min(answerRef.current.scrollHeight, 180)}px`;
+  }, [answer, showCorrect]);
 
   // переключение избранного для конкретного грузинского слова
   const toggleFavorite = (ge: string) => {
@@ -407,6 +405,7 @@ export default function BlocksGame({
         setQuestion({ ge: w.ge, ru: w.ru });
         setAnswer('');
         setError(false);
+        setAnswerState('idle');
         setAttempts(0);
         setShowCorrect(false);
         clearRevealTimer();
@@ -441,6 +440,7 @@ export default function BlocksGame({
 
       setAnswer('');
       setError(false);
+      setAnswerState('idle');
       setAttempts(0);
       setShowCorrect(false);
       clearRevealTimer();
@@ -488,14 +488,20 @@ export default function BlocksGame({
 
     if (isCorrect) {
       clearRevealTimer();
+      clearCorrectTimer();
       setError(false);
-      setAnswer('');
+      setAnswerState('correct');
       setAttempts(0);
       setShowCorrect(false);
-
-      setMode('pieces');
-      setRoundId(prev => (prev > 0 ? prev + 1 : 1));
+      correctTimeoutRef.current = setTimeout(() => {
+        setAnswer('');
+        setAnswerState('idle');
+        setMode('pieces');
+        setRoundId(prev => (prev > 0 ? prev + 1 : 1));
+        correctTimeoutRef.current = null;
+      }, 180);
     } else {
+      setAnswerState('wrong');
       setAttempts(prev => {
         const next = prev + 1;
 
@@ -512,6 +518,7 @@ export default function BlocksGame({
                 setAnswer(question.ru);
               }
               setError(false);
+              setAnswerState('idle');
               setIsRevealing(false);
               revealTimeoutRef.current = null;
             }, 2000);
@@ -535,6 +542,7 @@ export default function BlocksGame({
     if (hardGameOver) return;
 
     setMode('question');
+    setAnswerState('idle');
     gotoNextFromQueue(false);
   };
 
@@ -547,6 +555,7 @@ export default function BlocksGame({
   const handleRestartRequested = () => {
     setHardGameOver(false);
     setMode('question');
+    setAnswerState('idle');
     setRoundId(0);
     gotoNextFromQueue(false);
   };
@@ -568,16 +577,16 @@ export default function BlocksGame({
     currentGe != null ? favoriteWords.has(currentGe) : false;
 
   return (
-    <div className="flex w-full justify_center mt-[-60px]">
-      <div className="flex w-full max-w-5xl items-start gap-10 py-16 mx-6">
+    <div className="flex w-full justify-center -mt-3 md:-mt-4">
+      <div className="flex w-full max-w-5xl items-start gap-4 md:gap-6 lg:gap-10 px-2 sm:px-4 md:px-6 py-4 md:py-6 lg:py-8">
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
-          className="shrink-0 ml-[-35px]"
-          style={{ width: LEFT_COLUMN_WIDTH }}
+          className="shrink-0 lg:ml-[-35px]"
+          style={{ width: 'clamp(180px, 22vw, 260px)' }}
         >
           <div
             className="relative mt-8"
-            style={{ height: LEFT_COLUMN_HEIGHT }}
+            style={{ height: 'min(72vh, 640px)' }}
           >
             {shouldRenderQuestionPanel && (
               <div
@@ -592,15 +601,17 @@ export default function BlocksGame({
                   {hasWords && question && (
                     <>
                       {/* строка с грузинским словом и кнопкой избранного */}
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="text-2xl">{question.ge}</div>
+                      <div className="labelRow mb-6 flex items-center gap-2">
+                        <div className="text-[clamp(1.35rem,2.2vw,2rem)] leading-tight">
+                          {question.ge}
+                        </div>
 
                         {!isFavoritesEpisode && (
                           <button
                             type="button"
                             onClick={() => toggleFavorite(question.ge)}
                             className={
-                              'text-2xl transition ' +
+                              'text-[clamp(1.35rem,2.2vw,2rem)] transition ' +
                               (isCurrentFavorite
                                 ? 'text-yellow-300 hover:text-yellow-400'
                                 : 'text-slate-400 hover:text-slate-200')
@@ -617,44 +628,38 @@ export default function BlocksGame({
                       </div>
 
                       <form onSubmit={handleSubmit} className="mb-2 w-full">
-                        <div className="relative inline-block">
-                          <input
-                            value={answer}
-                            onChange={e => {
-                              setAnswer(e.target.value);
-                              if (error) setError(false);
-                            }}
-                            placeholder="введите перевод"
-                            readOnly={showCorrect}
-                            className={
-                              'px-6 py-4 rounded-xl border outline-none text-xl md:text-2xl tracking-wide transition-all duration-200 placeholder:text-lg placeholder:text-neutral-400 ' +
-                              (error && !showCorrect
-                                ? 'border-red-400 bg-red-700/10 text-white'
-                                : !error && isCurrentAnswerCorrect
-                                  ? 'border-green-300 bg-green-400/5 text-white'
-                                  : 'border-[#64748b] bg-[#0b1120]/60 focus:border-blue-400 text-white')
+                        <textarea
+                          ref={answerRef}
+                          value={answer}
+                          onChange={e => {
+                            setAnswer(e.target.value);
+                            if (error) setError(false);
+                            if (answerState !== 'idle') setAnswerState('idle');
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              e.currentTarget.form?.requestSubmit();
                             }
-                            style={{
-                              width: inputWidth,
-                              maxWidth: MAX_INPUT_WIDTH,
-                              transition: 'width 120ms ease',
-                            }}
-                          />
-
-                          {/* невидимый измеритель текста */}
-                          <span
-                            ref={measureRef}
-                            className="absolute invisible whitespace-pre px-6 py-4 text-xl md:text-2xl tracking-wide"
-                          >
-                            {answer || 'введите перевод'}
-                          </span>
-                        </div>
+                          }}
+                          placeholder="введите перевод"
+                          readOnly={showCorrect}
+                          rows={1}
+                          className={
+                            'w-full min-h-[56px] max-h-[180px] resize-none overflow-y-auto px-4 py-3 rounded-xl border outline-none text-[clamp(1.1rem,1.8vw,1.65rem)] tracking-wide transition-all duration-200 placeholder:text-[clamp(1rem,1.5vw,1.4rem)] placeholder:text-neutral-400 ' +
+                            (answerState === 'wrong' && !showCorrect
+                              ? 'border-red-400 bg-red-700/10 text-white'
+                              : answerState === 'correct' || (!error && isCurrentAnswerCorrect)
+                                ? 'border-green-300 bg-green-400/5 text-white'
+                                : 'border-transparent bg-[#0b1120]/60 focus:border-transparent focus:shadow-none text-white')
+                          }
+                        />
                       </form>
 
                       <button
                         type="button"
                         onClick={handleSkipQuestion}
-                        className="mt-2 flex items-center gap-2 text-sm text-neutral-300 hover:text-white"
+                        className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-2.5 py-1.5 text-sm text-neutral-300 opacity-70 transition-all duration-150 hover:opacity-100 hover:bg-white/[0.05] hover:text-white"
                         disabled={showCorrect}
                       >
                         <span className="text-lg">↻</span>
@@ -699,6 +704,7 @@ export default function BlocksGame({
             onGameOver={handleGameOver}
             initialBestScore={bestScore}
             onBestScoreChange={handleBestScoreChange}
+            topActions={topActions}
           />
         </div>
       </div>

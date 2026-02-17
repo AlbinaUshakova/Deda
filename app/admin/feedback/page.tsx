@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type FeedbackRow = {
     id: string;
@@ -14,6 +15,7 @@ type FeedbackRow = {
 };
 
 export default function AdminFeedbackPage() {
+    const router = useRouter();
     const [userEmail, setUserEmail] = useState<string | null>(null);
     const [rows, setRows] = useState<FeedbackRow[]>([]);
     const [loading, setLoading] = useState(true);
@@ -28,14 +30,14 @@ export default function AdminFeedbackPage() {
     const [onlyWithContact, setOnlyWithContact] = useState(false);
 
     useEffect(() => {
-        async function load() {
-            if (!supabase) {
-                setError('Supabase не настроен');
-                setLoading(false);
-                return;
-            }
+        if (!supabase) {
+            router.replace('/');
+            return;
+        }
+        const sb = supabase;
 
-            const { data: userData, error: userError } = await supabase.auth.getUser();
+        async function load() {
+            const { data: userData, error: userError } = await sb.auth.getUser();
             if (userError || !userData?.user) {
                 setError('Нужно войти в аккаунт, чтобы смотреть обратную связь');
                 setLoading(false);
@@ -44,7 +46,7 @@ export default function AdminFeedbackPage() {
 
             setUserEmail(userData.user.email ?? null);
 
-            const { data, error } = await supabase
+            const { data, error } = await sb
                 .from('feedback')
                 .select('*')
                 .order('created_at', { ascending: false })
@@ -71,16 +73,17 @@ export default function AdminFeedbackPage() {
         }
 
         load();
-    }, []);
+    }, [router]);
+
+    if (!supabase) return null;
+    const sb = supabase;
 
     const handleSaveNote = async (row: FeedbackRow) => {
         const value = (notes[row.id] ?? '').trim();
 
-        if (!supabase) return;
-
         setSavingId(row.id);
         try {
-            const { error } = await supabase
+            const { error } = await sb
                 .from('feedback')
                 .update({ admin_note: value || null })
                 .eq('id', row.id);

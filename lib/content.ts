@@ -16,11 +16,30 @@ export type Episode = {
 
 const CONTENT_DIR = path.join(process.cwd(), 'public', 'content');
 
+function normalizeGeorgianText(text: string): string {
+  if (!text) return text;
+  // Если строка грузинская, но случайно попала русская "и" — исправляем на грузинскую "ი"
+  if (/[\u10D0-\u10FF]/.test(text)) {
+    return text.replace(/и/g, 'ი').replace(/И/g, 'ი');
+  }
+  return text;
+}
+
+function normalizeEpisode(ep: Episode): Episode {
+  return {
+    ...ep,
+    cards: ep.cards.map(card => ({
+      ...card,
+      ge_text: normalizeGeorgianText(card.ge_text),
+    })),
+  };
+}
+
 function readEpisodeJson(file: string): Episode | null {
   try {
     const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
     const data = JSON.parse(raw);
-    return data as Episode;
+    return normalizeEpisode(data as Episode);
   } catch {
     return null;
   }
@@ -30,11 +49,6 @@ function loadSingleEp(id: string): Episode | null {
   // ожидаем файлы вида ka_ru_epN.json
   const file = `ka_ru_${id}.json`;
   return readEpisodeJson(file);
-}
-
-// спец-разделы, которые не epN (например: start_talking → ka_ru_start_talking.json)
-function loadSpecial(name: string): Episode | null {
-  return readEpisodeJson(`ka_ru_${name}.json`);
 }
 
 function mergeEpisodes(newId: string, title: string, eps: (Episode | null)[]): Episode | null {
@@ -128,12 +142,6 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
     };
   }
 
-  // ✅ спец-раздел “Начни говорить”
-  if (id === 'start_talking_en') {
-    const sp = loadSpecial('start_talking_en'); // читает ka_en_start_talking.json
-    return sp ? { ...sp, id: 'start_talking_en' } : null;
-  }
-
   // При необходимости оставляем склейки
   if (id === 'ep1_2') {
     return mergeEpisodes('ep1_2', 'Эпизод 1–2', [loadSingleEp('ep1'), loadSingleEp('ep2')]);
@@ -173,7 +181,6 @@ export async function listEpisodes(): Promise<Array<{ id: string; title: string 
   const specials = [
     { id: 'favorites', title: '⭐ Избранное' },
     { id: 'all', title: 'Все уроки' },
-    { id: 'start_talking_en', title: '🗣 Начни говорить' },
   ];
   return [...merged, ...specials];
 }

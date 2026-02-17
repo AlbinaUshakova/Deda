@@ -2,19 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function SupaTestPage() {
+    const router = useRouter();
     const [msg, setMsg] = useState('checking...');
 
     useEffect(() => {
+        if (!supabase) {
+            router.replace('/');
+            return;
+        }
+        const sb = supabase;
+
         async function test() {
             try {
-                if (!supabase) {
-                    setMsg('❌ supabase is NULL (env vars not loaded)');
-                    return;
-                }
-
-                const { data, error } = await supabase
+                const { data, error } = await sb
                     .from('profiles')
                     .select('*')
                     .limit(1);
@@ -27,7 +30,9 @@ export default function SupaTestPage() {
         }
 
         test();
-    }, []);
+    }, [router]);
+
+    if (!supabase) return null;
 
     return (
         <main style={{ padding: 32, color: 'white', fontSize: 18 }}>

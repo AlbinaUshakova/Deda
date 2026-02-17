@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom';
 
 const BOARD_SIZE = 8;
 const PREVIEW_SCALE = 0.6;
-const BOARD_PIXEL_SIZE = 'min(72vh, 640px)';
+const BOARD_PIXEL_SIZE = 'min(76vh, clamp(240px, calc(100vw - 300px), 700px))';
 
 type CellColor = string | null;
 type ShapeCell = { r: number; c: number };
@@ -26,6 +26,7 @@ type BlocksGridProps = {
   onGameOver: () => void;
   initialBestScore?: number;
   onBestScoreChange?: (best: number) => void;
+  topActions?: React.ReactNode;
 };
 
 type ClearedCell = {
@@ -168,15 +169,15 @@ const SHAPES: Shape[] = [
 ];
 
 const COLORS = [
-  '#38bdf8',
-  '#f97373',
-  '#4ade80',
-  '#a855f7',
-  '#facc15',
-  '#fb923c',
-  '#ef4444',
-  '#06b6d4',
-  '#f472b6',
+  '#8fa9c3',
+  '#9aabc6',
+  '#a7a0c5',
+  '#b39ac2',
+  '#c39ab4',
+  '#c69fa2',
+  '#c7a88f',
+  '#b7af8f',
+  '#9fb5a2',
 ];
 
 function randomInt(max: number): number {
@@ -427,6 +428,7 @@ export default function BlocksGrid({
   onGameOver,
   initialBestScore = 0,
   onBestScoreChange,
+  topActions,
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
   const [bag, setBag] = useState<Piece[]>([]);
@@ -436,10 +438,16 @@ export default function BlocksGrid({
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(initialBestScore);
   const [gameOver, setGameOver] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiSeed, setConfettiSeed] = useState(0);
+  const [scorePop, setScorePop] = useState(false);
 
   const [clearedCells, setClearedCells] = useState<ClearedCell[]>([]);
 
   const boardRef = useRef<HTMLDivElement | null>(null);
+  const confettiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scorePopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevScoreRef = useRef(0);
   const [cellSize, setCellSize] = useState(48);
 
   const [paletteContainer, setPaletteContainer] = useState<HTMLElement | null>(
@@ -466,6 +474,30 @@ export default function BlocksGrid({
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (confettiTimeoutRef.current) {
+        clearTimeout(confettiTimeoutRef.current);
+      }
+      if (scorePopTimeoutRef.current) {
+        clearTimeout(scorePopTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (score > prevScoreRef.current) {
+      setScorePop(true);
+      if (scorePopTimeoutRef.current) {
+        clearTimeout(scorePopTimeoutRef.current);
+      }
+      scorePopTimeoutRef.current = setTimeout(() => {
+        setScorePop(false);
+      }, 220);
+    }
+    prevScoreRef.current = score;
+  }, [score]);
 
   // новый раунд: подбираем мешок
   useEffect(() => {
@@ -553,7 +585,18 @@ export default function BlocksGrid({
           setBoard(clearedBoard);
           setScore(newScore);
           setBestScore(prevBest => {
-            const updated = newScore > prevBest ? newScore : prevBest;
+            const isNewRecord = newScore > prevBest;
+            const updated = isNewRecord ? newScore : prevBest;
+            if (isNewRecord) {
+              setConfettiSeed(s => s + 1);
+              setShowConfetti(true);
+              if (confettiTimeoutRef.current) {
+                clearTimeout(confettiTimeoutRef.current);
+              }
+              confettiTimeoutRef.current = setTimeout(() => {
+                setShowConfetti(false);
+              }, 900);
+            }
             if (onBestScoreChange) onBestScoreChange(updated);
             return updated;
           });
@@ -648,32 +691,11 @@ export default function BlocksGrid({
           className="flex flex-col items-stretch relative"
           style={{ width: BOARD_PIXEL_SIZE }}
         >
-          {/* счёт + рекорд */}
-          <div className="flex items-center justify-between mb-3 text-neutral-300 px-3 w-full">
-            <div className="flex items-center gap-3">
-              <div
-                className="font-bold text-white leading-none"
-                style={{ fontSize: `${cellSize * 0.45}px` }}
-              >
-                {score}
-              </div>
+          {topActions && (
+            <div className="absolute right-0 -top-[5.5rem] md:-top-24 z-[95] flex items-center gap-2">
+              {topActions}
             </div>
-
-            <div className="flex items-center gap-2">
-              <span
-                className="text-yellow-300"
-                style={{ fontSize: `${cellSize * 0.38}px` }}
-              >
-                🏆
-              </span>
-              <span
-                className="font-semibold text-white leading-none"
-                style={{ fontSize: `${cellSize * 0.35}px` }}
-              >
-                {bestScore}
-              </span>
-            </div>
-          </div>
+          )}
 
           {/* поле */}
           <div
@@ -681,6 +703,30 @@ export default function BlocksGrid({
             className="relative grid grid-cols-8 gap-[4px] rounded-3xl p-3 bg-transparent"
             style={{ width: '100%', height: BOARD_PIXEL_SIZE }}
           >
+            <div
+              className={`absolute right-2 -top-4 z-[90] px-1 py-0 text-white/90 transition-all duration-200 ${scorePop ? 'scale-105 drop-shadow-[0_0_8px_rgba(250,204,21,0.45)]' : ''}`}
+              style={{ fontSize: `${cellSize * 0.22}px` }}
+            >
+              <span className="font-semibold">{score} / {bestScore}</span>
+            </div>
+            {showConfetti && (
+              <div className="pointer-events-none absolute inset-0 z-[80] overflow-hidden rounded-3xl">
+                {Array.from({ length: 18 }).map((_, i) => (
+                  <span
+                    key={`${confettiSeed}-${i}`}
+                    className="confetti-dot"
+                    style={
+                      {
+                        '--x': `${8 + ((i * 5.1) % 84)}%`,
+                        '--d': `${500 + (i % 6) * 80}ms`,
+                        '--r': `${(i * 37) % 360}deg`,
+                        '--c': ['#34d399', '#f59e0b', '#60a5fa', '#f472b6'][i % 4],
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </div>
+            )}
             {board.map((row, r) =>
               row.map((color, c) => {
                 const showHover =
@@ -700,7 +746,7 @@ export default function BlocksGrid({
                 return (
                   <div
                     key={`${r}-${c}`}
-                    className="relative rounded-lg bg-[#111827] overflow-hidden"
+                    className="relative overflow-hidden rounded-lg bg-[#111827] transition-all duration-150 hover:-translate-y-[2px] hover:bg-white/[0.04]"
                   >
                     {color && (
                       <div
@@ -755,8 +801,8 @@ export default function BlocksGrid({
             className="pointer-events-none select-none"
             style={{
               position: 'absolute',
-              left: -cellSize * -1.0,
-              bottom: -cellSize * -7.6,
+              left: 0,
+              top: -cellSize * 1.55,
               width: cellSize * 2.0,
               height: 'auto',
               zIndex: 60,
@@ -781,8 +827,8 @@ export default function BlocksGrid({
       {/* палитра фигур слева */}
       {paletteContainer &&
         createPortal(
-          <div className="flex flex-col justify-center items-center h-full">
-            <div className="flex flex-col items-center gap-[72px]">
+          <div className="flex h-full flex-col items-center justify-center">
+            <div className="flex flex-col items-center gap-[48px] md:gap-[72px]">
               {bag.map(piece => {
                 const widthCells =
                   Math.max(...piece.shape.cells.map(c => c.c)) + 1;
@@ -813,6 +859,30 @@ export default function BlocksGrid({
         )}
 
       <style jsx>{`
+        .confetti-dot {
+          position: absolute;
+          left: var(--x);
+          top: 6%;
+          width: 8px;
+          height: 12px;
+          border-radius: 2px;
+          background: var(--c);
+          transform: rotate(var(--r));
+          animation: confetti-fall var(--d) ease-out forwards;
+        }
+        @keyframes confetti-fall {
+          0% {
+            opacity: 0;
+            transform: translateY(-8px) rotate(var(--r)) scale(0.7);
+          }
+          10% {
+            opacity: 1;
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(180px) rotate(calc(var(--r) + 220deg)) scale(1);
+          }
+        }
         @keyframes flashTwice {
           0% {
             opacity: 0;

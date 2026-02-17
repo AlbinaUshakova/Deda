@@ -2,7 +2,6 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
 
 export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
     const [message, setMessage] = useState('');
@@ -12,13 +11,15 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
     const [success, setSuccess] = useState(false);
 
     const handleSend = async () => {
-        if (!message.trim()) {
+        const trimmedMessage = message.trim();
+        const trimmedContact = contact.trim();
+
+        if (!trimmedMessage) {
             setError('Напишите хотя бы пару слов :)');
             return;
         }
-
-        if (!supabase) {
-            setError('Supabase не настроен');
+        if (trimmedMessage.length < 5) {
+            setError('Сообщение слишком короткое');
             return;
         }
 
@@ -26,29 +27,33 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
         setSending(true);
 
         try {
-            // берём текущего пользователя (если есть)
-            const { data: userData } = await supabase.auth.getUser();
-            const userId = userData?.user?.id ?? null;
+            const res = await fetch('/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: trimmedMessage,
+                    contact: trimmedContact || null,
+                }),
+            });
 
-            const { error: insertError } = await supabase
-                .from('feedback')
-                .insert([
-                    {
-                        user_id: userId,
-                        message: message.trim(),
-                        contact: contact.trim() || null,
-                    },
-                ]);
-
-            if (insertError) {
-                console.error('feedback insert error', insertError);
-                setError('Не получилось отправить. Попробуйте ещё раз позже.');
+            if (!res.ok) {
+                if (res.status === 429) {
+                    setError('Слишком часто. Попробуйте через минуту.');
+                } else if (res.status === 503) {
+                    setError('Почта не настроена. Напишите позже.');
+                } else if (res.status === 400) {
+                    setError('Проверьте сообщение и контакт.');
+                } else {
+                    setError('Не получилось отправить. Попробуйте ещё раз позже.');
+                }
                 setSending(false);
                 return;
             }
 
             setSuccess(true);
             setSending(false);
+            setMessage('');
+            setContact('');
 
             // чуть подождём и закроем модалку
             setTimeout(() => {
@@ -62,37 +67,47 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="absolute right-4 top-32 z-50">
-            <div className="card w-[320px] bg-slate-900 border border-white/10 rounded-2xl shadow-xl p-4 space-y-3">
-                <div className="text-lg font-semibold">Помощь и обратная связь</div>
+        <div className="absolute right-4 top-14 z-50">
+            <div className="card w-[320px] bg-[#1E1F22] border border-white/10 rounded-2xl shadow-xl p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                    <div className="text-lg font-semibold">Обратная связь</div>
+                    <button
+                        aria-label="Закрыть"
+                        className="mr-1 mt-0.5 h-7 w-7 rounded-md text-white/65 hover:text-white hover:bg-white/10 transition"
+                        onClick={onClose}
+                        disabled={sending}
+                    >
+                        ✕
+                    </button>
+                </div>
 
-                <p className="text-xs text-neutral-400">
-                    Напишите, что было непонятно, что сломалось или чего не хватает. Я
-                    прочитаю всё лично 🤍
+                <p className="text-xs text-neutral-400 leading-relaxed">
+                    Напишите, что было непонятно,
+                    <br />
+                    что сломалось или чего не хватает.
+                    <br />
+                    Я читаю всё лично 🤍
                 </p>
 
                 <div className="space-y-1">
-                    <label className="text-xs text-neutral-300">
-                        Сообщение
-                    </label>
                     <textarea
-                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-2 py-1 text-sm outline-none focus:border-emerald-400 resize-none min-h-[90px]"
+                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-2 py-1 text-sm outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-300/25 resize-none min-h-[106px]"
                         value={message}
                         onChange={e => {
                             setMessage(e.target.value);
                             setError(null);
                             setSuccess(false);
                         }}
-                        placeholder="Например: не поняла, как пройти уровень 3..."
+                        placeholder="Введите сообщение"
                     />
                 </div>
 
                 <div className="space-y-1">
                     <label className="text-xs text-neutral-300">
-                        Как с вами связаться (необязательно)
+                        Контакт (необязательно)
                     </label>
                     <input
-                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-2 py-1 text-sm outline-none focus:border-emerald-400"
+                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-2 py-1 text-sm outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-300/25"
                         value={contact}
                         onChange={e => {
                             setContact(e.target.value);
@@ -115,16 +130,9 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
                     </div>
                 )}
 
-                <div className="flex justify-end gap-2 pt-1">
+                <div className="pt-1">
                     <button
-                        className="px-3 py-1.5 text-xs rounded-lg border border-slate-600 text-neutral-200 hover:bg-slate-800"
-                        onClick={onClose}
-                        disabled={sending}
-                    >
-                        Закрыть
-                    </button>
-                    <button
-                        className="px-3 py-1.5 text-xs rounded-lg bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 disabled:opacity-60"
+                        className="w-full px-3 py-2 text-sm rounded-lg bg-emerald-500/95 text-slate-950 font-semibold hover:bg-emerald-400/95 disabled:opacity-60"
                         onClick={handleSend}
                         disabled={sending}
                     >

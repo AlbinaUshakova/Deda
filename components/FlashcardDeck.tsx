@@ -101,7 +101,16 @@ export default function FlashcardDeck({
 
   const [showTranslit, setShowTranslit] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
-  const [auto, setAuto] = useState(false);
+  const [auto, setAuto] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('deda_auto_play') === '1';
+  });
+  const [autoSpeedMs, setAutoSpeedMs] = useState(() => {
+    if (typeof window === 'undefined') return 2500;
+    const raw = localStorage.getItem('deda_auto_speed_ms');
+    const parsed = Number(raw);
+    return parsed === 1500 || parsed === 2500 || parsed === 4000 ? parsed : 2500;
+  });
   const [shuffled, setShuffled] = useState(false);
 
   const autoRef = useRef<number | null>(null);
@@ -180,7 +189,7 @@ export default function FlashcardDeck({
 
   const onPrev = useCallback(() => {
     if (!visible.length) return;
-    setIdx(i => (i > 0 ? i - 1 : visible.length - 1));
+    setIdx(i => (i > 0 ? i - 1 : 0));
     setFlipped(false);
     setShowTranslit(false);
     setRevealCount(0);
@@ -188,7 +197,7 @@ export default function FlashcardDeck({
 
   const onNext = useCallback(() => {
     if (!visible.length) return;
-    setIdx(i => (i + 1) % visible.length);
+    setIdx(i => (i < visible.length - 1 ? i + 1 : i));
     setFlipped(false);
     setShowTranslit(false);
     setRevealCount(0);
@@ -241,14 +250,26 @@ export default function FlashcardDeck({
       setFlipped(false);
       setShowTranslit(false);
       setRevealCount(0);
-    }, 2500);
+    }, autoSpeedMs);
     return () => {
       if (autoRef.current !== null) {
         clearInterval(autoRef.current);
         autoRef.current = null;
       }
     };
-  }, [auto, visible.length]);
+  }, [auto, visible.length, autoSpeedMs]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('deda_auto_play', auto ? '1' : '0');
+    } catch { }
+  }, [auto]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('deda_auto_speed_ms', String(autoSpeedMs));
+    } catch { }
+  }, [autoSpeedMs]);
 
   const hintText = useMemo(() => {
     if (!card) return '';
@@ -267,7 +288,16 @@ export default function FlashcardDeck({
 
   const total = visible.length;
   const counter = total ? `${idx + 1} / ${total}` : '0 / 0';
+  const progressPct = total ? Math.round(((idx + 1) / total) * 100) : 0;
   const isFav = !!(card && favMap[card.ge_text]);
+  const canPrev = hasCard && idx > 0;
+  const canNext = hasCard && idx < total - 1;
+  const playControl =
+    'h-16 w-16 -translate-y-1 rounded-full border-0 text-slate-950 shadow-[0_0_24px_rgba(80,255,200,0.25)] transition-all duration-150 ease-out hover:scale-[1.06] active:scale-[0.98] flex items-center justify-center text-2xl font-semibold leading-none';
+  const shuffleControl =
+    'h-8 w-8 rounded-full border-0 bg-transparent text-white/70 opacity-60 transition-all duration-150 ease-out hover:bg-white/8 hover:text-emerald-300 hover:opacity-100 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center text-base leading-none';
+  const glassMiniControl =
+    'inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.06] hover:border-emerald-300/35';
 
   const renderLevelDescription = (lvl: number | null) => {
     if (lvl === 1) {
@@ -286,8 +316,16 @@ export default function FlashcardDeck({
     <div className="relative w-full">
       {/* Верх: счётчик и заголовок */}
       <div className="mb-4 flex w-full flex-col items-center justify-center gap-2">
-        <div className="text-xs tracking-wide text-neutral-400">
-          {counter}
+        <div className="w-full max-w-[220px]">
+          <div className="h-2.5 rounded-full bg-white/16 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-white/70 transition-all duration-300"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+          <div className="mt-1 text-center text-xs tracking-wide text-neutral-400">
+            {counter}
+          </div>
         </div>
 
         {/* Фильтр по темам, если есть topic */}
@@ -365,7 +403,7 @@ export default function FlashcardDeck({
       </div>
 
       {/* Карточка */}
-      <div className="mx-auto w-full max-w-[1000px]">
+      <div className="relative mx-auto w-full max-w-[1000px]">
         <div
           className="relative mx-auto rounded-3xl border border-slate-700/60 bg-[#111827] shadow-2xl"
           style={{ height: '56vh', minHeight: 340 }}
@@ -379,11 +417,50 @@ export default function FlashcardDeck({
             }
           }}
         >
+          {canPrev && (
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                onPrev();
+              }}
+              className="absolute left-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-150 ease-out hover:bg-white/[0.06] hover:shadow-[0_0_14px_rgba(148,163,184,0.2)] hover:scale-[1.04] active:scale-[0.98]"
+              title="Назад"
+              aria-label="Назад"
+            >
+              <svg className="block -scale-x-100 mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+
+          {canNext && (
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                onNext();
+              }}
+              className="absolute right-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-150 ease-out hover:bg-white/[0.06] hover:shadow-[0_0_14px_rgba(148,163,184,0.2)] hover:scale-[1.04] active:scale-[0.98]"
+              title="Вперёд"
+              aria-label="Вперёд"
+            >
+              <svg className="block mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+
+          <div
+            className="pointer-events-none absolute inset-0 rounded-3xl opacity-35"
+            style={{
+              background:
+                'radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%)',
+            }}
+          />
           {hasCard && (
             <>
               {/* Подсказка */}
               <button
-                className="absolute left-4 top-4 z-10 rounded-full border border-slate-600/60 bg-transparent px-3 py-2 text-base md:text-lg text-neutral-100 hover:bg:white/5 transition-transform duration-200"
+                className={`group absolute left-4 top-4 z-10 h-10 px-3 text-sm md:text-base ${glassMiniControl} ${revealCount > 0 ? 'bg-emerald-300/12 border-emerald-300/50 text-emerald-200' : ''}`}
                 onClick={e => {
                   e.stopPropagation();
                   const t = (card?.ru_meaning || '').trim();
@@ -394,15 +471,15 @@ export default function FlashcardDeck({
                   e.preventDefault();
                   setRevealCount(0);
                 }}
-                title="Показать подсказку"
               >
-                💡 {revealCount === 0 ? 'подсказка' : hintText}
+                <span className="text-xl leading-none">💡</span>
+                <span className="ml-1">{revealCount === 0 ? 'подсказка' : hintText}</span>
               </button>
 
               {/* Справа сверху: избранное, транслит */}
               <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
                 <button
-                  className="w-14 h-14 rounded-full border border-slate-600/60 bg-transparent flex items-center justify-center text-xl md:text-2xl text-neutral-100 hover:bg-white/5 transition-transform duration-200"
+                  className={`h-10 w-10 text-lg ${glassMiniControl} ${isFav ? 'bg-emerald-300/12 border-emerald-300/50 text-emerald-200' : 'text-neutral-200'}`}
                   onClick={e => {
                     e.stopPropagation();
                     toggleFav(card.ge_text);
@@ -412,9 +489,9 @@ export default function FlashcardDeck({
                   {isFav ? '⭐' : '☆'}
                 </button>
                 <button
-                  className={`w-14 h-14 rounded-full flex items-center justify-center text-lg md:text-xl border transition duration-200 ${showTranslit
-                    ? 'border-emerald-400 text-emerald-300 bg-transparent'
-                    : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
+                  className={`h-10 min-w-10 px-3 text-sm md:text-base ${glassMiniControl} ${showTranslit
+                    ? 'bg-emerald-300/12 border-emerald-300/50 text-emerald-200'
+                    : 'text-neutral-200'
                     }`}
                   onClick={e => {
                     e.stopPropagation();
@@ -422,7 +499,7 @@ export default function FlashcardDeck({
                   }}
                   title="Показать транскрипцию"
                 >
-                  abc
+                  Aa
                 </button>
               </div>
             </>
@@ -437,7 +514,7 @@ export default function FlashcardDeck({
                   : 'Нет карточек'}
               </div>
             ) : !flipped ? (
-              <div className="flex flex-col items-center justify-center gap-3">
+              <div key={`front-${idx}`} className="animate-card-pop flex flex-col items-center justify-center gap-3">
                 <div
                   className="text-[clamp(32px,5.5vw,64px)] leading-tight text-neutral-100"
                   style={{
@@ -456,7 +533,7 @@ export default function FlashcardDeck({
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify:center gap-2">
+              <div key={`back-${idx}`} className="animate-card-pop flex flex-col items-center justify:center gap-2">
                 <div className="max-w-3xl text-[clamp(22px,3.6vw,38px)] leading-tight text-neutral-100">
                   {card.ru_meaning || '—'}
                 </div>
@@ -466,7 +543,7 @@ export default function FlashcardDeck({
 
           {/* котик внизу слева */}
           <div
-            className="pointer-events-none absolute z-[60] hidden select-none md:block"
+            className="pointer-events-none absolute z-[30] hidden select-none md:block"
             style={{
               left: 'max(calc(50% - 640px), 8px)',
               bottom: -180,
@@ -483,46 +560,17 @@ export default function FlashcardDeck({
           </div>
         </div>
 
-        {/* Низ: стрелки и опции */}
-        <div className="mt-4 flex items-center justify-between">
-          <div className="w-24" />
-          <div className="flex items-center gap-12">
-            <button
-              onClick={onPrev}
-              disabled={!hasCard}
-              className="h-16 w-16 rounded-full border border-slate-600/60 bg-transparent text-neutral-100 hover:scale-105 disabled:opacity-40 transition-transform duration-200 flex items-center justify-center"
-              title="Назад"
-              aria-label="Назад"
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            <button
-              onClick={onNext}
-              disabled={!hasCard}
-              className="h-16 w-16 rounded-full border border-slate-600/60 bg-transparent text-neutral-100 hover:scale-105 disabled:opacity-40 transition-transform duration-200 flex items-center justify-center"
-              title="Вперёд"
-              aria-label="Вперёд"
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-          <div className="w-24 flex items-center justify-end gap-3">
-            <button
-              onClick={() => setAuto(a => !a)}
-              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${auto
-                ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20'
-                : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
-                }`}
-              title="Автопрокрутка"
-            >
-              <img src="/icons/play1.png" alt="Auto" className="w-10 h-10 opacity-90" />
-            </button>
-
+        {/* Controls: below card */}
+        <div className="mt-5 mx-auto w-full max-w-[1000px] flex justify-center px-3">
+          <div
+            className="controls inline-flex min-w-[320px] items-center justify-center gap-[14px] rounded-full border border-white/[0.08] px-4 py-2.5 backdrop-blur-[12px] transition-all duration-200 hover:border-white/[0.12]"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
+              boxShadow:
+                '0 -10px 40px rgba(0,0,0,0.3), 0 0 40px rgba(80,255,200,0.08)',
+            }}
+          >
             <button
               onClick={() => {
                 setShuffled(s => {
@@ -531,15 +579,41 @@ export default function FlashcardDeck({
                   return next;
                 });
               }}
-              className={`px-4 py-2 rounded-lg border flex items-center justify-center h-11 min-w-[96px] text-base md:text-lg transition duration-200 ${shuffled
-                ? 'border-indigo-400 text-indigo-300 bg-indigo-900/20'
-                : 'border-slate-600/60 text-neutral-100 bg-transparent hover:bg-white/5'
-                }`}
+              className={`${shuffleControl} ${shuffled ? 'text-emerald-300 opacity-100' : ''}`}
               title="Перемешать"
               aria-pressed={shuffled}
             >
-              <img src="/icons/shuffle1.png" alt="Shuffle" className="w-10 h-10 opacity-90" />
+              <span className="relative inline-flex h-full w-full items-center justify-center">
+                <span>⇄</span>
+                {shuffled && (
+                  <span className="absolute -bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-300" />
+                )}
+              </span>
             </button>
+
+            <button
+              onClick={() => setAuto(a => !a)}
+              className={`${playControl} ${auto ? 'animate-play-pulse scale-[1.02] ring-2 ring-emerald-300/40 shadow-[0_8px_24px_rgba(0,0,0,0.35),0_0_20px_rgba(80,255,200,0.25)]' : ''}`}
+              title="Автопрокрутка"
+              aria-pressed={auto}
+              style={{
+                background:
+                  'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent 45%), #34d399',
+              }}
+            >
+              {auto ? 'Ⅱ' : '▶'}
+            </button>
+
+            <select
+              value={autoSpeedMs}
+              onChange={e => setAutoSpeedMs(Number(e.target.value))}
+              className="h-8 min-w-[92px] rounded-xl border border-white/10 bg-[#141928]/90 px-3 pr-7 text-[13px] font-medium text-white/85 outline-none backdrop-blur-[16px] transition-all duration-150 hover:border-white/20 hover:bg-[#18203a] focus:border-emerald-400"
+              aria-label="Скорость автопрокрутки"
+            >
+              <option value={1500}>⚡1.5×</option>
+              <option value={2500}>⚡2.5×</option>
+              <option value={4000}>⚡4×</option>
+            </select>
           </div>
         </div>
       </div>

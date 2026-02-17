@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -11,12 +12,29 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+    if (!supabase) {
+        return (
+            <main className="min-h-screen flex items-center justify-center p-4">
+                <div className="w-full max-w-md rounded-2xl bg-neutral-900/80 p-6 shadow-xl text-center space-y-3">
+                    <h1 className="text-2xl font-semibold text-white">Офлайн-режим</h1>
+                    <p className="text-sm text-neutral-300">
+                        Вход недоступен, потому что Supabase не настроен.
+                    </p>
+                    <Link href="/" className="inline-block rounded-lg bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-sm font-medium text-black">
+                        Перейти к урокам
+                    </Link>
+                </div>
+            </main>
+        );
+    }
+    const sb = supabase;
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg(null);
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await sb.auth.signInWithPassword({
             email,
             password,
         });

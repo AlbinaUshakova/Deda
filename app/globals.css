@@ -14,8 +14,6 @@ html {
 
 body {
     @apply bg-neutral-950 text-neutral-100 min-h-screen;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "SF Pro Display", "Segoe UI", sans-serif;
 }
 
 /* --------- УТИЛИТНЫЕ КОМПОНЕНТЫ --------- */
@@ -68,6 +66,95 @@ a {
 /* применяем к коту */
 .animate-cloud {
     animation: cloudBob 6s ease-in-out infinite;
+}
+
+@keyframes microPulse {
+
+    0%,
+    100% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(1.08);
+    }
+}
+
+.animate-micro-pulse {
+    animation: microPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes modalIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-modal-in {
+    animation: modalIn 180ms ease-out both;
+}
+
+@keyframes cardPop {
+    0% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-card-pop {
+    animation: cardPop 180ms ease-out both;
+}
+
+@keyframes playPulseGlow {
+    0%,
+    100% {
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.4),
+            0 0 20px rgba(80, 255, 180, 0.28);
+    }
+
+    50% {
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.42),
+            0 0 24px rgba(80, 255, 180, 0.4);
+    }
+}
+
+.animate-play-pulse {
+    animation: playPulseGlow 2.6s ease-in-out infinite;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.lesson-card--interactive:hover {
+    transform: translateY(-6px);
+}
+
+.lesson-card--recommended {
+    box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 215, 80, 0.06),
+        0 6px 18px rgba(255, 215, 80, 0.08);
+}
+
+.lesson-card--recommended:hover {
+    transform: translateY(-2px);
 }
 
 body {

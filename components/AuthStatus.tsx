@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import SettingsPanel from '@/components/SettingsPanel';
+import ProgressPanel from '@/components/ProgressPanel';
 import FeedbackPanel from '@/components/FeedbackPanel';
 
 type UserInfo = {
@@ -18,21 +19,40 @@ export default function AuthStatus() {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
+    const [showProgress, setShowProgress] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
 
     if (!supabase) {
         return (
-            <div className="flex items-center gap-3 text-sm">
-                <Link href="/login" className="text-emerald-400 hover:underline">
-                    Log in
-                </Link>
-                <Link href="/signup" className="text-neutral-300 hover:underline text-xs">
-                    Sign up
-                </Link>
-            </div>
+            <>
+                <div className="flex items-center gap-3 text-sm">
+                    <span className="rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 text-[11px] text-emerald-300">
+                        Офлайн
+                    </span>
+                    <button
+                        onClick={() => setShowProgress(true)}
+                        className="text-neutral-200 hover:underline"
+                    >
+                        Прогресс
+                    </button>
+                    <button
+                        onClick={() => setShowSettings(true)}
+                        className="text-neutral-200 hover:underline"
+                    >
+                        Настройки
+                    </button>
+                </div>
+                {showSettings && (
+                    <SettingsPanel onClose={() => setShowSettings(false)} />
+                )}
+                {showProgress && (
+                    <ProgressPanel onClose={() => setShowProgress(false)} />
+                )}
+            </>
         );
     }
+    const sb = supabase;
 
     useEffect(() => {
         let cancelled = false;
@@ -47,7 +67,7 @@ export default function AuthStatus() {
                 return;
             }
 
-            const { data: profile, error } = await supabase
+            const { data: profile, error } = await sb
                 .from('profiles')
                 .select('display_name')
                 .eq('id', sessionUser.id)
@@ -71,7 +91,7 @@ export default function AuthStatus() {
 
         async function loadSession() {
             try {
-                const { data, error } = await supabase.auth.getSession();
+                const { data, error } = await sb.auth.getSession();
                 if (error) {
                     console.error('getSession error', error);
                     setUser(null);
@@ -90,7 +110,7 @@ export default function AuthStatus() {
 
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        } = sb.auth.onAuthStateChange((_event, session) => {
             refreshUser(session);
         });
 
@@ -110,7 +130,7 @@ export default function AuthStatus() {
 
     const handleLogout = async () => {
         try {
-            await supabase.auth.signOut();
+            await sb.auth.signOut();
         } catch (e) {
             console.error('signOut error', e);
         }
@@ -123,14 +143,34 @@ export default function AuthStatus() {
 
     if (!user) {
         return (
-            <div className="flex items-center gap-3 text-sm">
-                <Link href="/login" className="text-emerald-400 hover:underline">
-                    Log in
-                </Link>
-                <Link href="/signup" className="text-neutral-300 hover:underline text-xs">
-                    Sign up
-                </Link>
-            </div>
+            <>
+                <div className="flex items-center gap-3 text-sm">
+                    <button
+                        onClick={() => setShowProgress(true)}
+                        className="text-neutral-200 hover:underline"
+                    >
+                        Прогресс
+                    </button>
+                    <button
+                        onClick={() => setShowSettings(true)}
+                        className="text-neutral-200 hover:underline"
+                    >
+                        Настройки
+                    </button>
+                    <Link href="/login" className="text-emerald-400 hover:underline">
+                        Log in
+                    </Link>
+                    <Link href="/signup" className="text-neutral-300 hover:underline text-xs">
+                        Sign up
+                    </Link>
+                </div>
+                {showSettings && (
+                    <SettingsPanel onClose={() => setShowSettings(false)} />
+                )}
+                {showProgress && (
+                    <ProgressPanel onClose={() => setShowProgress(false)} />
+                )}
+            </>
         );
     }
 
@@ -160,13 +200,24 @@ export default function AuthStatus() {
 
                         {/* Настройки */}
                         <button
-                            className="w-full text-left px-4 py-2 hover:bg-slate-800 text-neutral-100"
+                            className="w-full text-left px-4 py-2 hover:bg-slate-800/50 text-neutral-100"
                             onClick={() => {
                                 setOpen(false);
                                 setShowSettings(true);
                             }}
                         >
                             Настройки
+                        </button>
+
+                        {/* Прогресс */}
+                        <button
+                            className="w-full text-left px-4 py-2 hover:bg-slate-800/50 text-neutral-100"
+                            onClick={() => {
+                                setOpen(false);
+                                setShowProgress(true);
+                            }}
+                        >
+                            Прогресс
                         </button>
 
                         {/* Помощь и обратная связь */}
@@ -180,17 +231,6 @@ export default function AuthStatus() {
                             Помощь и обратная связь
                         </button>
 
-                        {/* Скрытый пункт "Админка" — только для твоего аккаунта */}
-                        {user.email === 'devochka.name@gmail.com' && (
-                            <Link
-                                href="/admin/feedback"
-                                className="block w-full text-left px-4 py-2 hover:bg-slate-800 text-neutral-100"
-                                onClick={() => setOpen(false)}
-                            >
-                                Админка
-                            </Link>
-                        )}
-
                         {/* Выйти */}
                         <button
                             onClick={handleLogout}
@@ -203,11 +243,29 @@ export default function AuthStatus() {
             </div>
 
             {showSettings && (
-                <SettingsPanel onClose={() => setShowSettings(false)} />
+                <SettingsPanel
+                    onClose={() => {
+                        setShowSettings(false);
+                        setOpen(true);
+                    }}
+                />
+            )}
+            {showProgress && (
+                <ProgressPanel
+                    onClose={() => {
+                        setShowProgress(false);
+                        setOpen(true);
+                    }}
+                />
             )}
 
             {showFeedback && (
-                <FeedbackPanel onClose={() => setShowFeedback(false)} />
+                <FeedbackPanel
+                    onClose={() => {
+                        setShowFeedback(false);
+                        setOpen(true);
+                    }}
+                />
             )}
         </>
     );

@@ -145,3 +145,25 @@ export async function upsertProgress(episodeId: string, score: number) {
     console.error('upsert progress error', error);
   }
 }
+
+// сброс прогресса: локально всегда, на сервере — если есть авторизованный пользователь
+export async function resetProgress() {
+  setLocalProgressArray([]);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('deda:progress-updated'));
+  }
+
+  if (!supabase) return;
+
+  const { data: userData, error: userErr } = await supabase.auth.getUser();
+  if (userErr || !userData.user) return;
+
+  const { error } = await supabase
+    .from('progress')
+    .delete()
+    .eq('user_id', userData.user.id);
+
+  if (error) {
+    console.error('reset progress error', error);
+  }
+}

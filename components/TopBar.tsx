@@ -1,16 +1,22 @@
 'use client';
 
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 import SettingsPanel from '@/components/SettingsPanel';
 import FeedbackPanel from '@/components/FeedbackPanel';
+import { supabase } from '@/lib/supabase';
 
 export default function TopBar() {
   const [user, setUser] = useState<any>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   // загрузка пользователя
   useEffect(() => {
+    if (!supabase) return;
+
     supabase.auth.getUser().then(({ data }) => {
       if (data?.user) setUser(data.user);
     });
@@ -25,6 +31,7 @@ export default function TopBar() {
   }, []);
 
   const logout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     window.location.href = '/login';
   };

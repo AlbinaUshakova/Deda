@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 export default function SignupPage() {
     const router = useRouter();
@@ -12,12 +13,29 @@ export default function SignupPage() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+    if (!supabase) {
+        return (
+            <main className="min-h-screen flex items-center justify-center p-4">
+                <div className="w-full max-w-md rounded-2xl bg-neutral-900/80 p-6 shadow-xl text-center space-y-3">
+                    <h1 className="text-2xl font-semibold text-white">Офлайн-режим</h1>
+                    <p className="text-sm text-neutral-300">
+                        Регистрация недоступна, потому что Supabase не настроен.
+                    </p>
+                    <Link href="/" className="inline-block rounded-lg bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-sm font-medium text-black">
+                        Перейти к урокам
+                    </Link>
+                </div>
+            </main>
+        );
+    }
+    const sb = supabase;
+
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg(null);
 
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await sb.auth.signUp({
             email,
             password,
         });
@@ -30,7 +48,7 @@ export default function SignupPage() {
 
         // создаём профиль в таблице profiles
         if (data.user) {
-            await supabase.from('profiles').insert({
+            await sb.from('profiles').insert({
                 id: data.user.id,
                 display_name: displayName || email,
             });
