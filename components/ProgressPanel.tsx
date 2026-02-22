@@ -56,8 +56,8 @@ export default function ProgressPanel({ onClose }: { onClose: () => void }) {
               <div className="flex items-center gap-2">
                 <span className="h-2 w-5 rounded-full bg-yellow-300/90" />
                 <span>Рекомендуем</span>
-                <span className="text-[11px] leading-none text-sky-100 drop-shadow-[0_0_4px_rgba(125,211,252,0.65)]">
-                  ✨
+                <span className="text-[11px] leading-none text-orange-300 drop-shadow-[0_0_4px_rgba(251,146,60,0.55)]">
+                  🐾
                 </span>
               </div>
             </div>

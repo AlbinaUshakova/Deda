@@ -146,17 +146,6 @@ a {
     transform: translateY(-6px);
 }
 
-.lesson-card--recommended {
-    box-shadow:
-        0 10px 20px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(255, 215, 80, 0.06),
-        0 6px 18px rgba(255, 215, 80, 0.08);
-}
-
-.lesson-card--recommended:hover {
-    transform: translateY(-2px);
-}
-
 body {
     background-color: var(--deda-bg, #020617);
     color: var(--deda-text, #f9fafb);

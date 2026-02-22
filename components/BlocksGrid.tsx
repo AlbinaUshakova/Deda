@@ -27,6 +27,7 @@ type BlocksGridProps = {
   initialBestScore?: number;
   onBestScoreChange?: (best: number) => void;
   topActions?: React.ReactNode;
+  leftOfCatAction?: React.ReactNode;
 };
 
 type ClearedCell = {
@@ -169,15 +170,15 @@ const SHAPES: Shape[] = [
 ];
 
 const COLORS = [
-  '#8fa9c3',
-  '#9aabc6',
-  '#a7a0c5',
-  '#b39ac2',
-  '#c39ab4',
-  '#c69fa2',
-  '#c7a88f',
-  '#b7af8f',
-  '#9fb5a2',
+  '#f0b35d',
+  '#eaa257',
+  '#d98b4f',
+  '#c97a45',
+  '#b7683f',
+  '#a95b3a',
+  '#d6a06b',
+  '#c88f5d',
+  '#e7b884',
 ];
 
 function randomInt(max: number): number {
@@ -429,6 +430,7 @@ export default function BlocksGrid({
   initialBestScore = 0,
   onBestScoreChange,
   topActions,
+  leftOfCatAction,
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
   const [bag, setBag] = useState<Piece[]>([]);
@@ -438,15 +440,14 @@ export default function BlocksGrid({
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(initialBestScore);
   const [gameOver, setGameOver] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [confettiSeed, setConfettiSeed] = useState(0);
   const [scorePop, setScorePop] = useState(false);
+  const [showCatLangHint, setShowCatLangHint] = useState(false);
 
   const [clearedCells, setClearedCells] = useState<ClearedCell[]>([]);
 
   const boardRef = useRef<HTMLDivElement | null>(null);
-  const confettiTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scorePopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const catHintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevScoreRef = useRef(0);
   const [cellSize, setCellSize] = useState(48);
 
@@ -477,11 +478,11 @@ export default function BlocksGrid({
 
   useEffect(() => {
     return () => {
-      if (confettiTimeoutRef.current) {
-        clearTimeout(confettiTimeoutRef.current);
-      }
       if (scorePopTimeoutRef.current) {
         clearTimeout(scorePopTimeoutRef.current);
+      }
+      if (catHintTimeoutRef.current) {
+        clearTimeout(catHintTimeoutRef.current);
       }
     };
   }, []);
@@ -585,18 +586,7 @@ export default function BlocksGrid({
           setBoard(clearedBoard);
           setScore(newScore);
           setBestScore(prevBest => {
-            const isNewRecord = newScore > prevBest;
-            const updated = isNewRecord ? newScore : prevBest;
-            if (isNewRecord) {
-              setConfettiSeed(s => s + 1);
-              setShowConfetti(true);
-              if (confettiTimeoutRef.current) {
-                clearTimeout(confettiTimeoutRef.current);
-              }
-              confettiTimeoutRef.current = setTimeout(() => {
-                setShowConfetti(false);
-              }, 900);
-            }
+            const updated = newScore > prevBest ? newScore : prevBest;
             if (onBestScoreChange) onBestScoreChange(updated);
             return updated;
           });
@@ -696,6 +686,11 @@ export default function BlocksGrid({
               {topActions}
             </div>
           )}
+          {leftOfCatAction && (
+            <div className="absolute left-0 -top-[2.35rem] md:-top-[2.75rem] z-[96] translate-x-[245%] origin-top-left scale-150">
+              {leftOfCatAction}
+            </div>
+          )}
 
           {/* поле */}
           <div
@@ -704,29 +699,11 @@ export default function BlocksGrid({
             style={{ width: '100%', height: BOARD_PIXEL_SIZE }}
           >
             <div
-              className={`absolute right-2 -top-4 z-[90] px-1 py-0 text-white/90 transition-all duration-200 ${scorePop ? 'scale-105 drop-shadow-[0_0_8px_rgba(250,204,21,0.45)]' : ''}`}
+              className={`absolute right-2 -top-6 z-[90] px-1 py-0 text-white/90 transition-all duration-200 ${scorePop ? 'scale-105 drop-shadow-[0_0_8px_rgba(250,204,21,0.45)]' : ''}`}
               style={{ fontSize: `${cellSize * 0.22}px` }}
             >
               <span className="font-semibold">{score} / {bestScore}</span>
             </div>
-            {showConfetti && (
-              <div className="pointer-events-none absolute inset-0 z-[80] overflow-hidden rounded-3xl">
-                {Array.from({ length: 18 }).map((_, i) => (
-                  <span
-                    key={`${confettiSeed}-${i}`}
-                    className="confetti-dot"
-                    style={
-                      {
-                        '--x': `${8 + ((i * 5.1) % 84)}%`,
-                        '--d': `${500 + (i % 6) * 80}ms`,
-                        '--r': `${(i * 37) % 360}deg`,
-                        '--c': ['#34d399', '#f59e0b', '#60a5fa', '#f472b6'][i % 4],
-                      } as React.CSSProperties
-                    }
-                  />
-                ))}
-              </div>
-            )}
             {board.map((row, r) =>
               row.map((color, c) => {
                 const showHover =
@@ -793,21 +770,52 @@ export default function BlocksGrid({
             )}
           </div>
 
-          {/* кот */}
-          <img
-            src="/images/deda-cat_6.png"
-            alt="deda cat"
-            draggable={false}
-            className="pointer-events-none select-none"
+          {/* кот + подсказка языка */}
+          <button
+            type="button"
+            onClick={() => {
+              setShowCatLangHint(true);
+              if (catHintTimeoutRef.current) clearTimeout(catHintTimeoutRef.current);
+              catHintTimeoutRef.current = setTimeout(() => setShowCatLangHint(false), 3200);
+            }}
+            aria-label="Подсказка по выбору языка"
+            className="absolute left-0 z-[60] select-none"
             style={{
-              position: 'absolute',
-              left: 0,
               top: -cellSize * 1.55,
               width: cellSize * 2.0,
-              height: 'auto',
-              zIndex: 60,
             }}
-          />
+          >
+            {showCatLangHint && (
+              <div className="pointer-events-none absolute bottom-[calc(100%-8px)] left-[58%] -translate-x-1/2 w-[250px] z-[80]">
+                <div className="relative w-[270px]">
+                  <svg viewBox="0 0 320 220" className="w-full h-auto drop-shadow-[0_12px_20px_rgba(0,0,0,0.35)]">
+                    <path
+                      d="M70 170 C35 170, 20 145, 30 120 C10 105, 18 72, 50 68 C62 40, 98 30, 122 48 C145 20, 190 20, 212 50 C245 40, 275 58, 280 88 C305 98, 312 128, 292 148 C282 162, 262 170, 240 170 C220 186, 96 186, 70 170 Z"
+                      fill="rgba(255,255,255,0.85)"
+                      stroke="#334155"
+                      strokeWidth="3"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center px-10 text-[15px] leading-snug text-center font-semibold tracking-tight text-slate-900">
+                    Выбери язык игры:
+                    <br />
+                    🇬🇪 → 🇷🇺 или 🇷🇺 → 🇬🇪
+                  </div>
+                </div>
+              </div>
+            )}
+            <img
+              src="/images/deda-cat_6.png"
+              alt="deda cat"
+              draggable={false}
+              className="select-none pointer-events-none"
+              style={{
+                width: '100%',
+                height: 'auto',
+              }}
+            />
+          </button>
         </div>
       </div>
 
@@ -859,30 +867,6 @@ export default function BlocksGrid({
         )}
 
       <style jsx>{`
-        .confetti-dot {
-          position: absolute;
-          left: var(--x);
-          top: 6%;
-          width: 8px;
-          height: 12px;
-          border-radius: 2px;
-          background: var(--c);
-          transform: rotate(var(--r));
-          animation: confetti-fall var(--d) ease-out forwards;
-        }
-        @keyframes confetti-fall {
-          0% {
-            opacity: 0;
-            transform: translateY(-8px) rotate(var(--r)) scale(0.7);
-          }
-          10% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(180px) rotate(calc(var(--r) + 220deg)) scale(1);
-          }
-        }
         @keyframes flashTwice {
           0% {
             opacity: 0;

@@ -113,7 +113,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
                       Главная
                     </Link>
                     <Link
-                      className="inline-flex whitespace-nowrap items-center justify-center rounded-xl border border-emerald-300/45 bg-emerald-300/[0.09] px-[clamp(0.55rem,1.5vw,0.9rem)] py-[clamp(0.38rem,0.9vw,0.52rem)] text-[clamp(0.72rem,1.6vw,0.9rem)] text-emerald-200 shadow-[0_0_10px_rgba(80,255,200,0.12)] transition-all duration-200 hover:shadow-[0_0_14px_rgba(80,255,200,0.18)] hover:text-emerald-100"
+                      className="inline-flex whitespace-nowrap items-center justify-center rounded-xl border border-orange-300/55 bg-orange-300/[0.1] px-[clamp(0.55rem,1.5vw,0.9rem)] py-[clamp(0.38rem,0.9vw,0.52rem)] text-[clamp(0.72rem,1.6vw,0.9rem)] text-orange-100 shadow-[0_0_10px_rgba(251,146,60,0.2)] transition-all duration-200 hover:shadow-[0_0_14px_rgba(251,146,60,0.28)] hover:text-white"
                       href={studyHref}
                     >
                       Карточки

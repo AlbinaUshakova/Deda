@@ -3,12 +3,14 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
+import { pickImageForCard } from '@/lib/imageMap';
 
 type Card = {
   id?: string;
   ge_text: string;
   translit?: string;
   ru_meaning?: string;
+  image_url?: string;
   type?: 'word' | 'letter';
   level?: number; // 1–3 сложность (используем, если нет topic)
   topic?: string; // тема фразы (location_movement, questions и т.п.)
@@ -112,6 +114,7 @@ export default function FlashcardDeck({
     return parsed === 1500 || parsed === 2500 || parsed === 4000 ? parsed : 2500;
   });
   const [shuffled, setShuffled] = useState(false);
+  const [brokenImages, setBrokenImages] = useState<Record<string, true>>({});
 
   const autoRef = useRef<number | null>(null);
 
@@ -186,6 +189,12 @@ export default function FlashcardDeck({
 
   const card = visible[order[idx]];
   const hasCard = !!card;
+  const cardImageSrc = useMemo(() => {
+    if (!card) return null;
+    return pickImageForCard(card);
+  }, [card]);
+  const imageKey = card?.id || card?.ge_text || '';
+  const showCardImage = !!cardImageSrc && !!imageKey && !brokenImages[imageKey];
 
   const onPrev = useCallback(() => {
     if (!visible.length) return;
@@ -293,9 +302,9 @@ export default function FlashcardDeck({
   const canPrev = hasCard && idx > 0;
   const canNext = hasCard && idx < total - 1;
   const playControl =
-    'h-16 w-16 -translate-y-1 rounded-full border-0 text-slate-950 shadow-[0_0_24px_rgba(80,255,200,0.25)] transition-all duration-150 ease-out hover:scale-[1.06] active:scale-[0.98] flex items-center justify-center text-2xl font-semibold leading-none';
+    'h-16 w-16 -translate-y-1 rounded-full border-0 text-slate-950 shadow-[0_0_24px_rgba(251,146,60,0.28)] transition-all duration-150 ease-out hover:scale-[1.06] active:scale-[0.98] flex items-center justify-center text-2xl font-semibold leading-none';
   const shuffleControl =
-    'h-8 w-8 rounded-full border-0 bg-transparent text-white/70 opacity-60 transition-all duration-150 ease-out hover:bg-white/8 hover:text-emerald-300 hover:opacity-100 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center text-base leading-none';
+    'h-8 w-8 rounded-full border-0 bg-transparent text-orange-100/75 opacity-70 transition-all duration-150 ease-out hover:bg-white/8 hover:text-orange-200 hover:opacity-100 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center text-base leading-none';
   const glassMiniControl =
     'inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.06] hover:border-emerald-300/35';
 
@@ -533,7 +542,19 @@ export default function FlashcardDeck({
                 )}
               </div>
             ) : (
-              <div key={`back-${idx}`} className="animate-card-pop flex flex-col items-center justify:center gap-2">
+              <div key={`back-${idx}`} className="animate-card-pop flex flex-col items-center justify:center gap-3">
+                {showCardImage && cardImageSrc && (
+                  <img
+                    src={cardImageSrc}
+                    alt={card.ru_meaning || card.ge_text}
+                    className="h-[140px] w-[140px] rounded-2xl object-contain border border-white/10 bg-white/[0.03] p-2"
+                    loading="lazy"
+                    onError={() => {
+                      if (!imageKey) return;
+                      setBrokenImages(prev => ({ ...prev, [imageKey]: true }));
+                    }}
+                  />
+                )}
                 <div className="max-w-3xl text-[clamp(22px,3.6vw,38px)] leading-tight text-neutral-100">
                   {card.ru_meaning || '—'}
                 </div>
@@ -579,35 +600,35 @@ export default function FlashcardDeck({
                   return next;
                 });
               }}
-              className={`${shuffleControl} ${shuffled ? 'text-emerald-300 opacity-100' : ''}`}
+              className={`${shuffleControl} ${shuffled ? 'text-orange-300 opacity-100' : ''}`}
               title="Перемешать"
               aria-pressed={shuffled}
             >
               <span className="relative inline-flex h-full w-full items-center justify-center">
                 <span>⇄</span>
                 {shuffled && (
-                  <span className="absolute -bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-300" />
+                  <span className="absolute -bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-orange-300" />
                 )}
               </span>
             </button>
 
             <button
               onClick={() => setAuto(a => !a)}
-              className={`${playControl} ${auto ? 'animate-play-pulse scale-[1.02] ring-2 ring-emerald-300/40 shadow-[0_8px_24px_rgba(0,0,0,0.35),0_0_20px_rgba(80,255,200,0.25)]' : ''}`}
+              className={`${playControl} ${auto ? 'animate-play-pulse scale-[1.02] ring-2 ring-orange-300/45 shadow-[0_8px_24px_rgba(0,0,0,0.35),0_0_20px_rgba(251,146,60,0.32)]' : ''}`}
               title="Автопрокрутка"
               aria-pressed={auto}
               style={{
                 background:
-                  'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent 45%), #34d399',
+                  'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.22), transparent 45%), #f59e0b',
               }}
             >
-              {auto ? 'Ⅱ' : '▶'}
+              {auto ? <span className="leading-none">Ⅱ</span> : <span className="leading-none translate-x-[1px]">▶</span>}
             </button>
 
             <select
               value={autoSpeedMs}
               onChange={e => setAutoSpeedMs(Number(e.target.value))}
-              className="h-8 min-w-[92px] rounded-xl border border-white/10 bg-[#141928]/90 px-3 pr-7 text-[13px] font-medium text-white/85 outline-none backdrop-blur-[16px] transition-all duration-150 hover:border-white/20 hover:bg-[#18203a] focus:border-emerald-400"
+              className="h-8 min-w-[74px] rounded-xl border border-white/10 bg-[#141928]/90 px-2.5 pr-5 text-[13px] font-medium text-white/85 outline-none backdrop-blur-[16px] transition-all duration-150 hover:border-orange-300/45 hover:bg-[#18203a] focus:border-orange-300/65 focus:shadow-[0_0_0_1px_rgba(251,146,60,0.28),0_0_12px_rgba(251,146,60,0.22)]"
               aria-label="Скорость автопрокрутки"
             >
               <option value={1500}>⚡1.5×</option>

@@ -1,7 +1,7 @@
 // src/components/BlocksGame.tsx
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect, useLayoutEffect, useRef } from 'react';
 import BlocksGrid from './BlocksGrid';
 import { upsertProgress } from '@/lib/supabase';
 
@@ -22,6 +22,7 @@ type Question = {
 
 type Mode = 'question' | 'pieces' | 'gameOver';
 type AnswerState = 'idle' | 'wrong' | 'correct';
+type TranslationDirection = 'ge-ru' | 'ru-ge';
 
 // ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
 const FAVORITES_KEY = 'deda_fav_ge';
@@ -252,6 +253,11 @@ export default function BlocksGame({
 
   const [mode, setMode] = useState<Mode>('question');
   const [roundId, setRoundId] = useState(0);
+  const [direction, setDirection] = useState<TranslationDirection>(() => {
+    if (typeof window === 'undefined') return 'ge-ru';
+    const saved = window.localStorage.getItem('deda_translation_direction');
+    return saved === 'ru-ge' ? 'ru-ge' : 'ge-ru';
+  });
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
@@ -277,8 +283,8 @@ export default function BlocksGame({
   const [favoriteWords, setFavoriteWords] = useState<Set<string>>(
     () => new Set(),
   );
+  const promptTextRef = useRef<HTMLDivElement | null>(null);
 
-  const answerRef = useRef<HTMLTextAreaElement | null>(null);
 
   // рекорд уровня (тот же, что на карте)
   const [bestScore, setBestScore] = useState(initialBest);
@@ -343,11 +349,30 @@ export default function BlocksGame({
     }
   }, []);
 
+  const answerFontPx = useMemo(() => {
+    const len = Array.from(answer ?? '').length;
+    if (len <= 12) return 24;
+    if (len <= 20) return 21;
+    if (len <= 30) return 18;
+    if (len <= 45) return 15;
+    return 13;
+  }, [answer]);
+
   useEffect(() => {
-    if (!answerRef.current) return;
-    answerRef.current.style.height = 'auto';
-    answerRef.current.style.height = `${Math.min(answerRef.current.scrollHeight, 180)}px`;
-  }, [answer, showCorrect]);
+    try {
+      window.localStorage.setItem('deda_translation_direction', direction);
+    } catch { }
+    setAnswer('');
+    setError(false);
+    setAnswerState('idle');
+    setAttempts(0);
+    setShowCorrect(false);
+    clearRevealTimer();
+    if (mode === 'question' && hasWords) {
+      gotoNextFromQueue(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [direction]);
 
   // переключение избранного для конкретного грузинского слова
   const toggleFavorite = (ge: string) => {
@@ -467,8 +492,9 @@ export default function BlocksGame({
 
   const isCurrentAnswerCorrect = useMemo(() => {
     if (!question) return false;
-    return isSameAnswer(answer, question.ru);
-  }, [answer, question]);
+    const correctAnswer = direction === 'ge-ru' ? question.ru : question.ge;
+    return isSameAnswer(answer, correctAnswer);
+  }, [answer, question, direction]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -484,7 +510,8 @@ export default function BlocksGame({
 
     if (!normalizeRu(answer)) return;
 
-    const isCorrect = isSameAnswer(answer, question.ru);
+    const correctAnswer = direction === 'ge-ru' ? question.ru : question.ge;
+    const isCorrect = isSameAnswer(answer, correctAnswer);
 
     if (isCorrect) {
       clearRevealTimer();
@@ -515,7 +542,7 @@ export default function BlocksGame({
             revealTimeoutRef.current = setTimeout(() => {
               setShowCorrect(true);
               if (question) {
-                setAnswer(question.ru);
+                setAnswer(correctAnswer);
               }
               setError(false);
               setAnswerState('idle');
@@ -575,6 +602,52 @@ export default function BlocksGame({
   const currentGe = question?.ge ?? null;
   const isCurrentFavorite =
     currentGe != null ? favoriteWords.has(currentGe) : false;
+  const promptText = question
+    ? (direction === 'ge-ru' ? question.ge : question.ru)
+    : '';
+  const [promptFontPx, setPromptFontPx] = useState(36);
+  const [promptLineHeight, setPromptLineHeight] = useState(1.15);
+
+  useLayoutEffect(() => {
+    const el = promptTextRef.current;
+    if (!el) return;
+
+    const fit = () => {
+      const maxSize = 30;
+      const minSize = 10;
+      const lh = 1.15;
+
+      let size = maxSize;
+      el.style.fontSize = `${size}px`;
+      el.style.lineHeight = String(lh);
+
+      while (size > minSize && el.scrollHeight > size * lh * 2 + 1) {
+        size -= 1;
+        el.style.fontSize = `${size}px`;
+      }
+
+      setPromptFontPx(size);
+      setPromptLineHeight(lh);
+    };
+
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [promptText, direction]);
+  const inputPlaceholder =
+    direction === 'ge-ru'
+      ? 'Введите перевод на русский'
+      : 'Введите перевод на грузинский';
+  const directionAction = (
+    <button
+      type="button"
+      onClick={() => setDirection(prev => (prev === 'ge-ru' ? 'ru-ge' : 'ge-ru'))}
+      className="rounded-xl border border-orange-300/55 bg-orange-300/[0.1] px-3 py-1 text-xs font-semibold text-orange-100 shadow-[0_0_12px_rgba(251,146,60,0.22)] transition-all hover:bg-orange-300/[0.14] hover:text-white hover:shadow-[0_0_16px_rgba(251,146,60,0.3)]"
+      title="Сменить направление перевода"
+    >
+      {direction === 'ge-ru' ? '🇬🇪 → 🇷🇺' : '🇷🇺 → 🇬🇪'}
+    </button>
+  );
 
   return (
     <div className="flex w-full justify-center -mt-3 md:-mt-4">
@@ -585,7 +658,7 @@ export default function BlocksGame({
           style={{ width: 'clamp(180px, 22vw, 260px)' }}
         >
           <div
-            className="relative mt-8"
+            className="relative mt-0"
             style={{ height: 'min(72vh, 640px)' }}
           >
             {shouldRenderQuestionPanel && (
@@ -597,21 +670,68 @@ export default function BlocksGame({
                     : 'opacity-0 translate-y-16 pointer-events-none')
                 }
               >
-                <div className="flex flex-col items-start justify-start h-full px-2 pt-12">
+                <div className="flex flex-col items-start justify-start h-full px-2 pt-5">
                   {hasWords && question && (
                     <>
                       {/* строка с грузинским словом и кнопкой избранного */}
                       <div className="labelRow mb-6 flex items-center gap-2">
-                        <div className="text-[clamp(1.35rem,2.2vw,2rem)] leading-tight">
-                          {question.ge}
+                        <div
+                          ref={promptTextRef}
+                          className="max-w-full break-words overflow-visible text-neutral-100 font-semibold tracking-[-0.01em]"
+                          style={{
+                            fontSize: `${promptFontPx}px`,
+                            lineHeight: promptLineHeight,
+                            overflowWrap: 'anywhere',
+                          }}
+                        >
+                          {promptText}
                         </div>
+                      </div>
 
+                      <form onSubmit={handleSubmit} className="mb-2 w-full">
+                        <input
+                          type="text"
+                          value={answer}
+                          onChange={e => {
+                            setAnswer(e.target.value);
+                            if (error) setError(false);
+                            if (answerState !== 'idle') setAnswerState('idle');
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') e.currentTarget.form?.requestSubmit();
+                          }}
+                          placeholder={inputPlaceholder}
+                          readOnly={showCorrect}
+                          autoComplete="off"
+                          spellCheck={false}
+                          className={
+                            'w-full h-14 px-4 rounded-xl border outline-none tracking-wide transition-all duration-200 placeholder:text-[clamp(0.5rem,0.75vw,0.7rem)] placeholder:text-neutral-400 ' +
+                            (answerState === 'wrong' && !showCorrect
+                              ? 'border-red-400 bg-red-700/10 text-white'
+                              : answerState === 'correct'
+                                ? 'border-green-300 bg-green-400/5 text-white'
+                                : 'border-orange-300/55 bg-[#0b1120]/60 text-white shadow-[0_0_0_1px_rgba(251,146,60,0.2)]')
+                          }
+                          style={{ fontSize: `${answerFontPx}px` }}
+                        />
+                      </form>
+
+                      <div className="mt-2 inline-flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleSkipQuestion}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-2.5 py-1.5 text-sm text-neutral-300 opacity-70 transition-all duration-150 hover:opacity-100 hover:bg-white/[0.05] hover:text-white"
+                          disabled={showCorrect}
+                        >
+                          <span className="text-lg">↻</span>
+                          <span>Обновить</span>
+                        </button>
                         {!isFavoritesEpisode && (
                           <button
                             type="button"
                             onClick={() => toggleFavorite(question.ge)}
                             className={
-                              'text-[clamp(1.35rem,2.2vw,2rem)] transition ' +
+                              'h-9 w-9 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-lg transition-all duration-150 ' +
                               (isCurrentFavorite
                                 ? 'text-yellow-300 hover:text-yellow-400'
                                 : 'text-slate-400 hover:text-slate-200')
@@ -626,45 +746,6 @@ export default function BlocksGame({
                           </button>
                         )}
                       </div>
-
-                      <form onSubmit={handleSubmit} className="mb-2 w-full">
-                        <textarea
-                          ref={answerRef}
-                          value={answer}
-                          onChange={e => {
-                            setAnswer(e.target.value);
-                            if (error) setError(false);
-                            if (answerState !== 'idle') setAnswerState('idle');
-                          }}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                              e.preventDefault();
-                              e.currentTarget.form?.requestSubmit();
-                            }
-                          }}
-                          placeholder="введите перевод"
-                          readOnly={showCorrect}
-                          rows={1}
-                          className={
-                            'w-full min-h-[56px] max-h-[180px] resize-none overflow-y-auto px-4 py-3 rounded-xl border outline-none text-[clamp(1.1rem,1.8vw,1.65rem)] tracking-wide transition-all duration-200 placeholder:text-[clamp(1rem,1.5vw,1.4rem)] placeholder:text-neutral-400 ' +
-                            (answerState === 'wrong' && !showCorrect
-                              ? 'border-red-400 bg-red-700/10 text-white'
-                              : answerState === 'correct' || (!error && isCurrentAnswerCorrect)
-                                ? 'border-green-300 bg-green-400/5 text-white'
-                                : 'border-transparent bg-[#0b1120]/60 focus:border-transparent focus:shadow-none text-white')
-                          }
-                        />
-                      </form>
-
-                      <button
-                        type="button"
-                        onClick={handleSkipQuestion}
-                        className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-2.5 py-1.5 text-sm text-neutral-300 opacity-70 transition-all duration-150 hover:opacity-100 hover:bg-white/[0.05] hover:text-white"
-                        disabled={showCorrect}
-                      >
-                        <span className="text-lg">↻</span>
-                        <span>Обновить</span>
-                      </button>
 
                       {error && !showCorrect && (
                         <div className="mt-2 text-xs text-red-400">
@@ -705,6 +786,7 @@ export default function BlocksGame({
             initialBestScore={bestScore}
             onBestScoreChange={handleBestScoreChange}
             topActions={topActions}
+            leftOfCatAction={directionAction}
           />
         </div>
       </div>
