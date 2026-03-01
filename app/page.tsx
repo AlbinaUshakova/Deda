@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { listEpisodes, loadNewLettersPerEpisode } from '@/lib/content';
 import { getSettings } from '@/lib/settings';
 import {
   loadProgressMap,
@@ -11,6 +10,11 @@ import {
 } from '@/lib/supabase';
 
 type Ep = { id: string; title: string; best?: number };
+type EpisodesApiResponse = {
+  ok: boolean;
+  episodes?: Ep[];
+  lettersByEpisode?: Record<string, string[]>;
+};
 type LessonStatus = 'mastered' | 'almost' | 'current' | 'locked';
 type AlphabetLetterStatus = LessonStatus | 'unknown';
 
@@ -140,6 +144,18 @@ const geLetterAudioMap: Record<string, string> = {
   'ჰ': '/audio/letters/33-hae.mp3',
 };
 
+async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: Record<string, string[]> }> {
+  const res = await fetch('/api/content/episodes', { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error('Failed to load episodes');
+  }
+  const json = (await res.json()) as EpisodesApiResponse;
+  return {
+    episodes: json.episodes ?? [],
+    lettersByEpisode: json.lettersByEpisode ?? {},
+  };
+}
+
 export default function HomePage() {
   const [eps, setEps] = useState<Ep[]>([]);
   const [showCatHint, setShowCatHint] = useState(false);
@@ -165,11 +181,9 @@ export default function HomePage() {
 
   useEffect(() => {
     const init = async () => {
-      const data = await listEpisodes();
-      setEps(data);
-
-      const letters = await loadNewLettersPerEpisode();
-      setLettersByEp(letters);
+      const { episodes, lettersByEpisode } = await loadEpisodesData();
+      setEps(episodes);
+      setLettersByEp(lettersByEpisode);
       setLessonTargetScore(getSettings().lessonTargetScore);
 
       // тянем merged-прогресс (локалка+сервер) и мёрджим поверх текущего

@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { listEpisodes, loadNewLettersPerEpisode } from '@/lib/content';
 import { getSettings } from '@/lib/settings';
 import { loadProgressMap, getLocalProgress, type ProgressMap } from '@/lib/supabase';
+
+type Ep = { id: string; title: string };
+type EpisodesApiResponse = {
+  ok: boolean;
+  episodes?: Ep[];
+  lettersByEpisode?: Record<string, string[]>;
+};
 
 type LessonStatus = 'mastered' | 'almost' | 'current' | 'locked';
 type AlphabetLetterStatus = LessonStatus | 'unknown';
@@ -66,6 +72,18 @@ const geLetterAudioMap: Record<string, string> = {
   'ჰ': '/audio/letters/33-hae.mp3',
 };
 
+async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: Record<string, string[]> }> {
+  const res = await fetch('/api/content/episodes', { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error('Failed to load episodes');
+  }
+  const json = (await res.json()) as EpisodesApiResponse;
+  return {
+    episodes: json.episodes ?? [],
+    lettersByEpisode: json.lettersByEpisode ?? {},
+  };
+}
+
 export default function GlobalAlphabetOverlay() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -101,8 +119,7 @@ export default function GlobalAlphabetOverlay() {
     let cancelled = false;
 
     const load = async () => {
-      const episodes = await listEpisodes();
-      const letters = await loadNewLettersPerEpisode();
+      const { episodes, lettersByEpisode } = await loadEpisodesData();
       const merged = await loadProgressMap();
       const target = getSettings().lessonTargetScore;
       if (cancelled) return;
@@ -112,7 +129,7 @@ export default function GlobalAlphabetOverlay() {
         progressMap[ep] = Math.max(progressMap[ep] ?? 0, best as number);
       }
       setProgress(progressMap);
-      setLettersByEp(letters);
+      setLettersByEp(lettersByEpisode);
       setLessonTargetScore(target);
 
       const normalEpisodes = episodes.filter(ep => /^ep\d+$/.test(ep.id));
@@ -149,7 +166,7 @@ export default function GlobalAlphabetOverlay() {
       const byChar: Record<string, AlphabetLetterStatus> = {};
       for (const ep of normalEpisodes) {
         const epStatus = statusById[ep.id] ?? 'locked';
-        const lettersForEp = letters[ep.id] ?? [];
+        const lettersForEp = lettersByEpisode[ep.id] ?? [];
         for (const ch of lettersForEp) {
           if (!byChar[ch]) byChar[ch] = epStatus;
         }

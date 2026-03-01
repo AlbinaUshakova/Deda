@@ -1,8 +1,15 @@
 // lib/content.ts
 'use server';
 
-import fs from 'fs';
-import path from 'path';
+import ep1Json from '@/public/content/ka_ru_ep1.json';
+import ep2Json from '@/public/content/ka_ru_ep2.json';
+import ep3Json from '@/public/content/ka_ru_ep3.json';
+import ep4Json from '@/public/content/ka_ru_ep4.json';
+import ep5Json from '@/public/content/ka_ru_ep5.json';
+import ep6Json from '@/public/content/ka_ru_ep6.json';
+import ep7Json from '@/public/content/ka_ru_ep7.json';
+import ep8Json from '@/public/content/ka_ru_ep8.json';
+import ep9Json from '@/public/content/ka_ru_ep9.json';
 
 type Card =
   | { type: 'word'; ge_text: string; ru_meaning: string; audio_url?: string }
@@ -13,8 +20,23 @@ export type Episode = {
   title: string;
   cards: Card[];
 };
+type RawEpisode = {
+  id: string;
+  title: string;
+  cards: Array<{ type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audio_url?: string }>;
+};
 
-const CONTENT_DIR = path.join(process.cwd(), 'public', 'content');
+const RAW_BY_ID: Record<string, RawEpisode> = {
+  ep1: ep1Json as RawEpisode,
+  ep2: ep2Json as RawEpisode,
+  ep3: ep3Json as RawEpisode,
+  ep4: ep4Json as RawEpisode,
+  ep5: ep5Json as RawEpisode,
+  ep6: ep6Json as RawEpisode,
+  ep7: ep7Json as RawEpisode,
+  ep8: ep8Json as RawEpisode,
+  ep9: ep9Json as RawEpisode,
+};
 
 function normalizeGeorgianText(text: string): string {
   if (!text) return text;
@@ -35,20 +57,19 @@ function normalizeEpisode(ep: Episode): Episode {
   };
 }
 
-function readEpisodeJson(file: string): Episode | null {
-  try {
-    const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
-    const data = JSON.parse(raw);
-    return normalizeEpisode(data as Episode);
-  } catch {
-    return null;
-  }
-}
-
 function loadSingleEp(id: string): Episode | null {
-  // ожидаем файлы вида ka_ru_epN.json
-  const file = `ka_ru_${id}.json`;
-  return readEpisodeJson(file);
+  const raw = RAW_BY_ID[id];
+  if (!raw) return null;
+  return normalizeEpisode({
+    id: raw.id,
+    title: raw.title,
+    cards: raw.cards.map(c => ({
+      type: c.type,
+      ge_text: c.ge_text,
+      ru_meaning: c.ru_meaning,
+      audio_url: c.audio_url,
+    })),
+  });
 }
 
 function mergeEpisodes(newId: string, title: string, eps: (Episode | null)[]): Episode | null {
@@ -63,13 +84,8 @@ function mergeEpisodes(newId: string, title: string, eps: (Episode | null)[]): E
 
 /** Вспомогательная: id epN, найденные в /public/content */
 function listEpisodeIdsFromFiles(): string[] {
-  const files = fs.readdirSync(CONTENT_DIR);
-  return files
-    .map(f => {
-      const m = /^ka_ru_(ep\d+)\.json$/.exec(f);
-      return m ? m[1] : null;
-    })
-    .filter((id): id is string => !!id)
+  return Object.keys(RAW_BY_ID)
+    .filter((id): id is string => /^ep\d+$/.test(id))
     .sort(
       (a, b) =>
         parseInt(a.replace('ep', ''), 10) -
@@ -156,10 +172,6 @@ export async function loadEpisode(id: string): Promise<Episode | null> {
   if (/^ep\d+$/.test(id)) {
     return loadSingleEp(id);
   }
-
-  // 🌟 Фоллбэк: пробуем загрузить любой кастомный id как ka_ru_${id}.json
-  const direct = loadSingleEp(id);
-  if (direct) return direct;
 
   return null;
 }

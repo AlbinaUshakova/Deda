@@ -42,12 +42,21 @@ export default function AuthStatus() {
                     >
                         Настройки
                     </button>
+                    <button
+                        onClick={() => setShowFeedback(true)}
+                        className="text-neutral-200 hover:underline"
+                    >
+                        Обратная связь
+                    </button>
                 </div>
                 {showSettings && (
                     <SettingsPanel onClose={() => setShowSettings(false)} />
                 )}
                 {showProgress && (
                     <ProgressPanel onClose={() => setShowProgress(false)} />
+                )}
+                {showFeedback && (
+                    <FeedbackPanel onClose={() => setShowFeedback(false)} />
                 )}
             </>
         );
@@ -157,6 +166,12 @@ export default function AuthStatus() {
                     >
                         Настройки
                     </button>
+                    <button
+                        onClick={() => setShowFeedback(true)}
+                        className="text-neutral-200 hover:underline"
+                    >
+                        Обратная связь
+                    </button>
                     <Link href="/login" className="text-emerald-400 hover:underline">
                         Log in
                     </Link>
@@ -169,6 +184,9 @@ export default function AuthStatus() {
                 )}
                 {showProgress && (
                     <ProgressPanel onClose={() => setShowProgress(false)} />
+                )}
+                {showFeedback && (
+                    <FeedbackPanel onClose={() => setShowFeedback(false)} />
                 )}
             </>
         );

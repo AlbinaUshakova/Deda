@@ -3,11 +3,23 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useEffect, useState, useMemo } from 'react';
-import { loadEpisode } from '@/lib/content';
 import { loadProgressMap, getLocalProgress } from '@/lib/supabase';
 import BlocksGame from '@/components/BlocksGame';
 
 type Word = { ge: string; ru: string; audio?: string };
+type Card = { type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audio_url?: string; topic?: string };
+type Episode = { id: string; title: string; cards: Card[] };
+type EpisodeApiResponse = { ok: boolean; episode?: Episode };
+
+async function loadEpisodeById(episodeId: string): Promise<Episode | null> {
+  const res = await fetch(`/api/content/episode?id=${encodeURIComponent(episodeId)}`, {
+    cache: 'no-store',
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('Failed to load episode');
+  const json = (await res.json()) as EpisodeApiResponse;
+  return json.episode ?? null;
+}
 
 export default function PlayPage({ params }: { params: { episodeId: string } }) {
   const { episodeId } = params;
@@ -20,7 +32,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
     let cancelled = false;
 
     (async () => {
-      const ep = await loadEpisode(episodeId);
+      const ep = await loadEpisodeById(episodeId);
       if (cancelled) return;
 
       if (!ep) {
