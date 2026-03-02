@@ -378,8 +378,8 @@ export default function HomePage() {
             </div>
           </aside>
           )}
-          <div className="max-w-3xl mx-auto">
-            <div className="grid grid-cols-3 gap-x-1 gap-y-0 justify-items-center">
+          <div className="mx-auto w-full max-w-5xl">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
           {normalEpisodes.map((ep, i) => {
             const best = progress[ep.id] ?? 0;
             const letters = lettersByEp[ep.id] ?? [];
@@ -493,7 +493,7 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все уроки */}
-      <section className="mt-6 flex flex-wrap justify-center gap-4 max-w-3xl mx-auto">
+      <section className="mt-6 flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
         {specials.map(ep => {
           const isFav = ep.id === 'favorites';
           const cleanTitle = ep.title.replace(/^⭐\s*/, '');

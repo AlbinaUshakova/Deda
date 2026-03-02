@@ -25,40 +25,11 @@ export default function AuthStatus() {
 
     if (!supabase) {
         return (
-            <>
-                <div className="flex items-center gap-3 text-sm">
-                    <span className="rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 text-[11px] text-emerald-300">
-                        Офлайн
-                    </span>
-                    <button
-                        onClick={() => setShowProgress(true)}
-                        className="text-neutral-200 hover:underline"
-                    >
-                        Прогресс
-                    </button>
-                    <button
-                        onClick={() => setShowSettings(true)}
-                        className="text-neutral-200 hover:underline"
-                    >
-                        Настройки
-                    </button>
-                    <button
-                        onClick={() => setShowFeedback(true)}
-                        className="text-neutral-200 hover:underline"
-                    >
-                        Обратная связь
-                    </button>
-                </div>
-                {showSettings && (
-                    <SettingsPanel onClose={() => setShowSettings(false)} />
-                )}
-                {showProgress && (
-                    <ProgressPanel onClose={() => setShowProgress(false)} />
-                )}
-                {showFeedback && (
-                    <FeedbackPanel onClose={() => setShowFeedback(false)} />
-                )}
-            </>
+            <div className="flex max-w-full items-center justify-end text-sm">
+                <Link href="/login" className="text-emerald-400 hover:underline">
+                    Log in
+                </Link>
+            </div>
         );
     }
     const sb = supabase;
@@ -152,43 +123,11 @@ export default function AuthStatus() {
 
     if (!user) {
         return (
-            <>
-                <div className="flex items-center gap-3 text-sm">
-                    <button
-                        onClick={() => setShowProgress(true)}
-                        className="text-neutral-200 hover:underline"
-                    >
-                        Прогресс
-                    </button>
-                    <button
-                        onClick={() => setShowSettings(true)}
-                        className="text-neutral-200 hover:underline"
-                    >
-                        Настройки
-                    </button>
-                    <button
-                        onClick={() => setShowFeedback(true)}
-                        className="text-neutral-200 hover:underline"
-                    >
-                        Обратная связь
-                    </button>
-                    <Link href="/login" className="text-emerald-400 hover:underline">
-                        Log in
-                    </Link>
-                    <Link href="/signup" className="text-neutral-300 hover:underline text-xs">
-                        Sign up
-                    </Link>
-                </div>
-                {showSettings && (
-                    <SettingsPanel onClose={() => setShowSettings(false)} />
-                )}
-                {showProgress && (
-                    <ProgressPanel onClose={() => setShowProgress(false)} />
-                )}
-                {showFeedback && (
-                    <FeedbackPanel onClose={() => setShowFeedback(false)} />
-                )}
-            </>
+            <div className="flex max-w-full items-center justify-end text-sm">
+                <Link href="/login" className="text-emerald-400 hover:underline">
+                    Log in
+                </Link>
+            </div>
         );
     }
 
@@ -196,12 +135,12 @@ export default function AuthStatus() {
 
     return (
         <>
-            <div className="relative" ref={menuRef}>
+            <div className="relative max-w-full" ref={menuRef}>
                 <button
                     onClick={() => setOpen(v => !v)}
-                    className="flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-sm hover:bg-white/5 transition-colors"
+                    className="flex max-w-full items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-sm hover:bg-white/5 transition-colors"
                 >
-                    <span className="truncate max-w-[140px]">{label}</span>
+                    <span className="truncate max-w-[48vw] sm:max-w-[140px]">{label}</span>
                 </button>
 
                 {open && (

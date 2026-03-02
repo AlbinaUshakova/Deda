@@ -27,68 +27,76 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   const [title, setTitle] = useState<string>('');
   const [words, setWords] = useState<Word[]>([]);
   const [initialBest, setInitialBest] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let cancelled = false;
+    setIsLoading(true);
 
     (async () => {
-      const ep = await loadEpisodeById(episodeId);
-      if (cancelled) return;
-
-      if (!ep) {
-        setTitle(episodeId);
-        setWords([]);
-        setInitialBest(0);
-        return;
-      }
-
-      setTitle(ep.title || episodeId);
-
-      // читаем topic из query
-      let topic: string | null = null;
-      if (typeof window !== 'undefined') {
-        const sp = new URLSearchParams(window.location.search);
-        topic = sp.get('topic');
-      }
-
-      // берём только нужные карточки
-      let cards = ep.cards.filter(
-        (c: any) => c.type === 'word' || c.type === 'phrase',
-      ) as any[];
-
-      if (topic) {
-        const filtered = cards.filter(c => c.topic === topic);
-        if (filtered.length > 0) {
-          cards = filtered;
-        }
-      }
-
-      const ws: Word[] = cards.map((c: any) => ({
-        ge: c.ge_text,
-        ru: c.ru_meaning,
-        audio: c.audio_url,
-      }));
-      setWords(ws);
-
-      // локальный рекорд
-      let localBest = 0;
-      if (typeof window !== 'undefined') {
-        const local = getLocalProgress();
-        const row = local.find(r => r.episodeId === episodeId);
-        if (row) localBest = row.best;
-      }
-      setInitialBest(localBest);
-
-      // рекорд из Supabase
       try {
-        const progressMap = await loadProgressMap();
+        const ep = await loadEpisodeById(episodeId);
         if (cancelled) return;
-        const serverBest = progressMap[episodeId] ?? 0;
-        if (serverBest > localBest) {
-          setInitialBest(serverBest);
+
+        if (!ep) {
+          setTitle(episodeId);
+          setWords([]);
+          setInitialBest(0);
+          return;
         }
-      } catch (e) {
-        console.error('load progress for episode error', e);
+
+        setTitle(ep.title || episodeId);
+
+        // читаем topic из query
+        let topic: string | null = null;
+        if (typeof window !== 'undefined') {
+          const sp = new URLSearchParams(window.location.search);
+          topic = sp.get('topic');
+        }
+
+        // берём только нужные карточки
+        let cards = ep.cards.filter(
+          (c: any) => c.type === 'word' || c.type === 'phrase',
+        ) as any[];
+
+        if (topic) {
+          const filtered = cards.filter(c => c.topic === topic);
+          if (filtered.length > 0) {
+            cards = filtered;
+          }
+        }
+
+        const ws: Word[] = cards.map((c: any) => ({
+          ge: c.ge_text,
+          ru: c.ru_meaning,
+          audio: c.audio_url,
+        }));
+        setWords(ws);
+
+        // локальный рекорд
+        let localBest = 0;
+        if (typeof window !== 'undefined') {
+          const local = getLocalProgress();
+          const row = local.find(r => r.episodeId === episodeId);
+          if (row) localBest = row.best;
+        }
+        setInitialBest(localBest);
+
+        // рекорд из Supabase
+        try {
+          const progressMap = await loadProgressMap();
+          if (cancelled) return;
+          const serverBest = progressMap[episodeId] ?? 0;
+          if (serverBest > localBest) {
+            setInitialBest(serverBest);
+          }
+        } catch (e) {
+          console.error('load progress for episode error', e);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     })();
 
@@ -110,7 +118,11 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
         </div>
 
         <div className="relative z-50">
-          {hasWords ? (
+          {isLoading ? (
+            <div className="text-neutral-400 mt-8">
+              Загружаем слова...
+            </div>
+          ) : hasWords ? (
             <>
               <BlocksGame
                 words={words}
