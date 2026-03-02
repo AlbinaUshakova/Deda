@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadEpisode } from '@/lib/content';
 
-export const dynamic = 'force-dynamic';
-
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id')?.trim() || '';
   if (!id) {
@@ -21,10 +19,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.json(
-      { ok: true, episode },
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
+    return NextResponse.json({ ok: true, episode });
   } catch (error) {
     console.error('content episode error', error);
     return NextResponse.json(

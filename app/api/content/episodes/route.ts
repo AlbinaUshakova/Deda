@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { listEpisodes, loadNewLettersPerEpisode } from '@/lib/content';
 
-export const dynamic = 'force-dynamic';
-
 export async function GET() {
   try {
     const [episodes, lettersByEpisode] = await Promise.all([
@@ -14,10 +12,6 @@ export async function GET() {
       ok: true,
       episodes,
       lettersByEpisode,
-    }, {
-      headers: {
-        'Cache-Control': 'no-store',
-      },
     });
   } catch (error) {
     console.error('content episodes error', error);

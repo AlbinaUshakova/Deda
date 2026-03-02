@@ -23,7 +23,6 @@ export type Episode = {
 type RawEpisode = {
   id: string;
   title: string;
-  letters?: string[];
   cards: Array<{ type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audio_url?: string }>;
 };
 
@@ -106,21 +105,6 @@ export async function loadNewLettersPerEpisode(): Promise<Record<string, string[
   const isGeorgianLetter = (ch: string) => /[\u10D0-\u10FF]/.test(ch);
 
   for (const id of ids) {
-    const raw = RAW_BY_ID[id];
-    if (raw?.letters?.length) {
-      const local = Array.from(
-        new Set(
-          raw.letters
-            .map(ch => normalizeGeorgianText(ch))
-            .filter(ch => isGeorgianLetter(ch) && !seen.has(ch)),
-        ),
-      );
-      const arr = local.sort((a, b) => a.localeCompare(b, 'ka'));
-      result[id] = arr;
-      arr.forEach(ch => seen.add(ch));
-      continue;
-    }
-
     const ep = loadSingleEp(id);
     if (!ep) {
       result[id] = [];
