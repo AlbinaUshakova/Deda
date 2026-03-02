@@ -115,6 +115,15 @@ export default function GlobalAlphabetOverlay() {
   }, [pathname]);
 
   useEffect(() => {
+    const isOpenForPage = open && pathname !== '/';
+    window.dispatchEvent(
+      new CustomEvent('deda:alphabet-overlay-state', {
+        detail: { open: isOpenForPage },
+      }),
+    );
+  }, [open, pathname]);
+
+  useEffect(() => {
     if (!open || pathname === '/') return;
     let cancelled = false;
 
@@ -209,8 +218,8 @@ export default function GlobalAlphabetOverlay() {
   if (!open || pathname === '/') return null;
 
   return (
-    <div className="fixed left-[calc(50%-836px)] top-24 z-[140] w-[260px]">
-      <div className="origin-top-left scale-[1.2] rounded-3xl border border-amber-200/20 bg-gradient-to-b from-[#1a2238]/95 via-[#141d33]/95 to-[#111827]/95 p-3 shadow-[0_14px_24px_rgba(0,0,0,0.45)]">
+    <div className="fixed left-20 top-[86px] z-[140] w-[224px] xl:w-[246px]">
+      <div className="max-h-[calc(100vh-112px)] overflow-y-auto rounded-3xl border border-amber-200/15 bg-gradient-to-b from-[#1a2238]/82 via-[#141d33]/82 to-[#111827]/82 p-3 xl:p-3.5 shadow-[0_8px_18px_rgba(0,0,0,0.32)]">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-semibold tracking-[-0.01em] text-amber-100/95">🐱 Ანბანი</h3>
           <button
@@ -223,17 +232,17 @@ export default function GlobalAlphabetOverlay() {
             ✕
           </button>
         </div>
-        <div className="mt-3 grid grid-cols-6 gap-x-2 gap-y-2">
+        <div className="mt-2.5 grid grid-cols-6 gap-x-2 gap-y-2">
           {GEORGIAN_ALPHABET.map(ch => (
             <button
               key={ch}
               type="button"
               onClick={() => speakLetter(ch)}
-              className="rounded-lg border border-amber-100/15 bg-[#0f1a31]/70 py-1 text-center hover:bg-[#152544]/80 transition-colors"
+              className="rounded-lg border border-amber-100/15 bg-[#0f1a31]/70 py-0.5 text-center hover:bg-[#152544]/80 transition-colors"
               title={`Озвучить букву ${ch}`}
               aria-label={`Озвучить букву ${ch}`}
             >
-              <div className={`text-xl leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}>{ch}</div>
+              <div className={`text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}>{ch}</div>
               <div className="mt-0.5 text-[10px] leading-none text-amber-50/55">{letterTranslit[ch] ?? ''}</div>
             </button>
           ))}

@@ -11,6 +11,12 @@ type Card = { type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audi
 type Episode = { id: string; title: string; cards: Card[] };
 type EpisodeApiResponse = { ok: boolean; episode?: Episode };
 
+function getEpisodeFallbackTitle(episodeId: string): string {
+  const match = episodeId.match(/^ep(\d+)$/i);
+  if (match) return `Урок ${match[1]}`;
+  return episodeId;
+}
+
 async function loadEpisodeById(episodeId: string): Promise<Episode | null> {
   const res = await fetch(`/api/content/episode?id=${encodeURIComponent(episodeId)}`, {
     cache: 'no-store',
@@ -107,22 +113,19 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
 
   const hasWords = useMemo(() => words.length > 0, [words]);
   const studyHref = `/study/${episodeId}` as Route;
+  const pageTitle = title || getEpisodeFallbackTitle(episodeId);
 
   return (
     <main className="relative min-h-screen bg-[#020617] text-neutral-50">
-      <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-8">
-        <div className="relative z-40 mb-6 flex items-center justify-between gap-2 sm:gap-3">
-          <h1 className="mb-0 min-w-0 text-[clamp(1.55rem,3.2vw,2rem)] font-semibold leading-tight tracking-[-0.01em]">
-            {title || episodeId}
+      <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
+        <div className="relative z-40 mb-6 max-w-[820px]">
+          <h1 className="mb-0 min-w-0 text-2xl font-semibold">
+            {pageTitle}
           </h1>
         </div>
 
-        <div className="relative z-50">
-          {isLoading ? (
-            <div className="text-neutral-400 mt-8">
-              Загружаем слова...
-            </div>
-          ) : hasWords ? (
+        <div className="relative z-50 max-w-[820px]">
+          {isLoading ? null : hasWords ? (
             <>
               <BlocksGame
                 words={words}

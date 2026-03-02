@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`${manrope.className} min-h-screen bg-[#020617] text-white`}>
-        <header className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 border-b border-white/10 w-full relative z-[100]">
+        <header className="relative z-[100] mx-auto flex w-full max-w-[1520px] flex-wrap items-center justify-between gap-3 border-b border-white/10 px-6 py-3 md:px-8">
           <BrandToggle />
           <AuthStatus />
         </header>

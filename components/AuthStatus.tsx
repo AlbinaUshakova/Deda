@@ -144,9 +144,9 @@ export default function AuthStatus() {
                 </button>
 
                 {open && (
-                    <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-slate-900 border border-white/10 shadow-xl text-sm z-50">
+                    <div className="absolute right-0 top-full mt-12 w-[184px] sm:w-[198px] rounded-2xl bg-slate-900 border border-white/10 shadow-xl text-xs sm:text-sm z-50">
                         {/* шапка с именем и почтой */}
-                        <div className="px-4 py-3 border-b border-white/10">
+                        <div className="px-3 py-2.5 border-b border-white/10">
                             <div className="font-medium truncate">{label}</div>
                             {user.email && (
                                 <div className="text-xs text-neutral-400 truncate">
@@ -157,7 +157,7 @@ export default function AuthStatus() {
 
                         {/* Настройки */}
                         <button
-                            className="w-full text-left px-4 py-2 hover:bg-slate-800/50 text-neutral-100"
+                            className="w-full text-left px-3 py-2 hover:bg-slate-800/50 text-neutral-100"
                             onClick={() => {
                                 setOpen(false);
                                 setShowSettings(true);
@@ -168,7 +168,7 @@ export default function AuthStatus() {
 
                         {/* Прогресс */}
                         <button
-                            className="w-full text-left px-4 py-2 hover:bg-slate-800/50 text-neutral-100"
+                            className="w-full text-left px-3 py-2 hover:bg-slate-800/50 text-neutral-100"
                             onClick={() => {
                                 setOpen(false);
                                 setShowProgress(true);
@@ -179,7 +179,7 @@ export default function AuthStatus() {
 
                         {/* Помощь и обратная связь */}
                         <button
-                            className="w-full text-left px-4 py-2 hover:bg-slate-800 text-neutral-100"
+                            className="w-full text-left px-3 py-2 hover:bg-slate-800 text-neutral-100"
                             onClick={() => {
                                 setOpen(false);
                                 setShowFeedback(true);
@@ -191,7 +191,7 @@ export default function AuthStatus() {
                         {/* Выйти */}
                         <button
                             onClick={handleLogout}
-                            className="w-full text-left px-4 py-2 hover:bg-slate-800 text-red-300"
+                            className="w-full text-left px-3 py-2 hover:bg-slate-800 text-red-300"
                         >
                             Выйти
                         </button>

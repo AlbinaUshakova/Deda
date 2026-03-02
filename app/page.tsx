@@ -157,9 +157,11 @@ async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: R
 }
 
 export default function HomePage() {
+  const DESIGN_WIDTH = 1320;
   const [eps, setEps] = useState<Ep[]>([]);
   const [showCatHint, setShowCatHint] = useState(false);
   const [showAlphabet, setShowAlphabet] = useState(false);
+  const [pageScale, setPageScale] = useState(1);
   const [ttsVoices, setTtsVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [audioError, setAudioError] = useState('');
   const [progress, setProgress] = useState<ProgressMap>(() => {
@@ -243,6 +245,19 @@ export default function HomePage() {
     return () => {
       synth.onvoiceschanged = null;
     };
+  }, []);
+
+  useEffect(() => {
+    const updateScale = () => {
+      const viewportWidth = window.innerWidth;
+      const widthScale = viewportWidth / DESIGN_WIDTH;
+      const nextScale = Math.min(1, widthScale);
+      setPageScale(Math.max(0.82, Number(nextScale.toFixed(3))));
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
   }, []);
 
   const speakLetter = (letter: string) => {
@@ -334,13 +349,18 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-3 sm:px-6 py-8 relative overflow-hidden">
+    <main
+      className="min-h-screen bg-slate-950 px-3 sm:px-6 py-4 relative overflow-hidden"
+      style={{
+        zoom: pageScale as any,
+      }}
+    >
       {/* алфавит + сетка эпизодов */}
-      <section className="mt-2">
+      <section className="mt-1">
         <div className="relative mx-auto max-w-[1280px]">
           {showAlphabet && (
-          <aside className="hidden min-[1150px]:block absolute left-[-196px] top-0 z-20 w-[260px]">
-            <div className="origin-top-left scale-[1.2] rounded-3xl border border-amber-200/20 bg-gradient-to-b from-[#1a2238]/95 via-[#141d33]/95 to-[#111827]/95 p-3 shadow-[0_14px_24px_rgba(0,0,0,0.45)]">
+          <aside className="hidden min-[760px]:block fixed left-20 top-[86px] z-20 w-[224px] xl:w-[246px]">
+            <div className="max-h-[calc(100vh-112px)] overflow-y-auto rounded-3xl border border-amber-200/15 bg-gradient-to-b from-[#1a2238]/82 via-[#141d33]/82 to-[#111827]/82 p-3 xl:p-3.5 shadow-[0_8px_18px_rgba(0,0,0,0.32)]">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold tracking-[-0.01em] text-amber-100/95">🐱 Ანბანი</h3>
                 <button
@@ -353,17 +373,17 @@ export default function HomePage() {
                   ✕
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-6 gap-x-2 gap-y-2">
+              <div className="mt-2.5 grid grid-cols-6 gap-x-2 gap-y-2">
                 {GEORGIAN_ALPHABET.map(ch => (
                   <button
                     key={ch}
                     type="button"
                     onClick={() => speakLetter(ch)}
-                    className="rounded-lg border border-amber-100/15 bg-[#0f1a31]/70 py-1 text-center hover:bg-[#152544]/80 transition-colors"
+                    className="rounded-lg border border-amber-100/15 bg-[#0f1a31]/70 py-0.5 text-center hover:bg-[#152544]/80 transition-colors"
                     title={`Озвучить букву ${ch}`}
                     aria-label={`Озвучить букву ${ch}`}
                   >
-                    <div className={`text-xl leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}>{ch}</div>
+                    <div className={`text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}>{ch}</div>
                     <div className="mt-0.5 text-[10px] leading-none text-amber-50/55">
                       {geLetterToTranslit(ch)}
                     </div>
@@ -378,8 +398,8 @@ export default function HomePage() {
             </div>
           </aside>
           )}
-          <div className="mx-auto w-full max-w-5xl">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
+          <div className="relative mx-auto w-full max-w-[700px]">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
           {normalEpisodes.map((ep, i) => {
             const best = progress[ep.id] ?? 0;
             const letters = lettersByEp[ep.id] ?? [];
@@ -413,18 +433,18 @@ export default function HomePage() {
                     : 'bg-slate-600/80';
 
             return (
-              <div key={ep.id} className="relative w-full max-w-[340px]">
+              <div key={ep.id} className="relative w-full max-w-[228px]">
                 <Link href={`/study/${ep.id}`} legacyBehavior>
                   <a
-                    className={`lesson-card relative w-full aspect-square rounded-2xl bg-slate-900 border border-white/10 flex flex-col items-center justify-center gap-1 transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(0,0,0,0.45)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-blue-400/70 hover:bg-slate-900/80' : 'cursor-not-allowed opacity-65'}`}
+                    className={`lesson-card relative w-full aspect-[1/0.8] rounded-2xl bg-slate-900 border border-white/10 flex flex-col items-center justify-center gap-1 transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(0,0,0,0.45)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-blue-400/70 hover:bg-slate-900/80' : 'cursor-not-allowed opacity-65'}`}
                     onClick={e => {
                       if (status === 'locked') e.preventDefault();
                     }}
                     aria-disabled={status === 'locked'}
                   >
                   <div className="absolute top-3 left-4 flex flex-col">
-                    <span className="text-lg font-semibold text-white/85">Урок {i + 1}</span>
-                    <span className="text-sm text-white/60">Изучаем новые буквы</span>
+                    <span className="text-base font-semibold text-white/85">Урок {i + 1}</span>
+                    <span className="text-sm text-white/60">Изучаем буквы</span>
                   </div>
                   {isRecommended && (
                     <div className="absolute top-3 right-3 rounded-full border border-amber-300/25 bg-amber-300/10 px-2 py-0.5 text-[10px] font-semibold text-amber-100/90">
@@ -433,7 +453,7 @@ export default function HomePage() {
                   )}
 
                   {/* буквы с транскрипцией */}
-                  <div className="flex flex-wrap justify-center gap-2 mb-1 min-h-[2.2rem]">
+                  <div className="flex flex-wrap justify-center gap-2 mb-1 min-h-[2rem]">
                     {letters.map(ch => {
                       const tr = geLetterToTranslit(ch);
                       return (
@@ -441,7 +461,7 @@ export default function HomePage() {
                           key={ch}
                           className={`flex flex-col items-center ${letterTone} drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]`}
                         >
-                          <span className="text-3xl leading-tight">{ch}</span>
+                          <span className="text-[2.05rem] leading-none">{ch}</span>
                           {tr && (
                             <span className={`text-sm ${translitTone} leading-tight mt-1 tracking-wide`}>
                               {tr}
@@ -493,7 +513,7 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все уроки */}
-      <section className="mt-6 flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+      <section className="mt-4 flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
         {specials.map(ep => {
           const isFav = ep.id === 'favorites';
           const cleanTitle = ep.title.replace(/^⭐\s*/, '');
@@ -520,7 +540,7 @@ export default function HomePage() {
 
       {/* кот Deda слева у поля */}
       <div
-        className="group/cat hidden min-[1150px]:block absolute bottom-8 left-[14%] z-10"
+        className="group/cat hidden min-[760px]:block fixed bottom-3 left-32 z-10"
         onMouseEnter={() => setShowCatHint(true)}
         onMouseLeave={() => setShowCatHint(false)}
         onClick={() => {
@@ -531,9 +551,9 @@ export default function HomePage() {
         style={{ cursor: 'pointer' }}
       >
         <div
-          className={`pointer-events-none absolute bottom-[calc(100%-40px)] left-[12%] -translate-x-1/2 w-[332px] z-30 transition-all ${showCatHint ? 'opacity-90 group-hover/cat:opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+          className={`pointer-events-none absolute bottom-[calc(100%-20px)] left-[30%] -translate-x-1/2 w-[178px] z-30 transition-all ${showCatHint ? 'opacity-90 group-hover/cat:opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
         >
-          <div className="relative w-[357px]">
+          <div className="relative w-[188px]">
             <svg viewBox="0 0 320 220" className="w-full h-auto drop-shadow-[0_12px_20px_rgba(0,0,0,0.35)]">
               <path
                 d="M70 170 C35 170, 20 145, 30 120 C10 105, 18 72, 50 68 C62 40, 98 30, 122 48 C145 20, 190 20, 212 50 C245 40, 275 58, 280 88 C305 98, 312 128, 292 148 C282 162, 262 170, 240 170 C220 186, 96 186, 70 170 Z"
@@ -543,8 +563,9 @@ export default function HomePage() {
                 strokeLinejoin="round"
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center px-12 translate-y-2 text-[18px] leading-snug text-center font-semibold tracking-tight text-slate-900">
-              Урок за уроком — и ты читаешь по-грузински 😺<br />
+            <div className="absolute inset-0 flex items-center justify-center px-5 translate-y-1 text-[9px] leading-snug text-center font-semibold tracking-tight text-slate-900">
+              Урок за уроком — и ты читаешь<br />
+              по-грузински 😺<br />
               წავიდეთ!
             </div>
           </div>
@@ -552,7 +573,7 @@ export default function HomePage() {
         <img
           src="/images/deda-cat.png"
           alt="Кот Deda, читает книгу"
-          className="w-[320px] drop-shadow-[0_12px_30px_rgba(0,0,0,0.6)] animate-cloud"
+          className="w-[232px] drop-shadow-[0_10px_24px_rgba(0,0,0,0.5)] animate-cloud"
         />
       </div>
     </main>

@@ -613,8 +613,8 @@ export default function BlocksGame({
     if (!el) return;
 
     const fit = () => {
-      const maxSize = 30;
-      const minSize = 10;
+      const maxSize = 32;
+      const minSize = 17;
       const lh = 1.15;
 
       let size = maxSize;
@@ -651,15 +651,15 @@ export default function BlocksGame({
 
   return (
     <div className="flex w-full justify-center -mt-3 md:-mt-4">
-      <div className="flex w-full max-w-5xl items-start gap-4 md:gap-6 lg:gap-10 px-2 sm:px-4 md:px-6 py-4 md:py-6 lg:py-8">
+      <div className="flex w-full max-w-5xl items-start gap-4 md:gap-6 lg:gap-7 px-2 sm:px-4 md:px-6 py-4 md:py-6 lg:py-8">
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
           className="shrink-0 lg:ml-[-35px]"
-          style={{ width: 'clamp(180px, 22vw, 260px)' }}
+          style={{ width: 'clamp(210px, 24vw, 300px)' }}
         >
           <div
             className="relative mt-0"
-            style={{ height: 'min(72vh, 640px)' }}
+            style={{ height: 'min(68vh, 600px)' }}
           >
             {shouldRenderQuestionPanel && (
               <div
@@ -681,7 +681,8 @@ export default function BlocksGame({
                           style={{
                             fontSize: `${promptFontPx}px`,
                             lineHeight: promptLineHeight,
-                            overflowWrap: 'anywhere',
+                            overflowWrap: 'break-word',
+                            wordBreak: 'normal',
                           }}
                         >
                           {promptText}
@@ -777,7 +778,7 @@ export default function BlocksGame({
         </div>
 
         {/* ПРАВАЯ ОБЛАСТЬ: игровое поле */}
-        <div className="flex-1 flex justify-start">
+        <div className="flex-1 flex justify-start -ml-1 md:-ml-2 lg:-ml-6 xl:-ml-8">
           <BlocksGrid
             roundId={roundId}
             onRoundFinished={handleRoundFinished}

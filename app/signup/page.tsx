@@ -121,6 +121,13 @@ export default function SignupPage() {
                     </button>
                 </form>
 
+                <Link
+                    href="/"
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-white/15 px-3 py-2 text-sm text-neutral-200 hover:bg-white/5"
+                >
+                    Продолжить без входа
+                </Link>
+
                 <p className="mt-4 text-center text-sm text-neutral-400">
                     Already have an account?{' '}
                     <a href="/login" className="text-emerald-400 hover:underline">

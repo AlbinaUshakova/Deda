@@ -96,6 +96,13 @@ export default function LoginPage() {
                     </button>
                 </form>
 
+                <Link
+                    href="/"
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-white/15 px-3 py-2 text-sm text-neutral-200 hover:bg-white/5"
+                >
+                    Продолжить без входа
+                </Link>
+
                 <p className="mt-4 text-center text-sm text-neutral-400">
                     No account yet?{' '}
                     <a href="/signup" className="text-emerald-400 hover:underline">

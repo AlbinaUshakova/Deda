@@ -56,12 +56,12 @@ export default function StudyClient({
   return (
     <main className="min-h-screen bg-[#020617] text-neutral-50">
       <div className="max-w-5xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold mb-4">
+        <div className="flex items-start justify-between mb-6 max-w-[820px] lg:translate-x-6">
+          <h1 className="text-2xl font-semibold lg:translate-x-[4.5rem]">
             {ep.title || episodeId}
           </h1>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 ml-auto justify-end lg:translate-x-16">
             <Link
               className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm text-white/65 hover:bg-white/[0.04] hover:text-white/90 transition-all"
               href="/"

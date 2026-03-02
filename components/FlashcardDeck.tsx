@@ -412,10 +412,10 @@ export default function FlashcardDeck({
       </div>
 
       {/* Карточка */}
-      <div className="relative mx-auto w-full max-w-[1000px]">
+      <div className="relative mx-auto w-full max-w-[820px] lg:translate-x-6">
         <div
           className="relative mx-auto rounded-3xl border border-slate-700/60 bg-[#111827] shadow-2xl"
-          style={{ height: '56vh', minHeight: 340 }}
+          style={{ height: '48vh', minHeight: 300 }}
           onClick={() => hasCard && setFlipped(f => !f)}
           role="button"
           tabIndex={0}
@@ -566,7 +566,7 @@ export default function FlashcardDeck({
           <div
             className="pointer-events-none absolute z-[30] hidden select-none md:block"
             style={{
-              left: 'max(calc(50% - 640px), 8px)',
+              left: 'max(calc(50% - 585px), 8px)',
               bottom: -180,
               pointerEvents: 'none',
             }}
@@ -574,17 +574,17 @@ export default function FlashcardDeck({
             <Image
               src="/images/deda-cat_2.png"
               alt="Deda cat"
-              width={300}
-              height={200}
+              width={260}
+              height={173}
               priority
             />
           </div>
         </div>
 
         {/* Controls: below card */}
-        <div className="mt-5 mx-auto w-full max-w-[1000px] flex justify-center px-3">
+        <div className="mt-4 mx-auto w-full max-w-[820px] flex justify-center px-3 lg:translate-x-6">
           <div
-            className="controls inline-flex min-w-[320px] items-center justify-center gap-[14px] rounded-full border border-white/[0.08] px-4 py-2.5 backdrop-blur-[12px] transition-all duration-200 hover:border-white/[0.12]"
+            className="controls origin-center scale-[0.85] inline-flex min-w-[280px] items-center justify-center gap-[12px] rounded-full border border-white/[0.08] px-3 py-2 backdrop-blur-[12px] transition-all duration-200 hover:border-white/[0.12]"
             style={{
               background:
                 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
@@ -628,7 +628,7 @@ export default function FlashcardDeck({
             <select
               value={autoSpeedMs}
               onChange={e => setAutoSpeedMs(Number(e.target.value))}
-              className="h-8 min-w-[74px] rounded-xl border border-white/10 bg-[#141928]/90 px-2.5 pr-5 text-[13px] font-medium text-white/85 outline-none backdrop-blur-[16px] transition-all duration-150 hover:border-orange-300/45 hover:bg-[#18203a] focus:border-orange-300/65 focus:shadow-[0_0_0_1px_rgba(251,146,60,0.28),0_0_12px_rgba(251,146,60,0.22)]"
+              className="h-8 min-w-[96px] rounded-xl border border-white/10 bg-[#141928]/90 px-2.5 pr-6 text-[13px] font-medium text-white/85 outline-none backdrop-blur-[16px] transition-all duration-150 hover:border-orange-300/45 hover:bg-[#18203a] focus:border-orange-300/65 focus:shadow-[0_0_0_1px_rgba(251,146,60,0.28),0_0_12px_rgba(251,146,60,0.22)]"
               aria-label="Скорость автопрокрутки"
             >
               <option value={1500}>⚡1.5×</option>
