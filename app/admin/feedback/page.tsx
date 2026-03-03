@@ -119,7 +119,7 @@ export default function AdminFeedbackPage() {
     });
 
     return (
-        <main className="min-h-screen bg-[#020617] text-neutral-50 px-6 py-6">
+        <main className="min-h-screen bg-gradient-to-b from-[#f7f8fc] via-[#f3f5fb] to-[#eef2f9] text-slate-800 px-6 py-6">
             <div className="max-w-6xl mx-auto space-y-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Обратная связь</h1>

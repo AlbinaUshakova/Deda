@@ -9,6 +9,7 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
     const [error, setError] = useState<string | null>(null);
     const [sending, setSending] = useState(false);
     const [success, setSuccess] = useState(false);
+    const canSend = message.trim().length >= 5 && !sending;
 
     const handleSend = async () => {
         const trimmedMessage = message.trim();
@@ -67,13 +68,13 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="absolute right-4 top-14 z-50">
-            <div className="card w-[320px] bg-[#1E1F22] border border-white/10 rounded-2xl shadow-xl p-4 space-y-3">
+        <div className="fixed right-2 sm:right-4 top-[86px] z-[140]">
+            <div className="w-[186px] sm:w-[198px] max-h-[calc(100dvh-116px)] overflow-y-auto bg-white border border-slate-200 rounded-2xl shadow-xl p-2.5 space-y-2 text-[12px] text-slate-700">
                 <div className="flex items-start justify-between">
-                    <div className="text-lg font-semibold">Обратная связь</div>
+                    <div className="text-base font-semibold text-slate-800">Обратная связь</div>
                     <button
                         aria-label="Закрыть"
-                        className="mr-1 mt-0.5 h-7 w-7 rounded-md text-white/65 hover:text-white hover:bg-white/10 transition"
+                        className="mr-1 mt-0.5 h-7 w-7 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
                         onClick={onClose}
                         disabled={sending}
                     >
@@ -81,60 +82,56 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
                     </button>
                 </div>
 
-                <p className="text-xs text-neutral-400 leading-relaxed">
-                    Напишите, что было непонятно,
-                    <br />
-                    что сломалось или чего не хватает.
-                    <br />
-                    Я читаю всё лично 🤍
+                <p className="text-xs text-slate-500 leading-relaxed mb-1">
+                    Поделитесь, что можно улучшить 🤍
                 </p>
 
-                <div className="space-y-1">
+                <div className="space-y-1 mt-1.5">
                     <textarea
-                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-2 py-1 text-sm outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-300/25 resize-none min-h-[106px]"
+                        className="w-full rounded-lg bg-slate-50 border border-slate-300 px-2 py-1 text-xs outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/30 resize-none min-h-[106px]"
                         value={message}
                         onChange={e => {
                             setMessage(e.target.value);
                             setError(null);
                             setSuccess(false);
                         }}
-                        placeholder="Введите сообщение"
+                        placeholder="Опишите проблему или идею…"
                     />
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-xs text-neutral-300">
+                    <label className="text-xs text-slate-600">
                         Контакт (необязательно)
                     </label>
                     <input
-                        className="w-full rounded-lg bg-slate-800 border border-slate-700 px-2 py-1 text-sm outline-none focus:border-emerald-300 focus:ring-1 focus:ring-emerald-300/25"
+                        className="w-full rounded-lg bg-slate-50 border border-slate-300 px-2 py-1 text-xs outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/30"
                         value={contact}
                         onChange={e => {
                             setContact(e.target.value);
                             setError(null);
                             setSuccess(false);
                         }}
-                        placeholder="@telegram или email"
+                        placeholder="Telegram или email"
                     />
                 </div>
 
                 {error && (
-                    <div className="text-xs text-red-400">
+                    <div className="text-xs text-red-500">
                         {error}
                     </div>
                 )}
 
                 {success && (
-                    <div className="text-xs text-emerald-400">
-                        Сообщение отправлено 💌
+                    <div className="text-xs text-emerald-600 animate-settings-bump">
+                        Спасибо! Сообщение отправлено 💌
                     </div>
                 )}
 
-                <div className="pt-1">
+                <div className="pt-2">
                     <button
-                        className="w-full px-3 py-2 text-sm rounded-lg bg-emerald-500/95 text-slate-950 font-semibold hover:bg-emerald-400/95 disabled:opacity-60"
+                        className="w-full px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed"
                         onClick={handleSend}
-                        disabled={sending}
+                        disabled={!canSend}
                     >
                         {sending ? 'Отправляю…' : 'Отправить'}
                     </button>

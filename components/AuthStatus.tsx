@@ -22,11 +22,30 @@ export default function AuthStatus() {
     const [showProgress, setShowProgress] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const emitProfileMenuOpened = () => {
+        if (typeof window === 'undefined') return;
+        window.dispatchEvent(new CustomEvent('deda:profile-menu-opened'));
+    };
+    const openMenu = () => {
+        setOpen(true);
+        emitProfileMenuOpened();
+    };
+    const closeMenu = () => setOpen(false);
+    const toggleMenu = () => {
+        setOpen(prev => {
+            const next = !prev;
+            if (next) emitProfileMenuOpened();
+            return next;
+        });
+    };
 
     if (!supabase) {
         return (
             <div className="flex max-w-full items-center justify-end text-sm">
-                <Link href="/login" className="text-emerald-400 hover:underline">
+                <Link
+                    href="/login"
+                    className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50 hover:text-slate-800"
+                >
                     Log in
                 </Link>
             </div>
@@ -96,7 +115,7 @@ export default function AuthStatus() {
 
         const handleClickOutside = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setOpen(false);
+                closeMenu();
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -115,7 +134,7 @@ export default function AuthStatus() {
             console.error('signOut error', e);
         }
         setUser(null);
-        setOpen(false);
+        closeMenu();
         window.location.href = '/login';
     };
 
@@ -124,7 +143,10 @@ export default function AuthStatus() {
     if (!user) {
         return (
             <div className="flex max-w-full items-center justify-end text-sm">
-                <Link href="/login" className="text-emerald-400 hover:underline">
+                <Link
+                    href="/login"
+                    className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50 hover:text-slate-800"
+                >
                     Log in
                 </Link>
             </div>
@@ -137,51 +159,59 @@ export default function AuthStatus() {
         <>
             <div className="relative max-w-full" ref={menuRef}>
                 <button
-                    onClick={() => setOpen(v => !v)}
-                    className="flex max-w-full items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-sm hover:bg-white/5 transition-colors"
+                    onClick={toggleMenu}
+                    className="flex max-w-full items-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50"
                 >
                     <span className="truncate max-w-[48vw] sm:max-w-[140px]">{label}</span>
                 </button>
 
                 {open && (
-                    <div className="absolute right-0 top-full mt-12 w-[184px] sm:w-[198px] rounded-2xl bg-slate-900 border border-white/10 shadow-xl text-xs sm:text-sm z-50">
+                    <div className="fixed right-2 sm:right-4 top-[86px] w-[min(82vw,176px)] lg:w-[166px] xl:w-[176px] max-h-[calc(100dvh-110px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl text-[11px] sm:text-xs z-[140] text-slate-700">
                         {/* шапка с именем и почтой */}
-                        <div className="px-3 py-2.5 border-b border-white/10">
+                        <div className="relative px-2.5 py-2 border-b border-slate-200">
+                            <button
+                                type="button"
+                                aria-label="Закрыть меню"
+                                className="absolute right-2 top-2 h-6 w-6 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
+                                onClick={closeMenu}
+                            >
+                                ✕
+                            </button>
                             <div className="font-medium truncate">{label}</div>
                             {user.email && (
-                                <div className="text-xs text-neutral-400 truncate">
+                                <div className="text-xs text-slate-500 truncate pr-7">
                                     {user.email}
                                 </div>
                             )}
                         </div>
 
-                        {/* Настройки */}
-                        <button
-                            className="w-full text-left px-3 py-2 hover:bg-slate-800/50 text-neutral-100"
-                            onClick={() => {
-                                setOpen(false);
-                                setShowSettings(true);
-                            }}
-                        >
-                            Настройки
-                        </button>
-
                         {/* Прогресс */}
                         <button
-                            className="w-full text-left px-3 py-2 hover:bg-slate-800/50 text-neutral-100"
+                            className="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 text-slate-700"
                             onClick={() => {
-                                setOpen(false);
+                                closeMenu();
                                 setShowProgress(true);
                             }}
                         >
                             Прогресс
                         </button>
 
+                        {/* Настройки игры */}
+                        <button
+                            className="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 text-slate-700"
+                            onClick={() => {
+                                closeMenu();
+                                setShowSettings(true);
+                            }}
+                        >
+                            Настройки игры
+                        </button>
+
                         {/* Помощь и обратная связь */}
                         <button
-                            className="w-full text-left px-3 py-2 hover:bg-slate-800 text-neutral-100"
+                            className="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 text-slate-700"
                             onClick={() => {
-                                setOpen(false);
+                                closeMenu();
                                 setShowFeedback(true);
                             }}
                         >
@@ -191,7 +221,7 @@ export default function AuthStatus() {
                         {/* Выйти */}
                         <button
                             onClick={handleLogout}
-                            className="w-full text-left px-3 py-2 hover:bg-slate-800 text-red-300"
+                            className="w-full text-left px-2.5 py-1.5 hover:bg-red-50 text-red-600"
                         >
                             Выйти
                         </button>
@@ -203,7 +233,7 @@ export default function AuthStatus() {
                 <SettingsPanel
                     onClose={() => {
                         setShowSettings(false);
-                        setOpen(true);
+                        openMenu();
                     }}
                 />
             )}
@@ -211,7 +241,7 @@ export default function AuthStatus() {
                 <ProgressPanel
                     onClose={() => {
                         setShowProgress(false);
-                        setOpen(true);
+                        openMenu();
                     }}
                 />
             )}
@@ -220,7 +250,7 @@ export default function AuthStatus() {
                 <FeedbackPanel
                     onClose={() => {
                         setShowFeedback(false);
-                        setOpen(true);
+                        openMenu();
                     }}
                 />
             )}

@@ -103,27 +103,22 @@ export default function FlashcardDeck({
 
   const [showTranslit, setShowTranslit] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
-  const [auto, setAuto] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return localStorage.getItem('deda_auto_play') === '1';
-  });
-  const [autoSpeedMs, setAutoSpeedMs] = useState(() => {
-    if (typeof window === 'undefined') return 2500;
-    const raw = localStorage.getItem('deda_auto_speed_ms');
-    const parsed = Number(raw);
-    return parsed === 1500 || parsed === 2500 || parsed === 4000 ? parsed : 2500;
-  });
+  const [auto, setAuto] = useState(false);
+  const [autoSpeedMs, setAutoSpeedMs] = useState(2500);
+  const [prefsHydrated, setPrefsHydrated] = useState(false);
+  const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
   const [shuffled, setShuffled] = useState(false);
   const [brokenImages, setBrokenImages] = useState<Record<string, true>>({});
 
   const autoRef = useRef<number | null>(null);
+  const speedMenuRef = useRef<HTMLDivElement | null>(null);
 
   const chipBase =
     'h-8 px-3 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold transition transform duration-200';
   const chipPassive =
-    'bg-transparent border border-slate-600/60 text-neutral-300 hover:bg-white/5';
+    'bg-white border border-slate-300 text-slate-600 hover:bg-slate-50';
   const chipActive =
-    'bg-transparent border border-indigo-400 text-indigo-300';
+    'bg-indigo-50 border border-indigo-400 text-indigo-700';
 
   const hasTopics = useMemo(
     () => cards.some(c => !!c.topic),
@@ -270,15 +265,47 @@ export default function FlashcardDeck({
 
   useEffect(() => {
     try {
-      localStorage.setItem('deda_auto_play', auto ? '1' : '0');
+      const autoRaw = localStorage.getItem('deda_auto_play');
+      setAuto(autoRaw === '1');
+
+      const speedRaw = localStorage.getItem('deda_auto_speed_ms');
+      const speedParsed = Number(speedRaw);
+      if (speedParsed === 1500 || speedParsed === 2500 || speedParsed === 4000) {
+        setAutoSpeedMs(speedParsed);
+      }
     } catch { }
-  }, [auto]);
+    setPrefsHydrated(true);
+  }, []);
 
   useEffect(() => {
+    if (!prefsHydrated) return;
+    try {
+      localStorage.setItem('deda_auto_play', auto ? '1' : '0');
+    } catch { }
+  }, [auto, prefsHydrated]);
+
+  useEffect(() => {
+    if (!prefsHydrated) return;
     try {
       localStorage.setItem('deda_auto_speed_ms', String(autoSpeedMs));
     } catch { }
-  }, [autoSpeedMs]);
+  }, [autoSpeedMs, prefsHydrated]);
+
+  useEffect(() => {
+    if (!prefsHydrated) return;
+    setSpeedMenuOpen(false);
+  }, [prefsHydrated]);
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!speedMenuRef.current) return;
+      if (!speedMenuRef.current.contains(e.target as Node)) {
+        setSpeedMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, []);
 
   const hintText = useMemo(() => {
     if (!card) return '';
@@ -302,11 +329,19 @@ export default function FlashcardDeck({
   const canPrev = hasCard && idx > 0;
   const canNext = hasCard && idx < total - 1;
   const playControl =
-    'h-16 w-16 -translate-y-1 rounded-full border-0 text-slate-950 shadow-[0_0_24px_rgba(251,146,60,0.28)] transition-all duration-150 ease-out hover:scale-[1.06] active:scale-[0.98] flex items-center justify-center text-2xl font-semibold leading-none';
+    'h-[56px] w-[56px] -translate-y-1 rounded-full border-0 text-slate-950 shadow-[0_0_24px_rgba(251,146,60,0.28)] transition-all duration-200 ease-out hover:scale-[1.08] active:scale-[0.96] flex items-center justify-center text-2xl font-semibold leading-none';
   const shuffleControl =
-    'h-8 w-8 rounded-full border-0 bg-transparent text-orange-100/75 opacity-70 transition-all duration-150 ease-out hover:bg-white/8 hover:text-orange-200 hover:opacity-100 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center text-base leading-none';
+    'h-10 w-10 rounded-full border border-slate-300/90 bg-transparent text-slate-700 opacity-100 transition-all duration-200 ease-out hover:bg-white/10 hover:text-slate-800 hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[32px] leading-none';
   const glassMiniControl =
-    'inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-200 hover:bg-white/[0.06] hover:border-emerald-300/35';
+    'inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 transition-all duration-200 hover:bg-slate-50 hover:border-emerald-300/45';
+  const navLikeMiniControl =
+    'inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-slate-900 active:scale-[0.98]';
+  const speedOptions = [
+    { value: 1500, label: '1.5x' },
+    { value: 2500, label: '2.5x' },
+    { value: 4000, label: '4x' },
+  ] as const;
+  const currentSpeedLabel = speedOptions.find(o => o.value === autoSpeedMs)?.label ?? '2.5x';
 
   const renderLevelDescription = (lvl: number | null) => {
     if (lvl === 1) {
@@ -326,13 +361,13 @@ export default function FlashcardDeck({
       {/* Верх: счётчик и заголовок */}
       <div className="mb-4 flex w-full flex-col items-center justify-center gap-2">
         <div className="w-full max-w-[220px]">
-          <div className="h-2.5 rounded-full bg-white/16 overflow-hidden">
+          <div className="h-4 rounded-full bg-slate-200/90 overflow-hidden">
             <div
-              className="h-full rounded-full bg-white/70 transition-all duration-300"
+              className="h-full rounded-full bg-indigo-500 transition-all duration-300 shadow-[0_0_10px_rgba(79,70,229,0.45)]"
               style={{ width: `${progressPct}%` }}
             />
           </div>
-          <div className="mt-1 text-center text-xs tracking-wide text-neutral-400">
+          <div className="mt-1 text-center text-xs tracking-wide text-slate-500">
             {counter}
           </div>
         </div>
@@ -369,7 +404,7 @@ export default function FlashcardDeck({
               })}
             </div>
             {topicFilter && (
-              <div className="mt-1 max-w-xl text-center text-[11px] md:text-xs text-neutral-400">
+              <div className="mt-1 max-w-xl text-center text-[11px] md:text-xs text-slate-500">
                 {TOPIC_CONFIG[topicFilter]?.description ?? 'Фразы по выбранной теме.'}
               </div>
             )}
@@ -403,7 +438,7 @@ export default function FlashcardDeck({
               ))}
             </div>
             {levelInfo !== null && (
-              <div className="mt-1 max-w-xl text-center text-[11px] md:text-xs text-neutral-400">
+              <div className="mt-1 max-w-xl text-center text-[11px] md:text-xs text-slate-500">
                 {renderLevelDescription(levelInfo)}
               </div>
             )}
@@ -412,9 +447,16 @@ export default function FlashcardDeck({
       </div>
 
       {/* Карточка */}
-      <div className="relative mx-auto w-full max-w-[820px] lg:translate-x-6">
+      <div className="relative mx-auto w-full max-w-[800px]">
         <div
-          className="relative mx-auto rounded-3xl border border-slate-700/60 bg-[#111827] shadow-2xl"
+          className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[74%] w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-[44px] opacity-70 blur-2xl"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(226,232,240,0.35) 45%, rgba(226,232,240,0) 78%)',
+          }}
+        />
+        <div
+          className="relative z-10 mx-auto rounded-3xl border border-slate-200 bg-gradient-to-b from-white via-[#fcfdff] to-[#f4f7ff] shadow-[0_20px_36px_rgba(15,23,42,0.14)]"
           style={{ height: '48vh', minHeight: 300 }}
           onClick={() => hasCard && setFlipped(f => !f)}
           role="button"
@@ -426,13 +468,20 @@ export default function FlashcardDeck({
             }
           }}
         >
+          <div
+            className="pointer-events-none absolute left-4 right-4 top-0 h-px rounded-full opacity-80"
+            style={{
+              background:
+                'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%)',
+            }}
+          />
           {canPrev && (
             <button
               onClick={e => {
                 e.stopPropagation();
                 onPrev();
               }}
-              className="absolute left-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-150 ease-out hover:bg-white/[0.06] hover:shadow-[0_0_14px_rgba(148,163,184,0.2)] hover:scale-[1.04] active:scale-[0.98]"
+              className="absolute left-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-slate-300 bg-white text-slate-600 transition-all duration-150 ease-out hover:bg-slate-50 hover:shadow-[0_0_12px_rgba(148,163,184,0.25)] hover:scale-[1.04] active:scale-[0.98]"
               title="Назад"
               aria-label="Назад"
             >
@@ -448,7 +497,7 @@ export default function FlashcardDeck({
                 e.stopPropagation();
                 onNext();
               }}
-              className="absolute right-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-white/10 bg-white/[0.03] text-neutral-100 backdrop-blur-[10px] transition-all duration-150 ease-out hover:bg-white/[0.06] hover:shadow-[0_0_14px_rgba(148,163,184,0.2)] hover:scale-[1.04] active:scale-[0.98]"
+              className="absolute right-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-slate-300 bg-white text-slate-600 transition-all duration-150 ease-out hover:bg-slate-50 hover:shadow-[0_0_12px_rgba(148,163,184,0.25)] hover:scale-[1.04] active:scale-[0.98]"
               title="Вперёд"
               aria-label="Вперёд"
             >
@@ -462,14 +511,14 @@ export default function FlashcardDeck({
             className="pointer-events-none absolute inset-0 rounded-3xl opacity-35"
             style={{
               background:
-                'radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 60%)',
+                'radial-gradient(circle at center, rgba(99,102,241,0.06), transparent 60%)',
             }}
           />
           {hasCard && (
             <>
               {/* Подсказка */}
               <button
-                className={`group absolute left-4 top-4 z-10 h-10 px-3 text-sm md:text-base ${glassMiniControl} ${revealCount > 0 ? 'bg-emerald-300/12 border-emerald-300/50 text-emerald-200' : ''}`}
+                className={`group absolute left-4 top-4 z-10 h-10 px-3 text-sm md:text-base ${navLikeMiniControl} ${revealCount > 0 ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50' : ''}`}
                 onClick={e => {
                   e.stopPropagation();
                   const t = (card?.ru_meaning || '').trim();
@@ -488,7 +537,7 @@ export default function FlashcardDeck({
               {/* Справа сверху: избранное, транслит */}
               <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
                 <button
-                  className={`h-10 w-10 text-lg ${glassMiniControl} ${isFav ? 'bg-emerald-300/12 border-emerald-300/50 text-emerald-200' : 'text-neutral-200'}`}
+                  className={`h-10 w-10 text-lg ${navLikeMiniControl} ${isFav ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50' : ''}`}
                   onClick={e => {
                     e.stopPropagation();
                     toggleFav(card.ge_text);
@@ -498,9 +547,9 @@ export default function FlashcardDeck({
                   {isFav ? '⭐' : '☆'}
                 </button>
                 <button
-                  className={`h-10 min-w-10 px-3 text-sm md:text-base ${glassMiniControl} ${showTranslit
-                    ? 'bg-emerald-300/12 border-emerald-300/50 text-emerald-200'
-                    : 'text-neutral-200'
+                  className={`h-10 min-w-10 px-3 text-sm md:text-base ${navLikeMiniControl} ${showTranslit
+                    ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50'
+                    : ''
                     }`}
                   onClick={e => {
                     e.stopPropagation();
@@ -515,9 +564,9 @@ export default function FlashcardDeck({
           )}
 
           {/* Контент */}
-          <div className="grid h-full w-full select-none place-items-center px-6 text-center">
+          <div className="grid h-full w-full select-none place-items-center px-14 sm:px-16 md:px-20 text-center">
             {!hasCard ? (
-              <div className="text-neutral-400">
+              <div className="text-slate-500">
                 {isFavoritesPage
                   ? 'Нет отмеченных карточек'
                   : 'Нет карточек'}
@@ -525,7 +574,7 @@ export default function FlashcardDeck({
             ) : !flipped ? (
               <div key={`front-${idx}`} className="animate-card-pop flex flex-col items-center justify-center gap-3">
                 <div
-                  className="text-[clamp(32px,5.5vw,64px)] leading-tight text-neutral-100"
+                  className="mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(32px,5.5vw,64px)] leading-tight text-slate-800"
                   style={{
                     fontFamily:
                       "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
@@ -534,7 +583,7 @@ export default function FlashcardDeck({
                   {card.ge_text}
                 </div>
                 {showTranslit && (
-                  <div className="text-[clamp(16px,2vw,22px)] text-emerald-300/90">
+                  <div className="text-[clamp(16px,2vw,22px)] text-emerald-600/90">
                     {card.translit && card.translit.trim()
                       ? card.translit
                       : geToTranslit(card.ge_text)}
@@ -547,7 +596,7 @@ export default function FlashcardDeck({
                   <img
                     src={cardImageSrc}
                     alt={card.ru_meaning || card.ge_text}
-                    className="h-[140px] w-[140px] rounded-2xl object-contain border border-white/10 bg-white/[0.03] p-2"
+                    className="h-[140px] w-[140px] rounded-2xl object-contain border border-slate-200 bg-slate-50 p-2"
                     loading="lazy"
                     onError={() => {
                       if (!imageKey) return;
@@ -555,7 +604,7 @@ export default function FlashcardDeck({
                     }}
                   />
                 )}
-                <div className="max-w-3xl text-[clamp(22px,3.6vw,38px)] leading-tight text-neutral-100">
+                <div className="mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(22px,3.6vw,38px)] leading-tight text-slate-700">
                   {card.ru_meaning || '—'}
                 </div>
               </div>
@@ -563,33 +612,25 @@ export default function FlashcardDeck({
           </div>
 
           {/* котик внизу слева */}
-          <div
-            className="pointer-events-none absolute z-[30] hidden select-none md:block"
-            style={{
-              left: 'max(calc(50% - 585px), 8px)',
-              bottom: -180,
-              pointerEvents: 'none',
-            }}
-          >
+          <div className="pointer-events-none absolute z-[30] hidden select-none md:block left-[-78px] min-[1512px]:left-[-92px] min-[1920px]:left-[-104px] bottom-[-151px]">
             <Image
               src="/images/deda-cat_2.png"
               alt="Deda cat"
-              width={260}
-              height={173}
+              width={208}
+              height={139}
               priority
+              className="drop-shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
+              style={{ filter: 'saturate(0.9) brightness(1)' }}
             />
           </div>
         </div>
 
         {/* Controls: below card */}
-        <div className="mt-4 mx-auto w-full max-w-[820px] flex justify-center px-3 lg:translate-x-6">
+        <div className="mt-1 mx-auto w-full max-w-[800px] flex justify-center px-3">
           <div
-            className="controls origin-center scale-[0.85] inline-flex min-w-[280px] items-center justify-center gap-[12px] rounded-full border border-white/[0.08] px-3 py-2 backdrop-blur-[12px] transition-all duration-200 hover:border-white/[0.12]"
+            className="controls origin-center scale-[0.85] inline-flex min-w-[280px] items-center justify-center gap-[12px] rounded-full border border-slate-300/80 px-3 py-2 bg-gradient-to-b from-slate-100 to-slate-200/75 transition-all duration-200 hover:border-slate-400"
             style={{
-              background:
-                'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
-              boxShadow:
-                '0 -10px 40px rgba(0,0,0,0.3), 0 0 40px rgba(80,255,200,0.08)',
+              boxShadow: '0 4px 12px rgba(15,23,42,0.10)',
             }}
           >
             <button
@@ -600,15 +641,12 @@ export default function FlashcardDeck({
                   return next;
                 });
               }}
-              className={`${shuffleControl} ${shuffled ? 'text-orange-300 opacity-100' : ''}`}
+              className={`${shuffleControl} ${shuffled ? 'border-indigo-500 bg-gradient-to-b from-indigo-500 to-indigo-600 text-white opacity-100 ring-1 ring-indigo-300/55 shadow-[0_2px_8px_rgba(79,70,229,0.22)]' : ''}`}
               title="Перемешать"
               aria-pressed={shuffled}
             >
               <span className="relative inline-flex h-full w-full items-center justify-center">
                 <span>⇄</span>
-                {shuffled && (
-                  <span className="absolute -bottom-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-orange-300" />
-                )}
               </span>
             </button>
 
@@ -625,16 +663,48 @@ export default function FlashcardDeck({
               {auto ? <span className="leading-none">Ⅱ</span> : <span className="leading-none translate-x-[1px]">▶</span>}
             </button>
 
-            <select
-              value={autoSpeedMs}
-              onChange={e => setAutoSpeedMs(Number(e.target.value))}
-              className="h-8 min-w-[96px] rounded-xl border border-white/10 bg-[#141928]/90 px-2.5 pr-6 text-[13px] font-medium text-white/85 outline-none backdrop-blur-[16px] transition-all duration-150 hover:border-orange-300/45 hover:bg-[#18203a] focus:border-orange-300/65 focus:shadow-[0_0_0_1px_rgba(251,146,60,0.28),0_0_12px_rgba(251,146,60,0.22)]"
-              aria-label="Скорость автопрокрутки"
-            >
-              <option value={1500}>⚡1.5×</option>
-              <option value={2500}>⚡2.5×</option>
-              <option value={4000}>⚡4×</option>
-            </select>
+            <div className="relative" ref={speedMenuRef}>
+              <button
+                type="button"
+                onClick={() => setSpeedMenuOpen(v => !v)}
+                className={`h-10 w-10 rounded-full border text-[12px] leading-none font-semibold outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none ${
+                  autoSpeedMs === 4000
+                    ? 'border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-500'
+                    : autoSpeedMs === 2500
+                      ? 'border-indigo-500 bg-indigo-500 text-white hover:bg-indigo-400'
+                      : 'border-indigo-300 bg-indigo-200 text-indigo-900 hover:bg-indigo-300'
+                }`}
+                aria-label="Скорость автопрокрутки"
+                title={`Скорость: ${currentSpeedLabel}`}
+                aria-haspopup="menu"
+                aria-expanded={speedMenuOpen}
+              >
+                {currentSpeedLabel}
+              </button>
+              {speedMenuOpen && (
+                <div className="absolute right-0 top-full mt-1 w-20 rounded-xl border border-slate-200 bg-white py-1 shadow-[0_12px_22px_rgba(15,23,42,0.18)] z-30">
+                  {speedOptions.map(option => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => {
+                        setAutoSpeedMs(option.value);
+                        setSpeedMenuOpen(false);
+                      }}
+                      title={`Установить скорость ${option.label}`}
+                      className={`flex w-full items-center justify-between px-2 py-1 text-left text-xs transition-all duration-150 active:scale-[0.99] ${
+                        autoSpeedMs === option.value
+                          ? 'bg-indigo-100 text-indigo-800'
+                          : 'text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span>{option.label}</span>
+                      <span className="w-3 text-right">{autoSpeedMs === option.value ? '✓' : ''}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

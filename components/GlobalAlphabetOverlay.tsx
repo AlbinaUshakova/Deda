@@ -14,6 +14,7 @@ type EpisodesApiResponse = {
 
 type LessonStatus = 'mastered' | 'almost' | 'current' | 'locked';
 type AlphabetLetterStatus = LessonStatus | 'unknown';
+const ALPHABET_STATUS_CACHE_KEY = 'deda:alphabet-letter-status-cache:v1';
 
 const GEORGIAN_ALPHABET = [
   'ა', 'ბ', 'გ', 'დ', 'ე', 'ვ', 'ზ', 'თ', 'ი', 'კ', 'ლ',
@@ -29,11 +30,11 @@ const letterTranslit: Record<string, string> = {
 };
 
 const alphabetLetterColorByStatus: Record<AlphabetLetterStatus, string> = {
-  mastered: 'text-emerald-300',
-  almost: 'text-orange-300',
-  current: 'text-yellow-300',
-  locked: 'text-slate-400',
-  unknown: 'text-amber-300/90',
+  mastered: 'text-emerald-600',
+  almost: 'text-orange-600',
+  current: 'text-yellow-600',
+  locked: 'text-slate-500',
+  unknown: 'text-indigo-600',
 };
 
 const geLetterAudioMap: Record<string, string> = {
@@ -86,19 +87,11 @@ async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: R
 
 export default function GlobalAlphabetOverlay() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const [progress, setProgress] = useState<ProgressMap>(() => {
-    if (typeof window === 'undefined') return {};
-    const local = getLocalProgress();
-    const map: ProgressMap = {};
-    for (const row of local) map[row.episodeId] = Math.max(map[row.episodeId] ?? 0, row.best);
-    return map;
-  });
+  const shouldOpenByDefault = (path: string) => path !== '/' && !path.startsWith('/play/');
+  const [open, setOpen] = useState(shouldOpenByDefault(pathname));
+  const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
-  const [lessonTargetScore, setLessonTargetScore] = useState(() => {
-    if (typeof window === 'undefined') return 50;
-    return getSettings().lessonTargetScore;
-  });
+  const [lessonTargetScore, setLessonTargetScore] = useState(50);
   const [letterStatusByChar, setLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
 
   useEffect(() => {
@@ -111,7 +104,22 @@ export default function GlobalAlphabetOverlay() {
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname === '/') setOpen(false);
+    const onProfileMenuOpened = () => {
+      setOpen(false);
+    };
+    window.addEventListener(
+      'deda:profile-menu-opened',
+      onProfileMenuOpened as EventListener,
+    );
+    return () =>
+      window.removeEventListener(
+        'deda:profile-menu-opened',
+        onProfileMenuOpened as EventListener,
+      );
+  }, []);
+
+  useEffect(() => {
+    setOpen(shouldOpenByDefault(pathname));
   }, [pathname]);
 
   useEffect(() => {
@@ -124,10 +132,23 @@ export default function GlobalAlphabetOverlay() {
   }, [open, pathname]);
 
   useEffect(() => {
-    if (!open || pathname === '/') return;
+    if (pathname === '/') return;
     let cancelled = false;
 
     const load = async () => {
+      const local = getLocalProgress();
+      const localMap: ProgressMap = {};
+      for (const row of local) localMap[row.episodeId] = Math.max(localMap[row.episodeId] ?? 0, row.best);
+      setProgress(localMap);
+      setLessonTargetScore(getSettings().lessonTargetScore);
+      try {
+        const raw = window.localStorage.getItem(ALPHABET_STATUS_CACHE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as Record<string, AlphabetLetterStatus>;
+          if (parsed && typeof parsed === 'object') setLetterStatusByChar(parsed);
+        }
+      } catch {}
+
       const { episodes, lettersByEpisode } = await loadEpisodesData();
       const merged = await loadProgressMap();
       const target = getSettings().lessonTargetScore;
@@ -181,13 +202,23 @@ export default function GlobalAlphabetOverlay() {
         }
       }
       setLetterStatusByChar(byChar);
+      try {
+        window.localStorage.setItem(ALPHABET_STATUS_CACHE_KEY, JSON.stringify(byChar));
+      } catch {}
     };
 
     load();
+    const onRefresh = () => {
+      load();
+    };
+    window.addEventListener('deda:progress-updated' as any, onRefresh);
+    window.addEventListener('deda:settings-updated' as any, onRefresh);
     return () => {
       cancelled = true;
+      window.removeEventListener('deda:progress-updated' as any, onRefresh);
+      window.removeEventListener('deda:settings-updated' as any, onRefresh);
     };
-  }, [open, pathname]);
+  }, [pathname]);
 
   const speakLetter = (letter: string) => {
     if (typeof window === 'undefined') return;
@@ -215,17 +246,24 @@ export default function GlobalAlphabetOverlay() {
     synth.speak(utterance);
   };
 
-  if (!open || pathname === '/') return null;
+  if (pathname === '/') return null;
 
   return (
-    <div className="fixed left-20 top-[86px] z-[140] w-[224px] xl:w-[246px]">
-      <div className="max-h-[calc(100vh-112px)] overflow-y-auto rounded-3xl border border-amber-200/15 bg-gradient-to-b from-[#1a2238]/82 via-[#141d33]/82 to-[#111827]/82 p-3 xl:p-3.5 shadow-[0_8px_18px_rgba(0,0,0,0.32)]">
+    <div
+      className={`hidden lg:block fixed left-16 top-[86px] z-[140] w-[224px] xl:w-[246px] transition-all duration-200 ease-out ${
+        open
+          ? 'opacity-100 translate-y-0 scale-100'
+          : 'opacity-0 -translate-y-1 scale-[0.98] pointer-events-none select-none'
+      }`}
+      aria-hidden={!open}
+    >
+      <div className="origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold tracking-[-0.01em] text-amber-100/95">🐱 Ანბანი</h3>
+          <h3 className="text-sm font-semibold tracking-[-0.01em] text-slate-700">ანბანი</h3>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="h-6 w-6 rounded-md border border-amber-200/30 bg-amber-300/10 text-xs text-amber-100/85 hover:bg-amber-300/20 hover:text-amber-50 transition-colors"
+            className="h-6 w-6 rounded-md border border-slate-300 bg-white text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
             aria-label="Скрыть алфавит"
             title="Скрыть алфавит"
           >
@@ -238,12 +276,12 @@ export default function GlobalAlphabetOverlay() {
               key={ch}
               type="button"
               onClick={() => speakLetter(ch)}
-              className="rounded-lg border border-amber-100/15 bg-[#0f1a31]/70 py-0.5 text-center hover:bg-[#152544]/80 transition-colors"
+              className="rounded-lg border border-slate-200 bg-white py-0.5 text-center shadow-sm hover:bg-slate-50 transition-colors"
               title={`Озвучить букву ${ch}`}
               aria-label={`Озвучить букву ${ch}`}
             >
               <div className={`text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}>{ch}</div>
-              <div className="mt-0.5 text-[10px] leading-none text-amber-50/55">{letterTranslit[ch] ?? ''}</div>
+              <div className="mt-0.5 text-[10px] leading-none text-slate-500">{letterTranslit[ch] ?? ''}</div>
             </button>
           ))}
         </div>

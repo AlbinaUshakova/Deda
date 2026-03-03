@@ -4,7 +4,7 @@ export default function BrandToggle() {
   return (
     <button
       type="button"
-      className="inline-flex items-center justify-center rounded-full border border-white/15 px-4 py-1.5 text-sm font-medium text-white/90 hover:bg-white/5 hover:text-white transition-colors"
+      className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50 hover:text-slate-800"
       onClick={() => {
         window.dispatchEvent(new CustomEvent('deda:toggle-alphabet'));
       }}

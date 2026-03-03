@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom';
 
 const BOARD_SIZE = 8;
 const PREVIEW_SCALE = 0.6;
-const BOARD_PIXEL_SIZE = 'min(76vh, clamp(240px, calc(100vw - 300px), 700px))';
+const BOARD_PIXEL_SIZE = 'min(67dvh, clamp(235px, 100%, 620px))';
 
 type CellColor = string | null;
 type ShapeCell = { r: number; c: number };
@@ -28,6 +28,7 @@ type BlocksGridProps = {
   onBestScoreChange?: (best: number) => void;
   topActions?: React.ReactNode;
   leftOfCatAction?: React.ReactNode;
+  answerState?: 'idle' | 'wrong' | 'correct';
 };
 
 type ClearedCell = {
@@ -169,23 +170,27 @@ const SHAPES: Shape[] = [
   },
 ];
 
-const COLORS = [
-  '#f0b35d',
-  '#eaa257',
-  '#d98b4f',
-  '#c97a45',
-  '#b7683f',
-  '#a95b3a',
-  '#d6a06b',
-  '#c88f5d',
-  '#e7b884',
+const TYPE_COLORS = [
+  '#F2A55A', // orange
+  '#8A78D6', // purple
+  '#67AEEA', // blue
+  '#67BE98', // green
 ];
 
 function randomInt(max: number): number {
   return Math.floor(Math.random() * max);
 }
-function randomColor() {
-  return COLORS[randomInt(COLORS.length)];
+
+function colorForShapeId(shapeId: string) {
+  let hash = 0;
+  for (let i = 0; i < shapeId.length; i += 1) {
+    hash = (hash * 31 + shapeId.charCodeAt(i)) >>> 0;
+  }
+  return TYPE_COLORS[hash % TYPE_COLORS.length];
+}
+
+function randomPaletteColor() {
+  return TYPE_COLORS[randomInt(TYPE_COLORS.length)];
 }
 
 function createEmptyBoard(): CellColor[][] {
@@ -339,7 +344,7 @@ function makeBag(board: CellColor[][]): Piece[] {
   return pickedShapes.map((shape, idx) => ({
     id: `p_${shape.id}_${now}_${idx}`,
     shape,
-    color: randomColor(),
+    color: colorForShapeId(shape.id),
   }));
 }
 
@@ -431,6 +436,7 @@ export default function BlocksGrid({
   onBestScoreChange,
   topActions,
   leftOfCatAction,
+  answerState = 'idle',
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
   const [bag, setBag] = useState<Piece[]>([]);
@@ -442,12 +448,26 @@ export default function BlocksGrid({
   const [gameOver, setGameOver] = useState(false);
   const [scorePop, setScorePop] = useState(false);
   const [showCatLangHint, setShowCatLangHint] = useState(false);
+  const [catReaction, setCatReaction] = useState<{
+    emoji: string;
+    text?: string;
+    bounce?: boolean;
+  } | null>(null);
+  const [catReactionVisible, setCatReactionVisible] = useState(false);
 
   const [clearedCells, setClearedCells] = useState<ClearedCell[]>([]);
 
   const boardRef = useRef<HTMLDivElement | null>(null);
   const scorePopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const catHintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reactionFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const reactionClearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const prevAnswerStateRef = useRef(answerState);
+  const prevGameOverRef = useRef(gameOver);
   const prevScoreRef = useRef(0);
   const [cellSize, setCellSize] = useState(48);
 
@@ -484,8 +504,41 @@ export default function BlocksGrid({
       if (catHintTimeoutRef.current) {
         clearTimeout(catHintTimeoutRef.current);
       }
+      if (reactionFadeTimeoutRef.current) {
+        clearTimeout(reactionFadeTimeoutRef.current);
+      }
+      if (reactionClearTimeoutRef.current) {
+        clearTimeout(reactionClearTimeoutRef.current);
+      }
     };
   }, []);
+
+  const triggerCatReaction = (
+    emoji: string,
+    text?: string,
+    durationMs = 1500,
+  ) => {
+    if (reactionFadeTimeoutRef.current) {
+      clearTimeout(reactionFadeTimeoutRef.current);
+    }
+    if (reactionClearTimeoutRef.current) {
+      clearTimeout(reactionClearTimeoutRef.current);
+    }
+
+    setCatReaction({ emoji, text, bounce: emoji === '🎉' });
+    setCatReactionVisible(true);
+
+    const fadeDelay = Math.max(700, durationMs - 350);
+    reactionFadeTimeoutRef.current = setTimeout(() => {
+      setCatReactionVisible(false);
+      reactionFadeTimeoutRef.current = null;
+    }, fadeDelay);
+
+    reactionClearTimeoutRef.current = setTimeout(() => {
+      setCatReaction(null);
+      reactionClearTimeoutRef.current = null;
+    }, durationMs);
+  };
 
   useEffect(() => {
     if (score > prevScoreRef.current) {
@@ -499,6 +552,22 @@ export default function BlocksGrid({
     }
     prevScoreRef.current = score;
   }, [score]);
+
+  useEffect(() => {
+    const prev = prevAnswerStateRef.current;
+    if (answerState !== prev) {
+      if (answerState === 'correct') triggerCatReaction('😄', undefined, 1400);
+      if (answerState === 'wrong') triggerCatReaction('🥺', undefined, 1600);
+      prevAnswerStateRef.current = answerState;
+    }
+  }, [answerState]);
+
+  useEffect(() => {
+    if (!prevGameOverRef.current && gameOver) {
+      triggerCatReaction('🥺', 'Давай ещё раз?', 1800);
+    }
+    prevGameOverRef.current = gameOver;
+  }, [gameOver]);
 
   // новый раунд: подбираем мешок
   useEffect(() => {
@@ -595,11 +664,12 @@ export default function BlocksGrid({
             const withColors: ClearedCell[] = clearedCellsRaw.map(cell => ({
               r: cell.r,
               c: cell.c,
-              color1: randomColor(),
-              color2: randomColor(),
+              color1: randomPaletteColor(),
+              color2: randomPaletteColor(),
             }));
             setClearedCells(withColors);
             setTimeout(() => setClearedCells([]), 1900);
+            triggerCatReaction('🎉', undefined, 1400);
           }
 
           setBag(oldBag => {
@@ -673,7 +743,12 @@ export default function BlocksGrid({
     ghostWidth = maxCol * cellSize;
     ghostHeight = maxRow * cellSize;
   }
-
+  const catMoodClass =
+    answerState === 'correct'
+      ? 'animate-cat-happy'
+      : answerState === 'wrong'
+        ? 'animate-cat-sad'
+        : '';
   return (
     <div className="flex justify-center w-full py-2">
       <div className="flex w-full max-w-6xl justify-center">
@@ -681,6 +756,12 @@ export default function BlocksGrid({
           className="flex flex-col items-stretch relative"
           style={{ width: BOARD_PIXEL_SIZE }}
         >
+          <div className="mb-2 px-1">
+            <div className="mt-1 text-center text-[16px] font-semibold tracking-[-0.01em] text-slate-700">
+              {score} / {bestScore}
+            </div>
+          </div>
+
           {topActions && (
             <div className="absolute right-0 -top-[5.5rem] md:-top-24 z-[95] flex items-center gap-2">
               {topActions}
@@ -691,19 +772,12 @@ export default function BlocksGrid({
               {leftOfCatAction}
             </div>
           )}
-
           {/* поле */}
           <div
             ref={boardRef}
-            className="relative grid grid-cols-8 gap-[4px] rounded-3xl p-3 bg-transparent"
-            style={{ width: '100%', height: BOARD_PIXEL_SIZE }}
+            className="relative grid grid-cols-8 gap-[4px]"
+            style={{ width: '100%', aspectRatio: '1 / 1', minHeight: 240 }}
           >
-            <div
-              className={`absolute right-2 -top-6 z-[90] px-1 py-0 text-white/90 transition-all duration-200 ${scorePop ? 'scale-105 drop-shadow-[0_0_8px_rgba(250,204,21,0.45)]' : ''}`}
-              style={{ fontSize: `${cellSize * 0.22}px` }}
-            >
-              <span className="font-semibold">{score} / {bestScore}</span>
-            </div>
             {board.map((row, r) =>
               row.map((color, c) => {
                 const showHover =
@@ -723,7 +797,7 @@ export default function BlocksGrid({
                 return (
                   <div
                     key={`${r}-${c}`}
-                    className="relative overflow-hidden rounded-lg bg-[#111827] transition-all duration-150 hover:-translate-y-[2px] hover:bg-white/[0.04]"
+                    className="relative overflow-hidden rounded-lg bg-[#dfe4ed] transition-all duration-150 hover:-translate-y-[1px] hover:bg-[#d5dbe7]"
                   >
                     {color && (
                       <div
@@ -733,7 +807,7 @@ export default function BlocksGrid({
                     )}
 
                     {showHover && (
-                      <div className="absolute inset-[3px] rounded-md border border-white/80 pointer-events-none" />
+                      <div className="absolute inset-[3px] rounded-md border border-indigo-400/90 pointer-events-none" />
                     )}
 
                     {flash && (
@@ -753,21 +827,22 @@ export default function BlocksGrid({
             )}
 
             {gameOver && (
-              <div className="absolute inset-0 bg-black/70 rounded-3xl flex flex-col items-center justify-center gap-3 text-sm">
-                <div className="text-white font-semibold mb-1">
+              <div className="absolute inset-0 rounded-3xl flex flex-col items-center justify-center gap-3 text-sm pointer-events-none">
+                <div className="text-slate-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
                   Нет ходов
                 </div>
-                <div className="text-neutral-300 mb-3">
+                <div className="text-slate-700 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
                   Фигуры больше нельзя разместить.
                 </div>
                 <button
                   onClick={handleRestart}
-                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                  className="pointer-events-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
                 >
                   Сыграть снова
                 </button>
               </div>
             )}
+
           </div>
 
           {/* кот + подсказка языка */}
@@ -781,10 +856,21 @@ export default function BlocksGrid({
             aria-label="Подсказка по выбору языка"
             className="absolute left-0 z-[60] select-none"
             style={{
-              top: -cellSize * 1.55,
-              width: cellSize * 2.0,
+              top: -cellSize * 0.8,
+              left: -cellSize * 0.08,
+              width: cellSize * 1.68,
             }}
           >
+            {catReaction && (
+              <div
+                className={`pointer-events-none absolute -top-4 right-0 rounded-full bg-white/92 px-1.5 py-0.5 text-[15px] shadow-[0_2px_8px_rgba(15,23,42,0.16)] transition-opacity duration-300 ${
+                  catReactionVisible ? 'opacity-100' : 'opacity-0'
+                } ${catReaction.bounce ? 'animate-bounce' : ''}
+                `}
+              >
+                {catReaction.emoji}
+              </div>
+            )}
             {showCatLangHint && (
               <div className="pointer-events-none absolute bottom-[calc(100%-8px)] left-[58%] -translate-x-1/2 w-[250px] z-[80]">
                 <div className="relative w-[270px]">
@@ -798,23 +884,25 @@ export default function BlocksGrid({
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center px-10 text-[15px] leading-snug text-center font-semibold tracking-tight text-slate-900">
-                    Выбери язык игры:
+                    Направление перевода
                     <br />
-                    🇬🇪 → 🇷🇺 или 🇷🇺 → 🇬🇪
+                    меняется в Настройках
                   </div>
                 </div>
               </div>
             )}
-            <img
-              src="/images/deda-cat_6.png"
-              alt="deda cat"
-              draggable={false}
-              className="select-none pointer-events-none"
-              style={{
-                width: '100%',
-                height: 'auto',
-              }}
-            />
+            <div className="animate-cat-blink">
+              <img
+                src="/images/deda-cat_6.png"
+                alt="deda cat"
+                draggable={false}
+                className={`select-none pointer-events-none ${catMoodClass}`}
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                }}
+              />
+            </div>
           </button>
         </div>
       </div>
@@ -835,33 +923,31 @@ export default function BlocksGrid({
       {/* палитра фигур слева */}
       {paletteContainer &&
         createPortal(
-          <div className="flex h-full flex-col items-center justify-center">
-            <div className="flex flex-col items-center gap-[48px] md:gap-[72px]">
-              {bag.map(piece => {
-                const widthCells =
-                  Math.max(...piece.shape.cells.map(c => c.c)) + 1;
-                const heightCells =
-                  Math.max(...piece.shape.cells.map(c => c.r)) + 1;
-                const isDragging = dragPiece?.id === piece.id;
+          <div className="flex h-full flex-col items-center justify-evenly overflow-hidden py-1">
+            {bag.map(piece => {
+              const widthCells =
+                Math.max(...piece.shape.cells.map(c => c.c)) + 1;
+              const heightCells =
+                Math.max(...piece.shape.cells.map(c => c.r)) + 1;
+              const isDragging = dragPiece?.id === piece.id;
 
-                const previewCellSize = cellSize * PREVIEW_SCALE;
+              const previewCellSize = cellSize * PREVIEW_SCALE;
 
-                return (
-                  <div
-                    key={piece.id}
-                    onPointerDown={e => startDrag(piece, e)}
-                    className="cursor-pointer touch-none transition-transform"
-                    style={{
-                      width: widthCells * previewCellSize,
-                      height: heightCells * previewCellSize,
-                      opacity: isDragging ? 0.2 : 1,
-                    }}
-                  >
-                    <PieceSVG piece={piece} cellSize={previewCellSize} />
-                  </div>
-                );
-              })}
-            </div>
+              return (
+                <div
+                  key={piece.id}
+                  onPointerDown={e => startDrag(piece, e)}
+                  className="cursor-pointer touch-none transition-transform"
+                  style={{
+                    width: widthCells * previewCellSize,
+                    height: heightCells * previewCellSize,
+                    opacity: isDragging ? 0.2 : 1,
+                  }}
+                >
+                  <PieceSVG piece={piece} cellSize={previewCellSize} />
+                </div>
+              );
+            })}
           </div>,
           paletteContainer,
         )}

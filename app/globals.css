@@ -13,7 +13,7 @@ html {
 }
 
 body {
-    @apply bg-neutral-950 text-neutral-100 min-h-screen;
+    @apply bg-slate-100 text-slate-800 min-h-screen;
 }
 
 /* --------- УТИЛИТНЫЕ КОМПОНЕНТЫ --------- */
@@ -135,6 +135,109 @@ a {
     animation: playPulseGlow 2.6s ease-in-out infinite;
 }
 
+@keyframes inputShake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    50% {
+        transform: translateX(3px);
+    }
+
+    75% {
+        transform: translateX(-2px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animate-input-shake {
+    animation: inputShake 220ms ease-in-out;
+}
+
+@keyframes settingsBump {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    40% {
+        transform: translateY(-2px) scale(1.03);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-settings-bump {
+    animation: settingsBump 260ms ease-out;
+}
+
+@keyframes catBlink {
+    0%,
+    46%,
+    52%,
+    100% {
+        transform: translateY(0) scaleY(1);
+    }
+
+    48%,
+    50% {
+        transform: translateY(0) scaleY(0.97);
+    }
+}
+
+@keyframes catHappy {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-5px) scale(1.03);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes catSad {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-2px);
+    }
+
+    75% {
+        transform: translateX(2px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animate-cat-blink {
+    animation: catBlink 4.2s ease-in-out infinite;
+    transform-origin: center bottom;
+}
+
+.animate-cat-happy {
+    animation: catHappy 320ms ease-out;
+}
+
+.animate-cat-sad {
+    animation: catSad 240ms ease-in-out;
+}
+
 .controls {
     display: flex;
     justify-content: center;
@@ -147,6 +250,6 @@ a {
 }
 
 body {
-    background-color: var(--deda-bg, #020617);
-    color: var(--deda-text, #f9fafb);
+    background-color: var(--deda-bg, #edf1f8);
+    color: var(--deda-text, #1e293b);
 }

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useEffect, useState, useMemo } from 'react';
+import { Nunito } from 'next/font/google';
 import { loadProgressMap, getLocalProgress } from '@/lib/supabase';
 import BlocksGame from '@/components/BlocksGame';
 
@@ -10,6 +11,12 @@ type Word = { ge: string; ru: string; audio?: string };
 type Card = { type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audio_url?: string; topic?: string };
 type Episode = { id: string; title: string; cards: Card[] };
 type EpisodeApiResponse = { ok: boolean; episode?: Episode };
+
+const nunito = Nunito({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['500', '600', '700'],
+  display: 'swap',
+});
 
 function getEpisodeFallbackTitle(episodeId: string): string {
   const match = episodeId.match(/^ep(\d+)$/i);
@@ -48,6 +55,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
           setTitle(episodeId);
           setWords([]);
           setInitialBest(0);
+          setIsLoading(false);
           return;
         }
 
@@ -87,20 +95,26 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
           if (row) localBest = row.best;
         }
         setInitialBest(localBest);
+        setIsLoading(false);
 
-        // рекорд из Supabase
-        try {
-          const progressMap = await loadProgressMap();
-          if (cancelled) return;
-          const serverBest = progressMap[episodeId] ?? 0;
-          if (serverBest > localBest) {
-            setInitialBest(serverBest);
-          }
-        } catch (e) {
-          console.error('load progress for episode error', e);
-        }
-      } finally {
+        // Рекорд из Supabase догружаем в фоне, чтобы не блокировать первый рендер игры.
+        loadProgressMap()
+          .then(progressMap => {
+            if (cancelled) return;
+            const serverBest = progressMap[episodeId] ?? 0;
+            if (serverBest > localBest) {
+              setInitialBest(serverBest);
+            }
+          })
+          .catch(e => {
+            console.error('load progress for episode error', e);
+          });
+      } catch (e) {
+        console.error('load play episode error', e);
         if (!cancelled) {
+          setTitle(episodeId);
+          setWords([]);
+          setInitialBest(0);
           setIsLoading(false);
         }
       }
@@ -116,12 +130,25 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   const pageTitle = title || getEpisodeFallbackTitle(episodeId);
 
   return (
-    <main className="relative min-h-screen bg-[#020617] text-neutral-50">
+    <main className={`${nunito.className} relative min-h-screen bg-gradient-to-b from-[#f7f8fc] via-[#f3f5fb] to-[#eef2f9] text-slate-800`}>
       <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
-        <div className="relative z-40 mb-6 max-w-[820px]">
-          <h1 className="mb-0 min-w-0 text-2xl font-semibold">
-            {pageTitle}
-          </h1>
+        <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
+          <div className="relative flex min-h-[52px] items-center justify-end">
+            <div className="ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">
+            <span
+              className="inline-flex items-center justify-center rounded-xl border border-indigo-600 bg-indigo-600 px-3.5 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm"
+              aria-current="page"
+            >
+              Игра
+            </span>
+            <Link
+              className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-slate-900"
+              href={studyHref}
+            >
+              Карточки
+            </Link>
+            </div>
+          </div>
         </div>
 
         <div className="relative z-50 max-w-[820px]">
@@ -131,22 +158,6 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
                 words={words}
                 episodeId={episodeId}
                 initialBest={initialBest}
-                topActions={
-                  <>
-                    <Link
-                      className="inline-flex whitespace-nowrap items-center justify-center rounded-xl border border-white/15 bg-transparent px-[clamp(0.55rem,1.5vw,0.9rem)] py-[clamp(0.38rem,0.9vw,0.52rem)] text-[clamp(0.72rem,1.6vw,0.9rem)] text-white/70 transition-all duration-200 hover:bg-white/[0.05] hover:text-white"
-                      href="/"
-                    >
-                      Главная
-                    </Link>
-                    <Link
-                      className="inline-flex whitespace-nowrap items-center justify-center rounded-xl border border-orange-300/55 bg-orange-300/[0.1] px-[clamp(0.55rem,1.5vw,0.9rem)] py-[clamp(0.38rem,0.9vw,0.52rem)] text-[clamp(0.72rem,1.6vw,0.9rem)] text-orange-100 shadow-[0_0_10px_rgba(251,146,60,0.2)] transition-all duration-200 hover:shadow-[0_0_14px_rgba(251,146,60,0.28)] hover:text-white"
-                      href={studyHref}
-                    >
-                      Карточки
-                    </Link>
-                  </>
-                }
               />
             </>
           ) : (

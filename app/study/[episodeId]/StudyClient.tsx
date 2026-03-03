@@ -54,35 +54,35 @@ export default function StudyClient({
       : `/play/${episodeId}`;
 
   return (
-    <main className="min-h-screen bg-[#020617] text-neutral-50">
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        <div className="flex items-start justify-between mb-6 max-w-[820px] lg:translate-x-6">
-          <h1 className="text-2xl font-semibold lg:translate-x-[4.5rem]">
-            {ep.title || episodeId}
-          </h1>
-
-          <div className="flex gap-2 ml-auto justify-end lg:translate-x-16">
+    <main className="min-h-screen bg-gradient-to-b from-[#f7f8fc] via-[#f3f5fb] to-[#eef2f9] text-slate-800">
+      <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
+        <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
+          <div className="relative flex min-h-[52px] items-center justify-end">
+            <div className="ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">
             <Link
-              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm text-white/65 hover:bg-white/[0.04] hover:text-white/90 transition-all"
+              className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-slate-900"
               href="/"
             >
               Главная
             </Link>
             <Link
-              className="inline-flex items-center justify-center rounded-xl border border-orange-300/55 bg-orange-300/[0.1] px-4 py-2 text-sm text-orange-100 shadow-[0_0_12px_rgba(251,146,60,0.22)] hover:bg-orange-300/[0.14] hover:text-white hover:shadow-[0_0_16px_rgba(251,146,60,0.3)] transition-all"
+              className="inline-flex items-center justify-center rounded-xl border border-indigo-600 bg-indigo-600 px-3.5 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:border-indigo-500 hover:bg-indigo-500"
               href={playHref as Route}
             >
               Играть
             </Link>
+            </div>
           </div>
         </div>
 
         {hasWords ? (
-          <FlashcardDeck
-            cards={words}
-            lessonTitle={ep.title || episodeId}
-            onTopicChange={setTopicForPlay}
-          />
+          <div className="relative z-0 -mt-6 md:-mt-8">
+            <FlashcardDeck
+              cards={words}
+              lessonTitle={ep.title || episodeId}
+              onTopicChange={setTopicForPlay}
+            />
+          </div>
         ) : (
           <div className="text-neutral-400 mt-8">
             В этом эпизоде пока нет слов для карточек.

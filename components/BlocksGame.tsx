@@ -1,9 +1,10 @@
 // src/components/BlocksGame.tsx
 'use client';
 
-import React, { useMemo, useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import BlocksGrid from './BlocksGrid';
 import { upsertProgress } from '@/lib/supabase';
+import { getSettings } from '@/lib/settings';
 
 type Word = { ge: string; ru: string; audio?: string };
 
@@ -22,7 +23,9 @@ type Question = {
 
 type Mode = 'question' | 'pieces' | 'gameOver';
 type AnswerState = 'idle' | 'wrong' | 'correct';
+type LetterCellState = 'correct' | 'present' | 'absent';
 type TranslationDirection = 'ge-ru' | 'ru-ge';
+const RECENT_WORD_GAP = 3;
 
 // ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
 const FAVORITES_KEY = 'deda_fav_ge';
@@ -193,6 +196,50 @@ function normalizeForCompare(str: string): string {
   return base.replace(/[^\p{L}\p{N}]+/gu, '');
 }
 
+function tokenizeAnswerCells(str: string): string[] {
+  return Array.from(normalizeRu(str).replace(/[^\p{L}\p{N}]+/gu, ''));
+}
+
+function evaluateLetterCells(
+  guessRaw: string,
+  solutionRaw: string,
+): Array<{ char: string; state: LetterCellState }> {
+  const guess = tokenizeAnswerCells(guessRaw);
+  const solution = tokenizeAnswerCells(solutionRaw);
+  if (!guess.length || !solution.length) return [];
+
+  const states: LetterCellState[] = Array(guess.length).fill('absent');
+  const remaining = new Map<string, number>();
+  const overlapLen = Math.min(guess.length, solution.length);
+
+  // 1) точные совпадения позиции
+  for (let i = 0; i < overlapLen; i += 1) {
+    if (guess[i] === solution[i]) {
+      states[i] = 'correct';
+    } else {
+      const ch = solution[i];
+      remaining.set(ch, (remaining.get(ch) ?? 0) + 1);
+    }
+  }
+  for (let i = overlapLen; i < solution.length; i += 1) {
+    const ch = solution[i];
+    remaining.set(ch, (remaining.get(ch) ?? 0) + 1);
+  }
+
+  // 2) есть в ответе, но в другой позиции
+  for (let i = 0; i < guess.length; i += 1) {
+    if (states[i] === 'correct') continue;
+    const ch = guess[i];
+    const cnt = remaining.get(ch) ?? 0;
+    if (cnt > 0) {
+      states[i] = 'present';
+      remaining.set(ch, cnt - 1);
+    }
+  }
+
+  return guess.map((char, i) => ({ char, state: states[i] }));
+}
+
 // сравнение ответов: сначала числовые формы, потом "только буквы/цифры"
 function isSameAnswer(userInput: string, correctAnswer: string): boolean {
   const nu = normalizeRu(userInput);
@@ -241,6 +288,38 @@ function buildCycle(total: number, hardSet: Set<number>): number[] {
   return combined;
 }
 
+function wordKey(word: Word): string {
+  return `${normalizeRu(word.ge)}|${normalizeRu(word.ru)}`;
+}
+
+function pickNextIndexFromQueue(
+  queue: number[],
+  words: Word[],
+  recentIndices: number[],
+  recentKeys: string[],
+): { nextIdx: number; rest: number[] } | null {
+  if (!queue.length) return null;
+
+  const recentWindow = Math.max(1, Math.min(RECENT_WORD_GAP, words.length - 1));
+  const recentIdxSet = new Set(recentIndices.slice(-recentWindow));
+  const recentKeySet = new Set(recentKeys.slice(-recentWindow));
+
+  let pickPos = queue.findIndex(idx => {
+    const w = words[idx];
+    if (!w) return false;
+    if (recentIdxSet.has(idx)) return false;
+    if (recentKeySet.has(wordKey(w))) return false;
+    return true;
+  });
+
+  // если все кандидаты "близкие", берём первый, чтобы не блокировать игру
+  if (pickPos === -1) pickPos = 0;
+
+  const nextIdx = queue[pickPos];
+  const rest = [...queue.slice(0, pickPos), ...queue.slice(pickPos + 1)];
+  return { nextIdx, rest };
+}
+
 export default function BlocksGame({
   words,
   episodeId,
@@ -254,15 +333,15 @@ export default function BlocksGame({
   const [mode, setMode] = useState<Mode>('question');
   const [roundId, setRoundId] = useState(0);
   const [direction, setDirection] = useState<TranslationDirection>(() => {
-    if (typeof window === 'undefined') return 'ge-ru';
-    const saved = window.localStorage.getItem('deda_translation_direction');
-    return saved === 'ru-ge' ? 'ru-ge' : 'ge-ru';
+    if (typeof window === 'undefined') return getSettings().translationDirection;
+    return getSettings().translationDirection;
   });
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState(false);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
+  const [isAnswerFocused, setIsAnswerFocused] = useState(false);
 
   const [attempts, setAttempts] = useState(0);
   const [showCorrect, setShowCorrect] = useState(false);
@@ -278,12 +357,14 @@ export default function BlocksGame({
   const [isRevealing, setIsRevealing] = useState(false);
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const correctTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const answerInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const recentWordIndicesRef = useRef<number[]>([]);
+  const recentWordKeysRef = useRef<string[]>([]);
 
   // ИЗБРАННЫЕ СЛОВА (по грузинскому слову)
   const [favoriteWords, setFavoriteWords] = useState<Set<string>>(
     () => new Set(),
   );
-  const promptTextRef = useRef<HTMLDivElement | null>(null);
 
 
   // рекорд уровня (тот же, что на карте)
@@ -306,6 +387,22 @@ export default function BlocksGame({
       clearTimeout(correctTimeoutRef.current);
       correctTimeoutRef.current = null;
     }
+  };
+
+  const resizeAnswerInput = () => {
+    const el = answerInputRef.current;
+    if (!el) return;
+
+    el.style.height = 'auto';
+    const cs = window.getComputedStyle(el);
+    const lineHeight = parseFloat(cs.lineHeight || '22');
+    const paddingTop = parseFloat(cs.paddingTop || '0');
+    const paddingBottom = parseFloat(cs.paddingBottom || '0');
+    const maxHeight = lineHeight * 2 + paddingTop + paddingBottom;
+    const nextHeight = Math.min(el.scrollHeight, maxHeight);
+
+    el.style.height = `${nextHeight}px`;
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
   };
 
   // очистка таймера при размонтировании
@@ -359,9 +456,19 @@ export default function BlocksGame({
   }, [answer]);
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem('deda_translation_direction', direction);
-    } catch { }
+    const syncDirectionFromSettings = () => {
+      const next = getSettings().translationDirection;
+      setDirection(prev => (prev === next ? prev : next));
+    };
+
+    syncDirectionFromSettings();
+    window.addEventListener('deda:settings-updated', syncDirectionFromSettings as EventListener);
+    return () => {
+      window.removeEventListener('deda:settings-updated', syncDirectionFromSettings as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
     setAnswer('');
     setError(false);
     setAnswerState('idle');
@@ -373,6 +480,10 @@ export default function BlocksGame({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [direction]);
+
+  useEffect(() => {
+    resizeAnswerInput();
+  }, [answer, answerFontPx]);
 
   // переключение избранного для конкретного грузинского слова
   const toggleFavorite = (ge: string) => {
@@ -393,6 +504,20 @@ export default function BlocksGame({
       }
       return next;
     });
+  };
+
+  const rememberRecentWord = (idx: number) => {
+    const w = words[idx];
+    if (!w) return;
+    const key = wordKey(w);
+    const maxRecent = Math.max(3, RECENT_WORD_GAP * 2);
+
+    recentWordIndicesRef.current = [...recentWordIndicesRef.current, idx].slice(
+      -maxRecent,
+    );
+    recentWordKeysRef.current = [...recentWordKeysRef.current, key].slice(
+      -maxRecent,
+    );
   };
 
   const gotoNextFromQueue = (markHard: boolean) => {
@@ -423,10 +548,22 @@ export default function BlocksGame({
           return [];
         }
 
-        const [nextIdx, ...rest] = q;
+        const picked = pickNextIndexFromQueue(
+          q,
+          words,
+          recentWordIndicesRef.current,
+          recentWordKeysRef.current,
+        );
+        if (!picked) {
+          setQuestion(null);
+          setCurrentWordIndex(null);
+          return [];
+        }
+        const { nextIdx, rest } = picked;
         const w = words[nextIdx];
 
         setCurrentWordIndex(nextIdx);
+        rememberRecentWord(nextIdx);
         setQuestion({ ge: w.ge, ru: w.ru });
         setAnswer('');
         setError(false);
@@ -444,6 +581,8 @@ export default function BlocksGame({
 
   useEffect(() => {
     if (hasWords) {
+      recentWordIndicesRef.current = [];
+      recentWordKeysRef.current = [];
       const newHard = new Set<number>();
       const cycle = buildCycle(words.length, newHard);
 
@@ -455,10 +594,25 @@ export default function BlocksGame({
         return;
       }
 
-      const [firstIdx, ...rest] = cycle;
+      const picked = pickNextIndexFromQueue(
+        cycle,
+        words,
+        recentWordIndicesRef.current,
+        recentWordKeysRef.current,
+      );
+      if (!picked) {
+        setQuestion(null);
+        setQueue([]);
+        setCurrentWordIndex(null);
+        setHardSet(newHard);
+        return;
+      }
+
+      const { nextIdx: firstIdx, rest } = picked;
       const w = words[firstIdx];
 
       setCurrentWordIndex(firstIdx);
+      rememberRecentWord(firstIdx);
       setQuestion({ ge: w.ge, ru: w.ru });
       setQueue(rest);
       setHardSet(newHard);
@@ -605,61 +759,29 @@ export default function BlocksGame({
   const promptText = question
     ? (direction === 'ge-ru' ? question.ge : question.ru)
     : '';
-  const [promptFontPx, setPromptFontPx] = useState(36);
-  const [promptLineHeight, setPromptLineHeight] = useState(1.15);
-
-  useLayoutEffect(() => {
-    const el = promptTextRef.current;
-    if (!el) return;
-
-    const fit = () => {
-      const maxSize = 32;
-      const minSize = 17;
-      const lh = 1.15;
-
-      let size = maxSize;
-      el.style.fontSize = `${size}px`;
-      el.style.lineHeight = String(lh);
-
-      while (size > minSize && el.scrollHeight > size * lh * 2 + 1) {
-        size -= 1;
-        el.style.fontSize = `${size}px`;
-      }
-
-      setPromptFontPx(size);
-      setPromptLineHeight(lh);
-    };
-
-    fit();
-    window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
-  }, [promptText, direction]);
-  const inputPlaceholder =
-    direction === 'ge-ru'
-      ? 'Введите перевод на русский'
-      : 'Введите перевод на грузинский';
-  const directionAction = (
-    <button
-      type="button"
-      onClick={() => setDirection(prev => (prev === 'ge-ru' ? 'ru-ge' : 'ge-ru'))}
-      className="rounded-xl border border-orange-300/55 bg-orange-300/[0.1] px-3 py-1 text-xs font-semibold text-orange-100 shadow-[0_0_12px_rgba(251,146,60,0.22)] transition-all hover:bg-orange-300/[0.14] hover:text-white hover:shadow-[0_0_16px_rgba(251,146,60,0.3)]"
-      title="Сменить направление перевода"
-    >
-      {direction === 'ge-ru' ? '🇬🇪 → 🇷🇺' : '🇷🇺 → 🇬🇪'}
-    </button>
-  );
+  const inputPlaceholder = 'Введите ответ';
+  const isAnswerRowActive =
+    mode === 'question' &&
+    !showCorrect &&
+    (isAnswerFocused || normalizeRu(answer).length > 0);
+  const currentCorrectAnswer = question
+    ? (direction === 'ge-ru' ? question.ru : question.ge)
+    : '';
+  const answerCells = useMemo(() => {
+    if (!question || !normalizeRu(answer) || showCorrect) return [];
+    return evaluateLetterCells(answer, currentCorrectAnswer);
+  }, [answer, currentCorrectAnswer, question, showCorrect]);
 
   return (
     <div className="flex w-full justify-center -mt-3 md:-mt-4">
-      <div className="flex w-full max-w-5xl items-start gap-4 md:gap-6 lg:gap-7 px-2 sm:px-4 md:px-6 py-4 md:py-6 lg:py-8">
+      <div className="relative flex w-full max-w-5xl flex-col lg:flex-row items-stretch lg:items-start gap-5 md:gap-7 lg:gap-9 rounded-[28px] bg-transparent px-3 sm:px-5 md:px-7 py-5 md:py-6 lg:py-8">
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
-          className="shrink-0 lg:ml-[-35px]"
-          style={{ width: 'clamp(210px, 24vw, 300px)' }}
+          className="w-full lg:w-[clamp(210px,24vw,300px)] lg:shrink-0 lg:ml-[-35px]"
         >
           <div
             className="relative mt-0"
-            style={{ height: 'min(68vh, 600px)' }}
+            style={{ height: 'min(67dvh, 620px)' }}
           >
             {shouldRenderQuestionPanel && (
               <div
@@ -672,15 +794,12 @@ export default function BlocksGame({
               >
                 <div className="flex flex-col items-start justify-start h-full px-2 pt-5">
                   {hasWords && question && (
-                    <>
+                    <div className="w-full lg:translate-x-3 rounded-3xl bg-transparent p-4 md:p-5">
                       {/* строка с грузинским словом и кнопкой избранного */}
                       <div className="labelRow mb-6 flex items-center gap-2">
                         <div
-                          ref={promptTextRef}
-                          className="max-w-full break-words overflow-visible text-neutral-100 font-semibold tracking-[-0.01em]"
+                          className="max-w-full break-words overflow-visible text-slate-700 font-normal tracking-[-0.01em] text-[24px] leading-[1.22]"
                           style={{
-                            fontSize: `${promptFontPx}px`,
-                            lineHeight: promptLineHeight,
                             overflowWrap: 'break-word',
                             wordBreak: 'normal',
                           }}
@@ -689,53 +808,79 @@ export default function BlocksGame({
                         </div>
                       </div>
 
-                      <form onSubmit={handleSubmit} className="mb-2 w-full">
-                        <input
-                          type="text"
-                          value={answer}
-                          onChange={e => {
-                            setAnswer(e.target.value);
-                            if (error) setError(false);
-                            if (answerState !== 'idle') setAnswerState('idle');
-                          }}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter') e.currentTarget.form?.requestSubmit();
-                          }}
-                          placeholder={inputPlaceholder}
-                          readOnly={showCorrect}
-                          autoComplete="off"
-                          spellCheck={false}
-                          className={
-                            'w-full h-14 px-4 rounded-xl border outline-none tracking-wide transition-all duration-200 placeholder:text-[clamp(0.5rem,0.75vw,0.7rem)] placeholder:text-neutral-400 ' +
-                            (answerState === 'wrong' && !showCorrect
-                              ? 'border-red-400 bg-red-700/10 text-white'
-                              : answerState === 'correct'
-                                ? 'border-green-300 bg-green-400/5 text-white'
-                                : 'border-orange-300/55 bg-[#0b1120]/60 text-white shadow-[0_0_0_1px_rgba(251,146,60,0.2)]')
-                          }
-                          style={{ fontSize: `${answerFontPx}px` }}
-                        />
-                      </form>
+                      <div
+                        className={`-mt-2 mb-2 w-full rounded-2xl transition-all duration-200 ${
+                          isAnswerRowActive
+                            ? 'bg-indigo-50/35 shadow-[0_6px_14px_rgba(99,102,241,0.1)]'
+                            : 'bg-transparent'
+                        }`}
+                      >
+                        <form onSubmit={handleSubmit} className="w-full md:-mt-0.5">
+                          <textarea
+                            ref={answerInputRef}
+                            value={answer}
+                            onChange={e => {
+                              const nextValue = e.target.value;
+                              setAnswer(nextValue);
+                              if (error) setError(false);
+                              if (!question || showCorrect) {
+                                if (answerState !== 'idle') setAnswerState('idle');
+                                return;
+                              }
+                              if (!normalizeRu(nextValue)) {
+                                if (answerState !== 'idle') setAnswerState('idle');
+                                return;
+                              }
+                              const correctAnswer = direction === 'ge-ru' ? question.ru : question.ge;
+                              const liveCorrect = isSameAnswer(nextValue, correctAnswer);
+                              setAnswerState(liveCorrect ? 'correct' : 'idle');
+                              requestAnimationFrame(resizeAnswerInput);
+                            }}
+                            onFocus={() => setIsAnswerFocused(true)}
+                            onBlur={() => setIsAnswerFocused(false)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                e.currentTarget.form?.requestSubmit();
+                              }
+                            }}
+                            placeholder={inputPlaceholder}
+                            readOnly={showCorrect}
+                            autoComplete="off"
+                            spellCheck={false}
+                            rows={1}
+                            className={
+                              'w-full min-h-[60px] max-h-[92px] px-6 py-3 rounded-2xl border-0 outline-none tracking-[-0.01em] leading-[1.2] resize-none overflow-hidden transition-all duration-200 placeholder:font-semibold placeholder:text-[#8892b0] placeholder:text-[18px] sm:placeholder:text-[20px] focus:ring-0 focus:shadow-none ' +
+                              (answerState === 'wrong' && !showCorrect
+                                ? 'animate-input-shake bg-red-50/85 text-slate-800'
+                                : answerState === 'correct'
+                                  ? 'bg-white/70 text-slate-800 shadow-none'
+                                  : 'bg-white/70 text-slate-800 shadow-none')
+                            }
+                            style={{ fontSize: `${Math.max(16, answerFontPx)}px` }}
+                          />
+                        </form>
+                      </div>
 
                       <div className="mt-2 inline-flex items-center gap-2">
                         <button
                           type="button"
                           onClick={handleSkipQuestion}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-2.5 py-1.5 text-sm text-neutral-300 opacity-70 transition-all duration-150 hover:opacity-100 hover:bg-white/[0.05] hover:text-white"
+                          className="inline-flex h-10 items-center gap-2 rounded-lg border border-transparent bg-transparent px-2 text-[17px] font-medium text-[#556182] transition-all duration-150 hover:bg-slate-100/60 hover:text-[#3f4967]"
                           disabled={showCorrect}
                         >
-                          <span className="text-lg">↻</span>
-                          <span>Обновить</span>
+                          <span className="inline-block -translate-y-[3px] text-[26px] leading-none font-normal">⟳</span>
+                          <span className="leading-none">Обновить</span>
                         </button>
                         {!isFavoritesEpisode && (
                           <button
                             type="button"
                             onClick={() => toggleFavorite(question.ge)}
                             className={
-                              'h-9 w-9 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-lg transition-all duration-150 ' +
+                              'h-10 w-10 inline-flex items-center justify-center rounded-xl border-0 bg-transparent text-[20px] transition-all duration-150 ' +
                               (isCurrentFavorite
-                                ? 'text-yellow-300 hover:text-yellow-400'
-                                : 'text-slate-400 hover:text-slate-200')
+                                ? 'text-amber-500 hover:text-amber-600'
+                                : 'text-slate-400 hover:text-slate-600')
                             }
                             title={
                               isCurrentFavorite
@@ -749,17 +894,17 @@ export default function BlocksGame({
                       </div>
 
                       {error && !showCorrect && (
-                        <div className="mt-2 text-xs text-red-400">
+                        <div className="mt-2 text-[13px] text-red-500">
                           {attempts >= 3
                             ? 'Неверно, сейчас покажем верный ответ.'
                             : 'Неверно, попробуй ещё раз.'}
                         </div>
                       )}
-                    </>
+                    </div>
                   )}
 
                   {!hasWords && (
-                    <div className="text-sm text-neutral-400">
+                    <div className="text-sm text-slate-500">
                       В этом эпизоде пока нет слов.
                     </div>
                   )}
@@ -778,7 +923,7 @@ export default function BlocksGame({
         </div>
 
         {/* ПРАВАЯ ОБЛАСТЬ: игровое поле */}
-        <div className="flex-1 flex justify-start -ml-1 md:-ml-2 lg:-ml-6 xl:-ml-8">
+        <div className="w-full lg:flex-1 flex justify-center lg:justify-start ml-0 lg:ml-1 xl:ml-2 -mt-3 md:-mt-4 lg:-mt-6">
           <BlocksGrid
             roundId={roundId}
             onRoundFinished={handleRoundFinished}
@@ -787,7 +932,7 @@ export default function BlocksGame({
             initialBestScore={bestScore}
             onBestScoreChange={handleBestScoreChange}
             topActions={topActions}
-            leftOfCatAction={directionAction}
+            answerState={answerState}
           />
         </div>
       </div>
