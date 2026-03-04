@@ -25,7 +25,7 @@ type Mode = 'question' | 'pieces' | 'gameOver';
 type AnswerState = 'idle' | 'wrong' | 'correct';
 type LetterCellState = 'correct' | 'present' | 'absent';
 type TranslationDirection = 'ge-ru' | 'ru-ge';
-const RECENT_WORD_GAP = 3;
+const RECENT_WORD_GAP = 4;
 
 // ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
 const FAVORITES_KEY = 'deda_fav_ge';
@@ -303,6 +303,7 @@ function pickNextIndexFromQueue(
   const recentWindow = Math.max(1, Math.min(RECENT_WORD_GAP, words.length - 1));
   const recentIdxSet = new Set(recentIndices.slice(-recentWindow));
   const recentKeySet = new Set(recentKeys.slice(-recentWindow));
+  const lastKey = recentKeys[recentKeys.length - 1] ?? null;
 
   let pickPos = queue.findIndex(idx => {
     const w = words[idx];
@@ -312,8 +313,39 @@ function pickNextIndexFromQueue(
     return true;
   });
 
-  // если все кандидаты "близкие", берём первый, чтобы не блокировать игру
-  if (pickPos === -1) pickPos = 0;
+  // fallback: выбираем наименее конфликтный вариант
+  // и отдельно стараемся никогда не давать тот же ключ подряд
+  if (pickPos === -1) {
+    if (lastKey) {
+      const nonSameAsLast = queue.findIndex(idx => {
+        const w = words[idx];
+        return !!w && wordKey(w) !== lastKey;
+      });
+      if (nonSameAsLast !== -1) {
+        pickPos = nonSameAsLast;
+      }
+    }
+
+    if (pickPos === -1) {
+      let bestPos = 0;
+      let bestScore = Number.NEGATIVE_INFINITY;
+      for (let i = 0; i < queue.length; i += 1) {
+        const idx = queue[i];
+        const w = words[idx];
+        if (!w) continue;
+        const key = wordKey(w);
+        let score = 0;
+        if (!recentIdxSet.has(idx)) score += 2;
+        if (!recentKeySet.has(key)) score += 3;
+        if (lastKey && key !== lastKey) score += 4;
+        if (score > bestScore) {
+          bestScore = score;
+          bestPos = i;
+        }
+      }
+      pickPos = bestPos;
+    }
+  }
 
   const nextIdx = queue[pickPos];
   const rest = [...queue.slice(0, pickPos), ...queue.slice(pickPos + 1)];
@@ -682,6 +714,13 @@ export default function BlocksGame({
         correctTimeoutRef.current = null;
       }, 180);
     } else {
+      if (currentWordIndex !== null) {
+        setHardSet(prev => {
+          const next = new Set(prev);
+          next.add(currentWordIndex);
+          return next;
+        });
+      }
       setAnswerState('wrong');
       setAttempts(prev => {
         const next = prev + 1;
@@ -774,10 +813,10 @@ export default function BlocksGame({
 
   return (
     <div className="flex w-full justify-center -mt-3 md:-mt-4">
-      <div className="relative flex w-full max-w-5xl flex-col lg:flex-row items-stretch lg:items-start gap-5 md:gap-7 lg:gap-9 rounded-[28px] bg-transparent px-3 sm:px-5 md:px-7 py-5 md:py-6 lg:py-8">
+      <div className="relative flex w-full max-w-5xl flex-row items-start gap-2 sm:gap-4 md:gap-6 lg:gap-8 rounded-[28px] bg-transparent px-1 sm:px-3 md:px-6 py-3 md:py-5 lg:py-7">
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
-          className="w-full lg:w-[clamp(210px,24vw,300px)] lg:shrink-0 lg:ml-[-35px]"
+          className="w-[clamp(220px,33vw,390px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]"
         >
           <div
             className="relative mt-0"
@@ -794,11 +833,11 @@ export default function BlocksGame({
               >
                 <div className="flex flex-col items-start justify-start h-full px-2 pt-5">
                   {hasWords && question && (
-                    <div className="w-full lg:translate-x-3 rounded-3xl bg-transparent p-4 md:p-5">
+                    <div className="w-full lg:translate-x-3 rounded-3xl bg-transparent p-2.5 sm:p-3 md:p-4">
                       {/* строка с грузинским словом и кнопкой избранного */}
-                      <div className="labelRow mb-6 flex items-center gap-2">
+                      <div className="labelRow mb-3 sm:mb-4 md:mb-5 flex items-center gap-2">
                         <div
-                          className="max-w-full break-words overflow-visible text-slate-700 font-normal tracking-[-0.01em] text-[24px] leading-[1.22]"
+                          className="max-w-full break-words overflow-visible text-slate-700 font-normal tracking-[-0.01em] text-[clamp(22px,2.5vw,34px)] leading-[1.22]"
                           style={{
                             overflowWrap: 'break-word',
                             wordBreak: 'normal',
@@ -850,7 +889,7 @@ export default function BlocksGame({
                             spellCheck={false}
                             rows={1}
                             className={
-                              'w-full min-h-[60px] max-h-[92px] px-6 py-3 rounded-2xl border-0 outline-none tracking-[-0.01em] leading-[1.2] resize-none overflow-hidden transition-all duration-200 placeholder:font-semibold placeholder:text-[#8892b0] placeholder:text-[18px] sm:placeholder:text-[20px] focus:ring-0 focus:shadow-none ' +
+                              'w-full min-h-[clamp(56px,7.5vh,84px)] max-h-[clamp(96px,14vh,132px)] px-[clamp(14px,2.4vw,26px)] py-[clamp(9px,1.3vw,14px)] rounded-2xl border-0 outline-none tracking-[-0.01em] leading-[1.2] resize-none overflow-hidden transition-all duration-200 placeholder:font-semibold placeholder:text-[#8892b0] placeholder:text-[clamp(16px,2.1vw,28px)] focus:ring-0 focus:shadow-none ' +
                               (answerState === 'wrong' && !showCorrect
                                 ? 'animate-input-shake bg-red-50/85 text-slate-800'
                                 : answerState === 'correct'
@@ -862,14 +901,14 @@ export default function BlocksGame({
                         </form>
                       </div>
 
-                      <div className="mt-2 inline-flex items-center gap-2">
+                      <div className="mt-2 inline-flex w-full items-center gap-[clamp(6px,1.1vw,12px)] flex-wrap">
                         <button
                           type="button"
                           onClick={handleSkipQuestion}
-                          className="inline-flex h-10 items-center gap-2 rounded-lg border border-transparent bg-transparent px-2 text-[17px] font-medium text-[#556182] transition-all duration-150 hover:bg-slate-100/60 hover:text-[#3f4967]"
+                          className="inline-flex h-[clamp(36px,5vh,48px)] items-center gap-2 rounded-lg border border-transparent bg-transparent px-[clamp(6px,1.2vw,10px)] text-[clamp(17px,2.1vw,24px)] font-medium text-[#556182] transition-all duration-150 hover:bg-slate-100/60 hover:text-[#3f4967]"
                           disabled={showCorrect}
                         >
-                          <span className="inline-block -translate-y-[3px] text-[26px] leading-none font-normal">⟳</span>
+                          <span className="inline-block -translate-y-[3px] text-[clamp(24px,3.1vw,34px)] leading-none font-normal">⟳</span>
                           <span className="leading-none">Обновить</span>
                         </button>
                         {!isFavoritesEpisode && (
@@ -877,7 +916,7 @@ export default function BlocksGame({
                             type="button"
                             onClick={() => toggleFavorite(question.ge)}
                             className={
-                              'h-10 w-10 inline-flex items-center justify-center rounded-xl border-0 bg-transparent text-[20px] transition-all duration-150 ' +
+                              'h-[clamp(36px,5vh,48px)] w-[clamp(36px,5vh,48px)] inline-flex shrink-0 items-center justify-center rounded-xl border-0 bg-transparent text-[clamp(22px,2.8vw,30px)] transition-all duration-150 ' +
                               (isCurrentFavorite
                                 ? 'text-amber-500 hover:text-amber-600'
                                 : 'text-slate-400 hover:text-slate-600')
@@ -923,7 +962,7 @@ export default function BlocksGame({
         </div>
 
         {/* ПРАВАЯ ОБЛАСТЬ: игровое поле */}
-        <div className="w-full lg:flex-1 flex justify-center lg:justify-start ml-0 lg:ml-1 xl:ml-2 -mt-3 md:-mt-4 lg:-mt-6">
+        <div className="flex-1 min-w-0 flex justify-center lg:justify-start ml-0 lg:ml-1 xl:ml-2 -mt-2 md:-mt-4 lg:-mt-6">
           <BlocksGrid
             roundId={roundId}
             onRoundFinished={handleRoundFinished}

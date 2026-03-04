@@ -5,7 +5,21 @@
 /* --------- БАЗОВЫЕ НАСТРОЙКИ --------- */
 
 :root {
+    color-scheme: light;
+    --app-bg: linear-gradient(to bottom, #f7f8fc 0%, #f3f5fb 55%, #eef2f9 100%);
+    --app-text: #1f2937;
+    --header-bg: #ffffff;
+    --header-text: #334155;
+    --header-border: rgba(203, 213, 225, 0.8);
+}
+
+html[data-theme='dark'] {
     color-scheme: dark;
+    --app-bg: linear-gradient(to bottom, #0b1020 0%, #0f172a 55%, #111827 100%);
+    --app-text: #e2e8f0;
+    --header-bg: #0f172a;
+    --header-text: #e2e8f0;
+    --header-border: rgba(51, 65, 85, 0.75);
 }
 
 html {
@@ -13,7 +27,9 @@ html {
 }
 
 body {
-    @apply bg-slate-100 text-slate-800 min-h-screen;
+    @apply min-h-screen;
+    background: var(--app-bg);
+    color: var(--app-text);
 }
 
 /* --------- УТИЛИТНЫЕ КОМПОНЕНТЫ --------- */

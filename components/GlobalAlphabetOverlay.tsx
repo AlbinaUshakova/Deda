@@ -250,7 +250,7 @@ export default function GlobalAlphabetOverlay() {
 
   return (
     <div
-      className={`hidden lg:block fixed left-16 top-[86px] z-[140] w-[224px] xl:w-[246px] transition-all duration-200 ease-out ${
+      className={`hidden min-[1366px]:block fixed left-4 top-[86px] z-[140] w-[224px] xl:w-[246px] transition-all duration-200 ease-out ${
         open
           ? 'opacity-100 translate-y-0 scale-100'
           : 'opacity-0 -translate-y-1 scale-[0.98] pointer-events-none select-none'

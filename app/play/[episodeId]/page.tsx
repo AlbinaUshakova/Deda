@@ -130,8 +130,8 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   const pageTitle = title || getEpisodeFallbackTitle(episodeId);
 
   return (
-    <main className={`${nunito.className} relative min-h-screen bg-gradient-to-b from-[#f7f8fc] via-[#f3f5fb] to-[#eef2f9] text-slate-800`}>
-      <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
+    <main className={`${nunito.className} relative min-h-screen bg-transparent text-slate-800`}>
+      <div className="mx-auto w-full px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
         <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
           <div className="relative flex min-h-[52px] items-center justify-end">
             <div className="ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">
@@ -151,7 +151,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
           </div>
         </div>
 
-        <div className="relative z-50 max-w-[820px]">
+        <div className="relative z-50 w-full">
           {isLoading ? null : hasWords ? (
             <>
               <BlocksGame

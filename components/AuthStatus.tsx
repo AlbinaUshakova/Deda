@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import SettingsPanel from '@/components/SettingsPanel';
 import ProgressPanel from '@/components/ProgressPanel';
 import FeedbackPanel from '@/components/FeedbackPanel';
+import { getSettings, setSettings, type Settings } from '@/lib/settings';
 
 type UserInfo = {
     id: string;
@@ -21,6 +22,7 @@ export default function AuthStatus() {
     const [showSettings, setShowSettings] = useState(false);
     const [showProgress, setShowProgress] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
+    const [theme, setTheme] = useState<Settings['theme']>('light');
     const menuRef = useRef<HTMLDivElement | null>(null);
     const emitProfileMenuOpened = () => {
         if (typeof window === 'undefined') return;
@@ -37,6 +39,12 @@ export default function AuthStatus() {
             if (next) emitProfileMenuOpened();
             return next;
         });
+    };
+    const closeAllProfileLayers = () => {
+        setOpen(false);
+        setShowSettings(false);
+        setShowProgress(false);
+        setShowFeedback(false);
     };
 
     if (!supabase) {
@@ -124,6 +132,48 @@ export default function AuthStatus() {
             cancelled = true;
             subscription.unsubscribe();
             document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        const syncTheme = () => setTheme(getSettings().theme);
+        syncTheme();
+        window.addEventListener('deda:settings-updated', syncTheme as EventListener);
+        return () => {
+            window.removeEventListener('deda:settings-updated', syncTheme as EventListener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const onToggleAlphabet = () => {
+            closeAllProfileLayers();
+        };
+        const onAlphabetOverlayState = (event: Event) => {
+            const custom = event as CustomEvent<{ open?: boolean }>;
+            if (custom.detail?.open) {
+                closeAllProfileLayers();
+            }
+        };
+
+        window.addEventListener('deda:toggle-alphabet', onToggleAlphabet as EventListener);
+        window.addEventListener('deda:alphabet-overlay-state', onAlphabetOverlayState as EventListener);
+
+        return () => {
+            window.removeEventListener('deda:toggle-alphabet', onToggleAlphabet as EventListener);
+            window.removeEventListener('deda:alphabet-overlay-state', onAlphabetOverlayState as EventListener);
+        };
+    }, []);
+
+    useEffect(() => {
+        const onResize = () => {
+            if (window.innerWidth < 1580) {
+                closeAllProfileLayers();
+            }
+        };
+        onResize();
+        window.addEventListener('resize', onResize);
+        return () => {
+            window.removeEventListener('resize', onResize);
         };
     }, []);
 
@@ -217,6 +267,42 @@ export default function AuthStatus() {
                         >
                             Помощь и обратная связь
                         </button>
+
+                        <div className="px-2.5 pt-1 pb-1 border-t border-slate-200/90">
+                            <div className="mb-1 text-[10px] uppercase tracking-[0.08em] text-slate-500">
+                                Тема
+                            </div>
+                            <div className="grid grid-cols-2 gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSettings({ theme: 'light' });
+                                        setTheme('light');
+                                    }}
+                                    className={`rounded-md px-2 py-1 text-[10px] font-medium transition ${
+                                        theme === 'light'
+                                            ? 'bg-indigo-600 text-white'
+                                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                    }`}
+                                >
+                                    Светлая
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSettings({ theme: 'dark' });
+                                        setTheme('dark');
+                                    }}
+                                    className={`rounded-md px-2 py-1 text-[10px] font-medium transition ${
+                                        theme === 'dark'
+                                            ? 'bg-indigo-600 text-white'
+                                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                    }`}
+                                >
+                                    Тёмная
+                                </button>
+                            </div>
+                        </div>
 
                         {/* Выйти */}
                         <button

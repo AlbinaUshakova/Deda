@@ -456,13 +456,13 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen bg-gradient-to-b from-[#f7f8fc] via-[#f3f5fb] to-[#eef2f9] px-3 sm:px-5 lg:px-7 min-[1366px]:px-8 min-[1512px]:px-9 min-[1920px]:px-11 py-4 min-[1920px]:py-6 relative overflow-hidden flex flex-col"
+      className="min-h-screen bg-transparent px-3 sm:px-5 lg:px-6 min-[1366px]:px-7 min-[1512px]:px-8 min-[1920px]:px-9 py-3 min-[1920px]:py-6 [@media(max-height:980px)]:py-2 relative overflow-hidden flex flex-col"
     >
-      <div className="relative mx-auto w-full max-w-[1500px] flex-1 flex flex-col justify-start">
+      <div className="relative mx-auto w-full flex-1 flex flex-col justify-start">
       {/* алфавит + сетка эпизодов */}
-      <section className="mt-2 min-[1512px]:mt-2.5 min-[1700px]:mt-3 min-[1700px]:pl-10 min-[2200px]:pl-12">
-        <div className="relative mx-auto w-full max-w-[1500px]">
-          <aside className="hidden lg:block fixed left-16 top-[86px] z-20 h-fit w-[224px] xl:w-[246px]">
+      <section className="mt-1.5 min-[1512px]:mt-2 min-[1700px]:mt-3 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-1">
+        <div className="relative mx-auto w-full">
+          <aside className="hidden min-[1366px]:block fixed left-4 top-[86px] z-20 h-fit w-[224px] xl:w-[246px]">
             <div
               className={`origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)] transition-all duration-200 ${showAlphabet ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none select-none'}`}
               aria-hidden={!showAlphabet}
@@ -502,9 +502,40 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+            <div
+              className={`group/cat absolute left-2 top-[calc(100%+12px)] z-30 transition-all duration-200 ${
+                showAlphabet ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'
+              }`}
+              onMouseEnter={() => setShowCatHint(showAlphabet)}
+              onMouseLeave={() => setShowCatHint(false)}
+            >
+              <div
+                className={`pointer-events-none absolute bottom-[calc(100%+2px)] left-[66%] w-[138px] z-40 transition-all ${showCatHint ? 'opacity-90 group-hover/cat:opacity-100 translate-x-0' : 'opacity-0 translate-x-2'}`}
+              >
+                <div className="relative w-[148px]">
+                  <svg viewBox="0 0 320 220" className="w-full h-auto drop-shadow-[0_12px_20px_rgba(0,0,0,0.35)]">
+                    <path
+                      d="M70 170 C35 170, 20 145, 30 120 C10 105, 18 72, 50 68 C62 40, 98 30, 122 48 C145 20, 190 20, 212 50 C245 40, 275 58, 280 88 C305 98, 312 128, 292 148 C282 162, 262 170, 240 170 C220 186, 96 186, 70 170 Z"
+                      fill="rgba(255,255,255,0.85)"
+                      stroke="#64748b"
+                      strokeWidth="2.5"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center px-5 translate-y-1 text-[8px] leading-snug text-center font-semibold tracking-tight text-slate-900">
+                    Нажми на букву — подскажу, как она звучит
+                  </div>
+                </div>
+              </div>
+              <img
+                src="/images/deda-cat.png"
+                alt="Кот Deda, читает книгу"
+                className="w-[260px] drop-shadow-[0_10px_24px_rgba(0,0,0,0.5)] animate-cloud"
+              />
+            </div>
           </aside>
-          <div className="relative mx-auto w-full max-w-[700px] sm:max-w-[780px] lg:max-w-[1080px] 2xl:max-w-[1240px] min-[1700px]:max-w-[1420px]">
-            <div className="grid grid-cols-1 sm:[grid-template-columns:repeat(2,max-content)] lg:[grid-template-columns:repeat(3,max-content)] 2xl:[grid-template-columns:repeat(4,max-content)] min-[1700px]:[grid-template-columns:repeat(5,max-content)] gap-1.5 justify-center">
+          <div className="relative mx-auto w-full max-w-[980px] [@media(max-height:980px)]:max-w-[900px]">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 [@media(max-height:980px)]:gap-2 justify-center">
               {normalEpisodes.map((ep, i) => {
                 const best = progress[ep.id] ?? 0;
                 const letters = lettersByEp[ep.id] ?? [];
@@ -520,14 +551,6 @@ export default function HomePage() {
                       : status === 'current'
                         ? 'text-yellow-600'
                         : 'text-slate-500';
-                const translitTone =
-                  status === 'mastered'
-                    ? 'text-emerald-600/75'
-                    : status === 'almost'
-                      ? 'text-orange-600/70'
-                      : status === 'current'
-                        ? 'text-yellow-700/85'
-                        : 'text-slate-500/70';
                 const progressTone =
                   status === 'mastered'
                     ? 'bg-emerald-400/90'
@@ -538,18 +561,18 @@ export default function HomePage() {
                         : 'bg-slate-600/80';
 
                 return (
-                  <div key={ep.id} className="relative w-[228px] min-[1700px]:w-[236px]">
+                  <div key={ep.id} className="relative w-full min-w-0">
                     <Link href={`/study/${ep.id}`} legacyBehavior>
                       <a
-                        className={`lesson-card relative w-full aspect-[1/0.8] rounded-2xl bg-white border border-slate-200 flex flex-col items-center justify-center gap-1 transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(15,23,42,0.12)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-indigo-300 hover:bg-slate-50' : 'cursor-not-allowed opacity-65'}`}
+                        className={`lesson-card relative w-full aspect-[1/0.8] [@media(max-height:980px)]:aspect-[1/0.68] rounded-2xl bg-white border border-slate-200 flex flex-col items-center justify-center gap-1 transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(15,23,42,0.12)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-indigo-300 hover:bg-slate-50' : 'cursor-not-allowed opacity-65'}`}
                         onClick={e => {
                           if (status === 'locked') e.preventDefault();
                         }}
                         aria-disabled={status === 'locked'}
                       >
                         <div className="absolute top-3 left-4 flex flex-col">
-                          <span className="text-base font-semibold text-slate-700">Урок {i + 1}</span>
-                          <span className="text-sm text-slate-500">Изучаем буквы</span>
+                          <span className="text-[clamp(13px,1.05vw,16px)] font-semibold text-slate-700">Урок {i + 1}</span>
+                          <span className="text-[clamp(11px,0.92vw,14px)] text-slate-500">Изучаем буквы</span>
                         </div>
                         {status === 'locked' && (
                           <div className="absolute top-3 right-3 text-sm text-slate-500/90" aria-hidden="true">
@@ -558,20 +581,14 @@ export default function HomePage() {
                         )}
 
                         {/* буквы с транскрипцией */}
-                        <div className="flex flex-wrap justify-center gap-2 mb-1 min-h-[2rem]">
+                        <div className="absolute left-3 right-3 top-1/2 -translate-y-1/2 flex flex-wrap content-center justify-center gap-1.5 sm:gap-2 overflow-visible">
                           {letters.map(ch => {
-                            const tr = geLetterToTranslit(ch);
                             return (
                               <div
                                 key={ch}
                                 className={`flex flex-col items-center ${letterTone} drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]`}
                               >
-                                <span className="text-[2.05rem] leading-none">{ch}</span>
-                                {tr && (
-                                  <span className={`text-sm ${translitTone} leading-tight mt-1 tracking-wide`}>
-                                    {tr}
-                                  </span>
-                                )}
+                                <span className="text-[clamp(1.08rem,1.7vw,2.05rem)] leading-none">{ch}</span>
                               </div>
                             );
                           })}
@@ -591,7 +608,7 @@ export default function HomePage() {
                                 style={{ width: `${progressPercent}%` }}
                               />
                             </div>
-                            <span className="text-[11px] text-slate-500 whitespace-nowrap">{best}/{lessonTargetScore}</span>
+                            <span className="text-[clamp(10px,0.82vw,11px)] text-slate-500 whitespace-nowrap">{best}/{lessonTargetScore}</span>
                           </div>
                         </div>
                         {isRecommended && (
@@ -618,7 +635,7 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все уроки */}
-      <section className="mt-4 min-[1512px]:mt-5 min-[1700px]:mt-6 flex flex-wrap justify-center gap-3 max-w-6xl mx-auto">
+      <section className="mt-3 min-[1512px]:mt-4 min-[1700px]:mt-6 [@media(max-height:980px)]:mt-1.5 flex flex-wrap justify-center gap-3 max-w-6xl mx-auto">
         {specials.map(ep => {
           const isFav = ep.id === 'favorites';
           const cleanTitle = ep.title.replace(/^⭐\s*/, '');
@@ -643,36 +660,6 @@ export default function HomePage() {
         })}
       </section>
 
-      {/* кот Deda слева у поля (привязан к контейнеру, не к вьюпорту) */}
-      <div
-        className="group/cat hidden lg:block absolute left-3 bottom-6 z-30"
-        onMouseEnter={() => setShowCatHint(showAlphabet)}
-        onMouseLeave={() => setShowCatHint(false)}
-      >
-        <div
-          className={`pointer-events-none absolute bottom-[calc(100%+2px)] left-[66%] w-[138px] z-40 transition-all ${showCatHint ? 'opacity-90 group-hover/cat:opacity-100 translate-x-0' : 'opacity-0 translate-x-2'}`}
-        >
-          <div className="relative w-[148px]">
-            <svg viewBox="0 0 320 220" className="w-full h-auto drop-shadow-[0_12px_20px_rgba(0,0,0,0.35)]">
-              <path
-                d="M70 170 C35 170, 20 145, 30 120 C10 105, 18 72, 50 68 C62 40, 98 30, 122 48 C145 20, 190 20, 212 50 C245 40, 275 58, 280 88 C305 98, 312 128, 292 148 C282 162, 262 170, 240 170 C220 186, 96 186, 70 170 Z"
-                fill="rgba(255,255,255,0.85)"
-                stroke="#64748b"
-                strokeWidth="2.5"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center px-5 translate-y-1 text-[8px] leading-snug text-center font-semibold tracking-tight text-slate-900">
-              Нажми на букву — подскажу, как она звучит
-            </div>
-          </div>
-        </div>
-        <img
-          src="/images/deda-cat.png"
-          alt="Кот Deda, читает книгу"
-          className="w-[260px] drop-shadow-[0_10px_24px_rgba(0,0,0,0.5)] animate-cloud"
-        />
-      </div>
       </div>
     </main>
   );

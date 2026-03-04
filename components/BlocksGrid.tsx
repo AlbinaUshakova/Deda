@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom';
 
 const BOARD_SIZE = 8;
 const PREVIEW_SCALE = 0.6;
-const BOARD_PIXEL_SIZE = 'min(67dvh, clamp(235px, 100%, 620px))';
+const BOARD_PIXEL_SIZE = 'min(64dvh, clamp(180px, 100%, 620px))';
 
 type CellColor = string | null;
 type ShapeCell = { r: number; c: number };
@@ -923,7 +923,10 @@ export default function BlocksGrid({
       {/* палитра фигур слева */}
       {paletteContainer &&
         createPortal(
-          <div className="flex h-full flex-col items-center justify-evenly overflow-hidden py-1">
+          <div
+            className="flex h-full flex-col items-center justify-center gap-[clamp(16px,2.8vh,30px)] overflow-hidden py-1"
+            style={{ transform: `translateY(-${Math.round(cellSize * 0.85)}px)` }}
+          >
             {bag.map(piece => {
               const widthCells =
                 Math.max(...piece.shape.cells.map(c => c.c)) + 1;
