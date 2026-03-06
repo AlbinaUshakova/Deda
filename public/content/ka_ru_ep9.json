@@ -109,6 +109,36 @@
       "ge_text": "მე არ მიყვარს ხაჭო",
       "ru_meaning": "я не люблю творог",
       "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა ხაჭაპური",
+      "ru_meaning": "я хочу хачапури",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ტელეფონი მჭირდება",
+      "ru_meaning": "мне нужен телефон",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს კატები",
+      "ru_meaning": "я люблю кошек",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა ჰამბურგერი",
+      "ru_meaning": "я хочу гамбургер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სად არის სასტუმრო?",
+      "ru_meaning": "где отель?",
+      "audio_url": ""
     }
   ]
 }

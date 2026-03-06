@@ -112,6 +112,42 @@
       "ge_text": "აი ხუთი უთო",
       "reading": "ai khuti uto",
       "ru_meaning": "вот 5 утюгов"
+    },
+    {
+      "type": "word",
+      "ge_text": "სია",
+      "reading": "sia",
+      "ru_meaning": "список"
+    },
+    {
+      "type": "word",
+      "ge_text": "სოსო",
+      "reading": "soso",
+      "ru_meaning": "Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ათი საათი",
+      "reading": "ai ati saati",
+      "ru_meaning": "вот десять часов"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ათასი საათი",
+      "reading": "ai atasi saati",
+      "ru_meaning": "вот тысяча часов"
+    },
+    {
+      "type": "word",
+      "ge_text": "სოსოს ასი საათი",
+      "reading": "sosos asi saati",
+      "ru_meaning": "у Сосо сто часов"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი საათი",
+      "reading": "ai saati",
+      "ru_meaning": "вот часы"
     }
   ]
 }

@@ -89,6 +89,7 @@ export default function FlashcardDeck({
   }, []);
 
   const [idx, setIdx] = useState(0);
+  const [progressStep, setProgressStep] = useState(0);
   const [order, setOrder] = useState<number[]>([]);
   const [flipped, setFlipped] = useState(false);
 
@@ -104,7 +105,7 @@ export default function FlashcardDeck({
   const [showTranslit, setShowTranslit] = useState(false);
   const [revealCount, setRevealCount] = useState(0);
   const [auto, setAuto] = useState(false);
-  const [autoSpeedMs, setAutoSpeedMs] = useState(2500);
+  const [autoSpeedMs, setAutoSpeedMs] = useState(1500);
   const [prefsHydrated, setPrefsHydrated] = useState(false);
   const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
   const [shuffled, setShuffled] = useState(false);
@@ -176,6 +177,7 @@ export default function FlashcardDeck({
   useEffect(() => {
     setOrder(visible.map((_, i) => i));
     setIdx(0);
+    setProgressStep(visible.length ? 1 : 0);
     setFlipped(false);
     setShowTranslit(false);
     setRevealCount(0);
@@ -193,7 +195,11 @@ export default function FlashcardDeck({
 
   const onPrev = useCallback(() => {
     if (!visible.length) return;
-    setIdx(i => (i > 0 ? i - 1 : 0));
+    setIdx(i => {
+      const nextIdx = i > 0 ? i - 1 : 0;
+      setProgressStep(visible.length ? nextIdx + 1 : 0);
+      return nextIdx;
+    });
     setFlipped(false);
     setShowTranslit(false);
     setRevealCount(0);
@@ -201,7 +207,15 @@ export default function FlashcardDeck({
 
   const onNext = useCallback(() => {
     if (!visible.length) return;
-    setIdx(i => (i < visible.length - 1 ? i + 1 : i));
+    setIdx(i => {
+      if (i >= visible.length - 1) {
+        setProgressStep(0);
+        return 0;
+      }
+      const nextIdx = i + 1;
+      setProgressStep(nextIdx + 1);
+      return nextIdx;
+    });
     setFlipped(false);
     setShowTranslit(false);
     setRevealCount(0);
@@ -250,7 +264,12 @@ export default function FlashcardDeck({
       return;
     }
     autoRef.current = window.setInterval(() => {
-      setIdx(i => (i + 1) % visible.length);
+      setIdx(i => {
+        const wrapped = i + 1 >= visible.length;
+        const nextIdx = wrapped ? 0 : i + 1;
+        setProgressStep(wrapped ? 0 : nextIdx + 1);
+        return nextIdx;
+      });
       setFlipped(false);
       setShowTranslit(false);
       setRevealCount(0);
@@ -324,10 +343,10 @@ export default function FlashcardDeck({
 
   const total = visible.length;
   const counter = total ? `${idx + 1} / ${total}` : '0 / 0';
-  const progressPct = total ? Math.round(((idx + 1) / total) * 100) : 0;
+  const progressPct = total ? Math.round((progressStep / total) * 100) : 0;
   const isFav = !!(card && favMap[card.ge_text]);
   const canPrev = hasCard && idx > 0;
-  const canNext = hasCard && idx < total - 1;
+  const canNext = hasCard && total > 1;
   const playControl =
     'h-[56px] w-[56px] -translate-y-1 rounded-full border-0 text-slate-950 shadow-[0_0_24px_rgba(251,146,60,0.28)] transition-all duration-200 ease-out hover:scale-[1.08] active:scale-[0.96] flex items-center justify-center text-2xl font-semibold leading-none';
   const shuffleControl =
@@ -341,7 +360,7 @@ export default function FlashcardDeck({
     { value: 2500, label: '2.5x' },
     { value: 4000, label: '4x' },
   ] as const;
-  const currentSpeedLabel = speedOptions.find(o => o.value === autoSpeedMs)?.label ?? '2.5x';
+  const currentSpeedLabel = speedOptions.find(o => o.value === autoSpeedMs)?.label ?? '1.5x';
 
   const renderLevelDescription = (lvl: number | null) => {
     if (lvl === 1) {
@@ -361,13 +380,13 @@ export default function FlashcardDeck({
       {/* Верх: счётчик и заголовок */}
       <div className="mb-4 flex w-full flex-col items-center justify-center gap-2">
         <div className="w-full max-w-[220px]">
-          <div className="h-4 rounded-full bg-slate-200/90 overflow-hidden">
+          <div className="flashcard-progress-track h-[6px] rounded-[4px] bg-slate-200/90 overflow-hidden">
             <div
-              className="h-full rounded-full bg-indigo-500 transition-all duration-300 shadow-[0_0_10px_rgba(79,70,229,0.45)]"
+              className="flashcard-progress-fill h-full rounded-full bg-indigo-500 transition-all duration-300 shadow-[0_0_10px_rgba(79,70,229,0.45)]"
               style={{ width: `${progressPct}%` }}
             />
           </div>
-          <div className="mt-1 text-center text-xs tracking-wide text-slate-500">
+          <div className="flashcard-counter mt-1 text-center text-xs tracking-wide text-slate-500">
             {counter}
           </div>
         </div>
@@ -456,7 +475,7 @@ export default function FlashcardDeck({
           }}
         />
         <div
-          className="relative z-10 mx-auto rounded-3xl border border-slate-200 bg-gradient-to-b from-white via-[#fcfdff] to-[#f4f7ff] shadow-[0_20px_36px_rgba(15,23,42,0.14)]"
+          className="flashcard-main-card relative z-10 mx-auto rounded-3xl border border-slate-200 bg-gradient-to-b from-white via-[#fcfdff] to-[#f4f7ff] shadow-[0_20px_36px_rgba(15,23,42,0.14)]"
           style={{ height: '48vh', minHeight: 300 }}
           onClick={() => hasCard && setFlipped(f => !f)}
           role="button"
@@ -497,7 +516,7 @@ export default function FlashcardDeck({
                 e.stopPropagation();
                 onNext();
               }}
-              className="absolute right-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-slate-300 bg-white text-slate-600 transition-all duration-150 ease-out hover:bg-slate-50 hover:shadow-[0_0_12px_rgba(148,163,184,0.25)] hover:scale-[1.04] active:scale-[0.98]"
+              className="flashcard-next-btn absolute right-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border border-slate-300 bg-white text-slate-600 transition-all duration-150 ease-out hover:bg-slate-50 hover:shadow-[0_0_12px_rgba(148,163,184,0.25)] hover:scale-[1.04] active:scale-[0.98]"
               title="Вперёд"
               aria-label="Вперёд"
             >
@@ -518,7 +537,7 @@ export default function FlashcardDeck({
             <>
               {/* Подсказка */}
               <button
-                className={`group absolute left-4 top-4 z-10 h-10 px-3 text-sm md:text-base ${navLikeMiniControl} ${revealCount > 0 ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50' : ''}`}
+                className={`flashcard-hint-btn flashcard-mini-btn group absolute left-4 top-4 z-10 h-10 px-3 text-sm md:text-base ${navLikeMiniControl}`}
                 onClick={e => {
                   e.stopPropagation();
                   const t = (card?.ru_meaning || '').trim();
@@ -537,7 +556,7 @@ export default function FlashcardDeck({
               {/* Справа сверху: избранное, транслит */}
               <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
                 <button
-                  className={`h-10 w-10 text-lg ${navLikeMiniControl} ${isFav ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50' : ''}`}
+                  className={`flashcard-mini-btn h-10 w-10 text-lg ${navLikeMiniControl} ${isFav ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50' : ''}`}
                   onClick={e => {
                     e.stopPropagation();
                     toggleFav(card.ge_text);
@@ -547,7 +566,7 @@ export default function FlashcardDeck({
                   {isFav ? '⭐' : '☆'}
                 </button>
                 <button
-                  className={`h-10 min-w-10 px-3 text-sm md:text-base ${navLikeMiniControl} ${showTranslit
+                  className={`flashcard-mini-btn h-10 min-w-10 px-3 text-sm md:text-base ${navLikeMiniControl} ${showTranslit
                     ? 'border-indigo-400/70 bg-indigo-50 text-indigo-700 hover:bg-indigo-50'
                     : ''
                     }`}
@@ -574,7 +593,7 @@ export default function FlashcardDeck({
             ) : !flipped ? (
               <div key={`front-${idx}`} className="animate-card-pop flex flex-col items-center justify-center gap-3">
                 <div
-                  className="mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(32px,5.5vw,64px)] leading-tight text-slate-800"
+                  className="flashcard-word-appear flashcard-ge-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(32px,5.5vw,64px)] leading-tight text-slate-800"
                   style={{
                     fontFamily:
                       "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
@@ -604,7 +623,7 @@ export default function FlashcardDeck({
                     }}
                   />
                 )}
-                <div className="mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(22px,3.6vw,38px)] leading-tight text-slate-700">
+                <div className="flashcard-word-appear flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(22px,3.6vw,38px)] leading-tight text-slate-700">
                   {card.ru_meaning || '—'}
                 </div>
               </div>
@@ -619,7 +638,7 @@ export default function FlashcardDeck({
               width={208}
               height={139}
               priority
-              className="drop-shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
+              className="flashcard-cat drop-shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
               style={{ filter: 'saturate(0.9) brightness(1)' }}
             />
           </div>
@@ -628,10 +647,7 @@ export default function FlashcardDeck({
         {/* Controls: below card */}
         <div className="mt-1 mx-auto w-full max-w-[800px] flex justify-center px-3">
           <div
-            className="controls origin-center scale-[0.85] inline-flex min-w-[280px] items-center justify-center gap-[12px] rounded-full border border-slate-300/80 px-3 py-2 bg-gradient-to-b from-slate-100 to-slate-200/75 transition-all duration-200 hover:border-slate-400"
-            style={{
-              boxShadow: '0 4px 12px rgba(15,23,42,0.10)',
-            }}
+            className="flashcard-controls controls origin-center scale-[0.85] inline-flex min-w-[280px] items-center justify-center gap-[12px] rounded-full border border-slate-300/80 px-3 py-2 bg-gradient-to-b from-slate-100 to-slate-200/75 transition-all duration-200 hover:border-slate-400"
           >
             <button
               onClick={() => {
@@ -652,7 +668,7 @@ export default function FlashcardDeck({
 
             <button
               onClick={() => setAuto(a => !a)}
-              className={`${playControl} ${auto ? 'animate-play-pulse scale-[1.02] ring-2 ring-orange-300/45 shadow-[0_8px_24px_rgba(0,0,0,0.35),0_0_20px_rgba(251,146,60,0.32)]' : ''}`}
+              className={`flashcard-play-btn ${playControl} ${auto ? 'animate-play-pulse scale-[1.02] ring-2 ring-orange-300/45 shadow-[0_8px_24px_rgba(0,0,0,0.35),0_0_20px_rgba(251,146,60,0.32)]' : ''}`}
               title="Автопрокрутка"
               aria-pressed={auto}
               style={{

@@ -136,13 +136,13 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
           <div className="relative flex min-h-[52px] items-center justify-end">
             <div className="ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">
             <span
-              className="inline-flex items-center justify-center rounded-xl border border-indigo-600 bg-indigo-600 px-3.5 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm"
+              className="play-tab--primary inline-flex items-center justify-center rounded-xl border border-indigo-600 bg-indigo-600 px-3.5 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm"
               aria-current="page"
             >
               Игра
             </span>
             <Link
-              className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-slate-900"
+              className="play-tab--secondary inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-slate-900"
               href={studyHref}
             >
               Карточки

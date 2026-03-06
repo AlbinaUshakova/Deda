@@ -1,10 +1,27 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 export default function BrandToggle() {
+  const [alphabetOpen, setAlphabetOpen] = useState(false);
+
+  useEffect(() => {
+    const onAlphabetOverlayState = (event: Event) => {
+      const custom = event as CustomEvent<{ open?: boolean }>;
+      setAlphabetOpen(Boolean(custom.detail?.open));
+    };
+    window.addEventListener('deda:alphabet-overlay-state', onAlphabetOverlayState as EventListener);
+    return () => {
+      window.removeEventListener('deda:alphabet-overlay-state', onAlphabetOverlayState as EventListener);
+    };
+  }, []);
+
   return (
     <button
       type="button"
-      className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50 hover:text-slate-800"
+      className={`header-control-btn inline-flex items-center justify-center px-4 ${
+        alphabetOpen ? 'header-control-btn--active' : ''
+      }`}
       onClick={() => {
         window.dispatchEvent(new CustomEvent('deda:toggle-alphabet'));
       }}

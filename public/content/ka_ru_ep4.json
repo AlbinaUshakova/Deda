@@ -153,6 +153,24 @@
       "ge_text": "კა ქა კი ქი კე ქე კუ ქუ კო ქო",
       "reading": "k’a ka k’i ki k’e ke k’u ku k’o ko",
       "ru_meaning": "ка ки кэ ку ко"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს სკამი",
+      "reading": "me makvs sk’ami",
+      "ru_meaning": "у меня есть стул"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს კარგი კაბა",
+      "reading": "me makvs k’argi k’aba",
+      "ru_meaning": "у меня есть хорошее платье"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ჩაი",
+      "reading": "me makvs chai",
+      "ru_meaning": "у меня есть чай"
     }
   ]
 }

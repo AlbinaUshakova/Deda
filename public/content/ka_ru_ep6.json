@@ -133,6 +133,12 @@
       "ge_text": "მაგიდები",
       "ru_meaning": "столы",
       "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე სახლში ვარ",
+      "ru_meaning": "я дома",
+      "audio_url": ""
     }
   ]
 }

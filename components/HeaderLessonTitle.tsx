@@ -29,11 +29,10 @@ export default function HeaderLessonTitle() {
   if (!title) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 flex justify-center">
-      <h1 className="max-w-[58vw] truncate text-center text-xl font-semibold tracking-[-0.01em] text-slate-700">
+    <div className="pointer-events-none flex h-full items-center justify-center">
+      <h1 className="header-lesson-title max-w-[58vw] truncate text-center text-[clamp(1rem,1.55vw,1.4rem)] font-semibold leading-none tracking-[-0.01em] text-slate-700">
         {title}
       </h1>
     </div>
   );
 }
-

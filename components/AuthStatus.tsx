@@ -2,22 +2,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import SettingsPanel from '@/components/SettingsPanel';
 import ProgressPanel from '@/components/ProgressPanel';
 import FeedbackPanel from '@/components/FeedbackPanel';
 import { getSettings, setSettings, type Settings } from '@/lib/settings';
 
-type UserInfo = {
-    id: string;
-    name: string | null;
-    email: string | null;
-};
-
 export default function AuthStatus() {
-    const [user, setUser] = useState<UserInfo | null>(null);
-    const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [showProgress, setShowProgress] = useState(false);
@@ -46,92 +36,28 @@ export default function AuthStatus() {
         setShowProgress(false);
         setShowFeedback(false);
     };
-
-    if (!supabase) {
-        return (
-            <div className="flex max-w-full items-center justify-end text-sm">
-                <Link
-                    href="/login"
-                    className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50 hover:text-slate-800"
-                >
-                    Log in
-                </Link>
-            </div>
-        );
-    }
-    const sb = supabase;
+    const menuLabel = 'Меню';
+    const focusRingClass =
+        'focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2';
+    const menuItemClass =
+        `flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-[14px] font-medium text-[var(--menu-text)] transition ${focusRingClass} hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)]`;
 
     useEffect(() => {
-        let cancelled = false;
-
-        async function refreshUser(session: any) {
-            if (cancelled) return;
-
-            const sessionUser = session?.user ?? null;
-            if (!sessionUser) {
-                setUser(null);
-                setLoading(false);
-                return;
-            }
-
-            const { data: profile, error } = await sb
-                .from('profiles')
-                .select('display_name')
-                .eq('id', sessionUser.id)
-                .maybeSingle();
-
-            if (cancelled) return;
-
-            if (error) {
-                console.error('load profile error', error);
-            }
-
-            const displayName = (profile as any)?.display_name ?? null;
-
-            setUser({
-                id: sessionUser.id,
-                name: displayName,
-                email: sessionUser.email ?? null,
-            });
-            setLoading(false);
-        }
-
-        async function loadSession() {
-            try {
-                const { data, error } = await sb.auth.getSession();
-                if (error) {
-                    console.error('getSession error', error);
-                    setUser(null);
-                    setLoading(false);
-                } else {
-                    await refreshUser(data.session);
-                }
-            } catch (e) {
-                console.error('getSession exception', e);
-                setUser(null);
-                setLoading(false);
-            }
-        }
-
-        loadSession();
-
-        const {
-            data: { subscription },
-        } = sb.auth.onAuthStateChange((_event, session) => {
-            refreshUser(session);
-        });
-
         const handleClickOutside = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
                 closeMenu();
             }
         };
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        };
         document.addEventListener('mousedown', handleClickOutside);
-
+        document.addEventListener('keydown', handleEsc);
         return () => {
-            cancelled = true;
-            subscription.unsubscribe();
             document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleEsc);
         };
     }, []);
 
@@ -177,112 +103,91 @@ export default function AuthStatus() {
         };
     }, []);
 
-    const handleLogout = async () => {
-        try {
-            await sb.auth.signOut();
-        } catch (e) {
-            console.error('signOut error', e);
-        }
-        setUser(null);
-        closeMenu();
-        window.location.href = '/login';
-    };
-
-    if (loading) return null;
-
-    if (!user) {
-        return (
-            <div className="flex max-w-full items-center justify-end text-sm">
-                <Link
-                    href="/login"
-                    className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50 hover:text-slate-800"
-                >
-                    Log in
-                </Link>
-            </div>
-        );
-    }
-
-    const label = user.name || user.email || 'User';
-
     return (
         <>
             <div className="relative max-w-full" ref={menuRef}>
                 <button
                     onClick={toggleMenu}
-                    className="flex max-w-full items-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_4px_14px_rgba(15,23,42,0.08)] transition-all hover:-translate-y-[1px] hover:bg-slate-50"
+                    aria-label="Открыть меню"
+                    className={`header-control-btn header-control-btn--menu inline-flex items-center justify-center ${
+                        open ? 'header-control-btn--active' : ''
+                    }`}
                 >
-                    <span className="truncate max-w-[48vw] sm:max-w-[140px]">{label}</span>
+                    <span className="flex flex-col items-center justify-center gap-[4px]" aria-hidden>
+                        <span className="block h-[2px] w-4 rounded-full bg-current" />
+                        <span className="block h-[2px] w-4 rounded-full bg-current" />
+                        <span className="block h-[2px] w-4 rounded-full bg-current" />
+                    </span>
                 </button>
 
                 {open && (
-                    <div className="fixed right-2 sm:right-4 top-[86px] w-[min(82vw,176px)] lg:w-[166px] xl:w-[176px] max-h-[calc(100dvh-110px)] overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl text-[11px] sm:text-xs z-[140] text-slate-700">
+                    <div className="animate-modal-in fixed right-2 sm:right-4 top-[86px] z-[230] w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-118px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                         {/* шапка с именем и почтой */}
-                        <div className="relative px-2.5 py-2 border-b border-slate-200">
+                        <div className="relative flex h-10 items-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
                             <button
                                 type="button"
                                 aria-label="Закрыть меню"
-                                className="absolute right-2 top-2 h-6 w-6 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
+                                className={`absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-lg text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] ${focusRingClass}`}
                                 onClick={closeMenu}
                             >
                                 ✕
                             </button>
-                            <div className="font-medium truncate">{label}</div>
-                            {user.email && (
-                                <div className="text-xs text-slate-500 truncate pr-7">
-                                    {user.email}
-                                </div>
-                            )}
+                            <div className="truncate pr-10 text-[14px] font-semibold">{menuLabel}</div>
                         </div>
 
-                        {/* Прогресс */}
-                        <button
-                            className="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 text-slate-700"
-                            onClick={() => {
-                                closeMenu();
-                                setShowProgress(true);
-                            }}
-                        >
-                            Прогресс
-                        </button>
+                        <div className="space-y-1 pt-2.5 pb-1.5">
+                            {/* Прогресс */}
+                            <button
+                                className={menuItemClass}
+                                onClick={() => {
+                                    closeMenu();
+                                    setShowProgress(true);
+                                }}
+                            >
+                                <span aria-hidden>📈</span>
+                                <span>Прогресс</span>
+                            </button>
 
-                        {/* Настройки игры */}
-                        <button
-                            className="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 text-slate-700"
-                            onClick={() => {
-                                closeMenu();
-                                setShowSettings(true);
-                            }}
-                        >
-                            Настройки игры
-                        </button>
+                            {/* Настройки игры */}
+                            <button
+                                className={menuItemClass}
+                                onClick={() => {
+                                    closeMenu();
+                                    setShowSettings(true);
+                                }}
+                            >
+                                <span aria-hidden>⚙️</span>
+                                <span>Настройки игры</span>
+                            </button>
 
-                        {/* Помощь и обратная связь */}
-                        <button
-                            className="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 text-slate-700"
-                            onClick={() => {
-                                closeMenu();
-                                setShowFeedback(true);
-                            }}
-                        >
-                            Помощь и обратная связь
-                        </button>
+                            {/* Помощь и обратная связь */}
+                            <button
+                                className={menuItemClass}
+                                onClick={() => {
+                                    closeMenu();
+                                    setShowFeedback(true);
+                                }}
+                            >
+                                <span aria-hidden>💬</span>
+                                <span>Помощь и обратная связь</span>
+                            </button>
+                        </div>
 
-                        <div className="px-2.5 pt-1 pb-1 border-t border-slate-200/90">
-                            <div className="mb-1 text-[10px] uppercase tracking-[0.08em] text-slate-500">
+                        <div className="mt-1 border-t border-[var(--menu-divider)] pt-2.5">
+                            <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--menu-text-muted)]">
                                 Тема
                             </div>
-                            <div className="grid grid-cols-2 gap-1.5">
+                            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[var(--menu-segment-border)] bg-[var(--menu-segment-bg)] p-1">
                                 <button
                                     type="button"
                                     onClick={() => {
                                         setSettings({ theme: 'light' });
                                         setTheme('light');
                                     }}
-                                    className={`rounded-md px-2 py-1 text-[10px] font-medium transition ${
+                                    className={`rounded-lg px-2 py-1 text-[12px] font-medium transition ${focusRingClass} ${
                                         theme === 'light'
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                            ? 'bg-[var(--menu-segment-active)] text-white shadow-[var(--menu-segment-active-shadow)]'
+                                            : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
                                     }`}
                                 >
                                     Светлая
@@ -293,10 +198,10 @@ export default function AuthStatus() {
                                         setSettings({ theme: 'dark' });
                                         setTheme('dark');
                                     }}
-                                    className={`rounded-md px-2 py-1 text-[10px] font-medium transition ${
+                                    className={`rounded-lg px-2 py-1 text-[12px] font-medium transition ${focusRingClass} ${
                                         theme === 'dark'
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                            ? 'bg-[var(--menu-segment-active)] text-white shadow-[var(--menu-segment-active-shadow)]'
+                                            : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
                                     }`}
                                 >
                                     Тёмная
@@ -304,13 +209,6 @@ export default function AuthStatus() {
                             </div>
                         </div>
 
-                        {/* Выйти */}
-                        <button
-                            onClick={handleLogout}
-                            className="w-full text-left px-2.5 py-1.5 hover:bg-red-50 text-red-600"
-                        >
-                            Выйти
-                        </button>
                     </div>
                 )}
             </div>
@@ -318,6 +216,9 @@ export default function AuthStatus() {
             {showSettings && (
                 <SettingsPanel
                     onClose={() => {
+                        setShowSettings(false);
+                    }}
+                    onBack={() => {
                         setShowSettings(false);
                         openMenu();
                     }}
@@ -327,6 +228,9 @@ export default function AuthStatus() {
                 <ProgressPanel
                     onClose={() => {
                         setShowProgress(false);
+                    }}
+                    onBack={() => {
+                        setShowProgress(false);
                         openMenu();
                     }}
                 />
@@ -335,6 +239,9 @@ export default function AuthStatus() {
             {showFeedback && (
                 <FeedbackPanel
                     onClose={() => {
+                        setShowFeedback(false);
+                    }}
+                    onBack={() => {
                         setShowFeedback(false);
                         openMenu();
                     }}

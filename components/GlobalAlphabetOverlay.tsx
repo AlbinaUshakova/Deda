@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { getSettings } from '@/lib/settings';
 import { loadProgressMap, getLocalProgress, type ProgressMap } from '@/lib/supabase';
@@ -87,8 +87,13 @@ async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: R
 
 export default function GlobalAlphabetOverlay() {
   const pathname = usePathname();
-  const shouldOpenByDefault = (path: string) => path !== '/' && !path.startsWith('/play/');
-  const [open, setOpen] = useState(shouldOpenByDefault(pathname));
+  const canAutoOpenAlphabet = () =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(min-width: 1440px) and (min-height: 760px)').matches;
+  const shouldOpenByDefault = (path: string) =>
+    path !== '/' && !path.startsWith('/play/') && canAutoOpenAlphabet();
+  const [open, setOpen] = useState(false);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(50);
@@ -123,12 +128,40 @@ export default function GlobalAlphabetOverlay() {
   }, [pathname]);
 
   useEffect(() => {
+    const onResize = () => {
+      if (!canAutoOpenAlphabet()) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(() => {
     const isOpenForPage = open && pathname !== '/';
     window.dispatchEvent(
       new CustomEvent('deda:alphabet-overlay-state', {
         detail: { open: isOpenForPage },
       }),
     );
+  }, [open, pathname]);
+
+  useEffect(() => {
+    if (pathname === '/' || !open) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (overlayRef.current && !overlayRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEsc);
+    };
   }, [open, pathname]);
 
   useEffect(() => {
@@ -250,20 +283,21 @@ export default function GlobalAlphabetOverlay() {
 
   return (
     <div
-      className={`hidden min-[1366px]:block fixed left-4 top-[86px] z-[140] w-[224px] xl:w-[246px] transition-all duration-200 ease-out ${
+      ref={overlayRef}
+      className={`block fixed left-2 sm:left-3 md:left-4 top-[86px] z-[140] w-[188px] sm:w-[210px] md:w-[224px] xl:w-[246px] transition-all duration-200 ease-out ${
         open
           ? 'opacity-100 translate-y-0 scale-100'
           : 'opacity-0 -translate-y-1 scale-[0.98] pointer-events-none select-none'
       }`}
       aria-hidden={!open}
     >
-      <div className="origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
+      <div className="home-alphabet-panel origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold tracking-[-0.01em] text-slate-700">ანბანი</h3>
+          <h3 className="home-alphabet-title text-sm font-semibold tracking-[-0.01em] text-slate-700">ანბანი</h3>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="h-6 w-6 rounded-md border border-slate-300 bg-white text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            className="home-alphabet-close h-6 w-6 rounded-md border border-slate-300 bg-white text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
             aria-label="Скрыть алфавит"
             title="Скрыть алфавит"
           >
@@ -276,12 +310,12 @@ export default function GlobalAlphabetOverlay() {
               key={ch}
               type="button"
               onClick={() => speakLetter(ch)}
-              className="rounded-lg border border-slate-200 bg-white py-0.5 text-center shadow-sm hover:bg-slate-50 transition-colors"
+              className="home-alphabet-key rounded-lg border border-slate-200 bg-white py-0.5 text-center shadow-sm hover:bg-slate-50 transition-colors"
               title={`Озвучить букву ${ch}`}
               aria-label={`Озвучить букву ${ch}`}
             >
-              <div className={`text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}>{ch}</div>
-              <div className="mt-0.5 text-[10px] leading-none text-slate-500">{letterTranslit[ch] ?? ''}</div>
+              <div className={`home-alphabet-letter text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']} home-alphabet-letter--${letterStatusByChar[ch] ?? 'unknown'}`}>{ch}</div>
+              <div className="home-alphabet-translit mt-0.5 text-[10px] leading-none text-slate-500">{letterTranslit[ch] ?? ''}</div>
             </button>
           ))}
         </div>

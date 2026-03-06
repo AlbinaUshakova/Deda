@@ -397,6 +397,7 @@ export default function BlocksGame({
   const [favoriteWords, setFavoriteWords] = useState<Set<string>>(
     () => new Set(),
   );
+  const [isNarrowLayout, setIsNarrowLayout] = useState(false);
 
 
   // рекорд уровня (тот же, что на карте)
@@ -498,6 +499,15 @@ export default function BlocksGame({
     return () => {
       window.removeEventListener('deda:settings-updated', syncDirectionFromSettings as EventListener);
     };
+  }, []);
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setIsNarrowLayout(window.innerWidth < 1024);
+    };
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
   }, []);
 
   useEffect(() => {
@@ -790,6 +800,9 @@ export default function BlocksGame({
   const isQuestionVisible = mode === 'question';
   const isGameOver = mode === 'gameOver';
   const shouldRenderQuestionPanel = !isGameOver && !hardGameOver;
+  const showQuestionStage = !isNarrowLayout || (shouldRenderQuestionPanel && isQuestionVisible);
+  const showBoardStage = !isNarrowLayout || !isQuestionVisible;
+  const paletteSlotId = isNarrowLayout ? 'blocks-palette-slot-mobile' : 'blocks-palette-slot';
 
   // текущий флаг избранности для показываемого слова
   const currentGe = question?.ge ?? null;
@@ -813,19 +826,32 @@ export default function BlocksGame({
 
   return (
     <div className="flex w-full justify-center -mt-3 md:-mt-4">
-      <div className="relative flex w-full max-w-5xl flex-row items-start gap-2 sm:gap-4 md:gap-6 lg:gap-8 rounded-[28px] bg-transparent px-1 sm:px-3 md:px-6 py-3 md:py-5 lg:py-7">
+      <div
+        className={
+          'relative flex w-full max-w-5xl rounded-[28px] bg-transparent px-1 sm:px-3 md:px-6 py-3 md:py-5 lg:py-7 ' +
+          (isNarrowLayout
+            ? 'flex-col items-center gap-3'
+            : 'flex-row items-start gap-2 sm:gap-4 md:gap-6 lg:gap-8')
+        }
+      >
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
-          className="w-[clamp(220px,33vw,390px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]"
+          className={
+            (isNarrowLayout
+              ? 'w-full max-w-[420px] shrink-0 ml-0'
+              : 'w-[clamp(220px,33vw,390px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]') +
+            (showQuestionStage ? '' : ' hidden')
+          }
         >
           <div
             className="relative mt-0"
-            style={{ height: 'min(67dvh, 620px)' }}
+            style={{ height: isNarrowLayout ? 'auto' : 'min(67dvh, 620px)' }}
           >
             {shouldRenderQuestionPanel && (
               <div
                 className={
-                  'absolute inset-0 transition-all duration-700 ' +
+                  (isNarrowLayout ? 'relative' : 'absolute inset-0 ') +
+                  'transition-all duration-700 ' +
                   (isQuestionVisible
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-16 pointer-events-none')
@@ -889,7 +915,7 @@ export default function BlocksGame({
                             spellCheck={false}
                             rows={1}
                             className={
-                              'w-full min-h-[clamp(56px,7.5vh,84px)] max-h-[clamp(96px,14vh,132px)] px-[clamp(14px,2.4vw,26px)] py-[clamp(9px,1.3vw,14px)] rounded-2xl border-0 outline-none tracking-[-0.01em] leading-[1.2] resize-none overflow-hidden transition-all duration-200 placeholder:font-semibold placeholder:text-[#8892b0] placeholder:text-[clamp(16px,2.1vw,28px)] focus:ring-0 focus:shadow-none ' +
+                              'blocks-answer-input w-full min-h-[clamp(56px,7.5vh,84px)] max-h-[clamp(96px,14vh,132px)] px-[clamp(14px,2.4vw,26px)] py-[clamp(9px,1.3vw,14px)] rounded-2xl border-2 border-transparent outline-none tracking-[-0.01em] leading-[1.2] resize-none overflow-hidden transition-all duration-200 placeholder:font-semibold placeholder:text-[#8892b0] placeholder:text-[clamp(16px,2.1vw,28px)] focus:ring-0 focus:shadow-none ' +
                               (answerState === 'wrong' && !showCorrect
                                 ? 'animate-input-shake bg-red-50/85 text-slate-800'
                                 : answerState === 'correct'
@@ -962,7 +988,15 @@ export default function BlocksGame({
         </div>
 
         {/* ПРАВАЯ ОБЛАСТЬ: игровое поле */}
-        <div className="flex-1 min-w-0 flex justify-center lg:justify-start ml-0 lg:ml-1 xl:ml-2 -mt-2 md:-mt-4 lg:-mt-6">
+        <div
+          className={
+            'min-w-0 flex flex-col items-center ' +
+            (isNarrowLayout
+              ? 'w-full max-w-[540px]'
+              : 'flex-1 justify-center lg:justify-start ml-0 lg:ml-1 xl:ml-2 -mt-2 md:-mt-4 lg:-mt-6') +
+            (showBoardStage ? '' : ' hidden')
+          }
+        >
           <BlocksGrid
             roundId={roundId}
             onRoundFinished={handleRoundFinished}
@@ -972,6 +1006,15 @@ export default function BlocksGame({
             onBestScoreChange={handleBestScoreChange}
             topActions={topActions}
             answerState={answerState}
+            paletteSlotId={paletteSlotId}
+            palettePlacement={isNarrowLayout ? 'bottom' : 'side'}
+          />
+          <div
+            id="blocks-palette-slot-mobile"
+            className={
+              (isNarrowLayout ? 'flex' : 'hidden') +
+              ' w-full min-h-[clamp(82px,15vh,140px)] items-center justify-center'
+            }
           />
         </div>
       </div>

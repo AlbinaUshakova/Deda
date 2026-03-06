@@ -71,7 +71,7 @@
     {
       "type": "word",
       "ge_text": "ყა ყე ყი ყო ყუ",
-      "ru_meaning": "ка кэ ки ко ку",
+      "ru_meaning": "кьа кье кьи кьо кьу",
       "audio_url": ""
     },
     {
@@ -83,7 +83,7 @@
     {
       "type": "word",
       "ge_text": "გაუმარჯოს",
-      "ru_meaning": "Да здравствует",
+      "ru_meaning": "ура",
       "audio_url": ""
     },
     {
@@ -114,6 +114,30 @@
       "type": "word",
       "ge_text": "მე მიყვარს რძე",
       "ru_meaning": "я люблю молоко",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი ყავა",
+      "ru_meaning": "мой кофе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს ყველი",
+      "ru_meaning": "я люблю сыр",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი ძმა კარგია",
+      "ru_meaning": "мой брат хороший",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მყავს ძმა",
+      "ru_meaning": "у меня есть брат",
       "audio_url": ""
     }
   ]

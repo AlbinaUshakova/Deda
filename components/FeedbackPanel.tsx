@@ -3,7 +3,13 @@
 
 import { useState } from 'react';
 
-export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
+export default function FeedbackPanel({
+    onClose,
+    onBack,
+}: {
+    onClose: () => void;
+    onBack?: () => void;
+}) {
     const [message, setMessage] = useState('');
     const [contact, setContact] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -68,13 +74,25 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="fixed right-2 sm:right-4 top-[86px] z-[140]">
-            <div className="w-[186px] sm:w-[198px] max-h-[calc(100dvh-116px)] overflow-y-auto bg-white border border-slate-200 rounded-2xl shadow-xl p-2.5 space-y-2 text-[12px] text-slate-700">
-                <div className="flex items-start justify-between">
-                    <div className="text-base font-semibold text-slate-800">Обратная связь</div>
+        <div className="fixed right-2 sm:right-4 top-[86px] z-[230]">
+            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-118px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 space-y-2 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+                <div className="relative flex h-10 items-center justify-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
+                    {onBack && (
+                        <button
+                            aria-label="Назад в меню"
+                            className="absolute left-1 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                            onClick={onBack}
+                            disabled={sending}
+                        >
+                            <svg viewBox="0 0 20 20" className="mx-auto h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M12.5 4.5L7 10l5.5 5.5" />
+                            </svg>
+                        </button>
+                    )}
+                    <div className="px-10 text-center text-[14px] font-semibold text-[var(--menu-text)]">Обратная связь</div>
                     <button
                         aria-label="Закрыть"
-                        className="mr-1 mt-0.5 h-7 w-7 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
+                        className="absolute right-1 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                         onClick={onClose}
                         disabled={sending}
                     >
@@ -82,13 +100,13 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
                     </button>
                 </div>
 
-                <p className="text-xs text-slate-500 leading-relaxed mb-1">
+                <p className="pt-0.5 text-[11px] text-[var(--menu-text-muted)] leading-relaxed mb-1">
                     Поделитесь, что можно улучшить 🤍
                 </p>
 
                 <div className="space-y-1 mt-1.5">
                     <textarea
-                        className="w-full rounded-lg bg-slate-50 border border-slate-300 px-2 py-1 text-xs outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/30 resize-none min-h-[106px]"
+                        className="w-full rounded-lg bg-[var(--menu-segment-bg)] border border-[var(--menu-segment-border)] px-2 py-1 text-[11px] text-[var(--menu-text)] outline-none focus:border-[var(--menu-segment-active)] focus:ring-1 focus:ring-[var(--menu-focus)] resize-none min-h-[96px]"
                         value={message}
                         onChange={e => {
                             setMessage(e.target.value);
@@ -100,11 +118,11 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-xs text-slate-600">
+                    <label className="text-[11px] text-[var(--menu-text-muted)]">
                         Контакт (необязательно)
                     </label>
                     <input
-                        className="w-full rounded-lg bg-slate-50 border border-slate-300 px-2 py-1 text-xs outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/30"
+                        className="w-full rounded-lg bg-[var(--menu-segment-bg)] border border-[var(--menu-segment-border)] px-2 py-1 text-[11px] text-[var(--menu-text)] outline-none focus:border-[var(--menu-segment-active)] focus:ring-1 focus:ring-[var(--menu-focus)]"
                         value={contact}
                         onChange={e => {
                             setContact(e.target.value);
@@ -116,20 +134,20 @@ export default function FeedbackPanel({ onClose }: { onClose: () => void }) {
                 </div>
 
                 {error && (
-                    <div className="text-xs text-red-500">
+                    <div className="text-[11px] text-red-500">
                         {error}
                     </div>
                 )}
 
                 {success && (
-                    <div className="text-xs text-emerald-600 animate-settings-bump">
+                    <div className="text-[11px] text-emerald-500 animate-settings-bump">
                         Спасибо! Сообщение отправлено 💌
                     </div>
                 )}
 
                 <div className="pt-2">
                     <button
-                        className="w-full px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-full px-3 py-1.5 text-[12px] rounded-lg bg-[var(--menu-segment-active)] text-white font-semibold hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                         onClick={handleSend}
                         disabled={!canSend}
                     >

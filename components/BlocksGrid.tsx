@@ -5,8 +5,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const BOARD_SIZE = 8;
-const PREVIEW_SCALE = 0.6;
+const PREVIEW_SCALE = 0.78;
 const BOARD_PIXEL_SIZE = 'min(64dvh, clamp(180px, 100%, 620px))';
+const GRID_GAP_PX = 4;
 
 type CellColor = string | null;
 type ShapeCell = { r: number; c: number };
@@ -29,6 +30,8 @@ type BlocksGridProps = {
   topActions?: React.ReactNode;
   leftOfCatAction?: React.ReactNode;
   answerState?: 'idle' | 'wrong' | 'correct';
+  paletteSlotId?: string;
+  palettePlacement?: 'side' | 'bottom';
 };
 
 type ClearedCell = {
@@ -171,22 +174,14 @@ const SHAPES: Shape[] = [
 ];
 
 const TYPE_COLORS = [
-  '#F2A55A', // orange
-  '#8A78D6', // purple
-  '#67AEEA', // blue
-  '#67BE98', // green
+  'var(--shape-orange)',
+  'var(--shape-purple)',
+  'var(--shape-blue)',
+  'var(--shape-green)',
 ];
 
 function randomInt(max: number): number {
   return Math.floor(Math.random() * max);
-}
-
-function colorForShapeId(shapeId: string) {
-  let hash = 0;
-  for (let i = 0; i < shapeId.length; i += 1) {
-    hash = (hash * 31 + shapeId.charCodeAt(i)) >>> 0;
-  }
-  return TYPE_COLORS[hash % TYPE_COLORS.length];
 }
 
 function randomPaletteColor() {
@@ -341,10 +336,17 @@ function makeBag(board: CellColor[][]): Piece[] {
   }
 
   const now = Date.now();
+  const shuffledColors = [...TYPE_COLORS];
+  for (let i = shuffledColors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledColors[i], shuffledColors[j]] = [shuffledColors[j], shuffledColors[i]];
+  }
+
   return pickedShapes.map((shape, idx) => ({
     id: `p_${shape.id}_${now}_${idx}`,
     shape,
-    color: colorForShapeId(shape.id),
+    // В одной раздаче все 3 фигуры должны иметь разные цвета.
+    color: shuffledColors[idx % shuffledColors.length],
   }));
 }
 
@@ -437,6 +439,8 @@ export default function BlocksGrid({
   topActions,
   leftOfCatAction,
   answerState = 'idle',
+  paletteSlotId = 'blocks-palette-slot',
+  palettePlacement = 'side',
 }: BlocksGridProps) {
   const [board, setBoard] = useState<CellColor[][]>(() => createEmptyBoard());
   const [bag, setBag] = useState<Piece[]>([]);
@@ -474,26 +478,44 @@ export default function BlocksGrid({
   const [paletteContainer, setPaletteContainer] = useState<HTMLElement | null>(
     null,
   );
+  const boardPixelSize =
+    palettePlacement === 'bottom'
+      ? 'min(54dvh, clamp(160px, 92vw, 480px))'
+      : BOARD_PIXEL_SIZE;
 
   useEffect(() => {
     setBestScore(initialBestScore || 0);
   }, [initialBestScore]);
 
   useEffect(() => {
-    const el = document.getElementById('blocks-palette-slot');
+    const el = document.getElementById(paletteSlotId);
     setPaletteContainer(el);
-  }, [roundId]);
+  }, [paletteSlotId, roundId]);
 
   useEffect(() => {
     const measure = () => {
       if (!boardRef.current) return;
       const rect = boardRef.current.getBoundingClientRect();
-      const size = rect.width / BOARD_SIZE;
-      setCellSize(size);
+      if (!rect.width) return;
+      const size = (rect.width - GRID_GAP_PX * (BOARD_SIZE - 1)) / BOARD_SIZE;
+      if (Number.isFinite(size) && size > 0) {
+        setCellSize(size);
+      }
     };
+
     measure();
     window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+
+    let ro: ResizeObserver | null = null;
+    if (typeof window !== 'undefined' && 'ResizeObserver' in window && boardRef.current) {
+      ro = new ResizeObserver(() => measure());
+      ro.observe(boardRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', measure);
+      if (ro) ro.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -633,13 +655,27 @@ export default function BlocksGrid({
           setHover(null);
           return null;
         }
-        if (!hover) {
+        const piece = prev.piece;
+        if (!boardRef.current) {
           setHover(null);
           return null;
         }
 
-        const { row, col } = hover;
-        const piece = prev.piece;
+        const rect = boardRef.current.getBoundingClientRect();
+        const relX = prev.pointerX - rect.left;
+        const relY = prev.pointerY - rect.top;
+        const maxCol = Math.max(...piece.shape.cells.map(c => c.c)) + 1;
+        const maxRow = Math.max(...piece.shape.cells.map(c => c.r)) + 1;
+        const baseCol = Math.round(relX / cellSize - maxCol / 2);
+        const baseRow = Math.round(relY / cellSize - maxRow / 2);
+        const finalPos = findNearestValidPos(board, piece.shape, baseRow, baseCol, 2);
+
+        if (!finalPos) {
+          setHover(null);
+          return null;
+        }
+
+        const { row, col } = finalPos;
 
         if (canPlace(board, piece.shape, row, col)) {
           const placed = placePiece(board, piece.shape, row, col, piece.color);
@@ -754,10 +790,10 @@ export default function BlocksGrid({
       <div className="flex w-full max-w-6xl justify-center">
         <div
           className="flex flex-col items-stretch relative"
-          style={{ width: BOARD_PIXEL_SIZE }}
+          style={{ width: boardPixelSize }}
         >
-          <div className="mb-2 px-1">
-            <div className="mt-1 text-center text-[16px] font-semibold tracking-[-0.01em] text-slate-700">
+          <div className="mb-2 px-1 relative z-[70]">
+            <div className="blocks-grid-score mt-1 text-center text-[16px] font-semibold tracking-[-0.01em] text-slate-700">
               {score} / {bestScore}
             </div>
           </div>
@@ -775,8 +811,16 @@ export default function BlocksGrid({
           {/* поле */}
           <div
             ref={boardRef}
-            className="relative grid grid-cols-8 gap-[4px]"
-            style={{ width: '100%', aspectRatio: '1 / 1', minHeight: 240 }}
+            className="blocks-grid-board relative grid grid-cols-8 gap-[4px]"
+            style={{
+              width: '100%',
+              aspectRatio: '1 / 1',
+              minHeight: 240,
+              marginTop:
+                palettePlacement === 'bottom'
+                  ? `-${Math.max(8, cellSize * 0.2)}px`
+                  : 0,
+            }}
           >
             {board.map((row, r) =>
               row.map((color, c) => {
@@ -797,17 +841,17 @@ export default function BlocksGrid({
                 return (
                   <div
                     key={`${r}-${c}`}
-                    className="relative overflow-hidden rounded-lg bg-[#dfe4ed] transition-all duration-150 hover:-translate-y-[1px] hover:bg-[#d5dbe7]"
+                    className="blocks-grid-cell relative overflow-hidden rounded-lg bg-[var(--grid-cell)] transition-all duration-150 hover:-translate-y-[1px] hover:bg-[var(--grid-cell-hover)]"
                   >
                     {color && (
                       <div
-                        className="w-full h-full"
+                        className="blocks-grid-filled-cell w-full h-full"
                         style={{ backgroundColor: color, borderRadius: 8 }}
                       />
                     )}
 
                     {showHover && (
-                      <div className="absolute inset-[3px] rounded-md border border-indigo-400/90 pointer-events-none" />
+                      <div className="blocks-grid-hover-cell absolute inset-[3px] rounded-md border border-indigo-400/90 pointer-events-none" />
                     )}
 
                     {flash && (
@@ -828,10 +872,10 @@ export default function BlocksGrid({
 
             {gameOver && (
               <div className="absolute inset-0 rounded-3xl flex flex-col items-center justify-center gap-3 text-sm pointer-events-none">
-                <div className="text-slate-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+                <div className="blocks-grid-gameover-title text-slate-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
                   Нет ходов
                 </div>
-                <div className="text-slate-700 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+                <div className="blocks-grid-gameover-text text-slate-700 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
                   Фигуры больше нельзя разместить.
                 </div>
                 <button
@@ -856,9 +900,9 @@ export default function BlocksGrid({
             aria-label="Подсказка по выбору языка"
             className="absolute left-0 z-[60] select-none"
             style={{
-              top: -cellSize * 0.8,
-              left: -cellSize * 0.08,
-              width: cellSize * 1.68,
+              top: -cellSize * 1.3,
+              left: -cellSize * 0.02,
+              width: cellSize * 2.2,
             }}
           >
             {catReaction && (
@@ -924,8 +968,16 @@ export default function BlocksGrid({
       {paletteContainer &&
         createPortal(
           <div
-            className="flex h-full flex-col items-center justify-center gap-[clamp(16px,2.8vh,30px)] overflow-hidden py-1"
-            style={{ transform: `translateY(-${Math.round(cellSize * 0.85)}px)` }}
+            className={
+              palettePlacement === 'bottom'
+                ? 'flex w-full flex-row items-center justify-center gap-[clamp(14px,2.2vw,24px)] overflow-hidden py-2'
+                : 'flex h-full flex-col items-center justify-center gap-[clamp(16px,2.8vh,30px)] overflow-hidden py-1'
+            }
+            style={
+              palettePlacement === 'bottom'
+                ? undefined
+                : { transform: `translateY(-${Math.round(cellSize * 0.85)}px)` }
+            }
           >
             {bag.map(piece => {
               const widthCells =
@@ -940,7 +992,7 @@ export default function BlocksGrid({
                 <div
                   key={piece.id}
                   onPointerDown={e => startDrag(piece, e)}
-                  className="cursor-pointer touch-none transition-transform"
+                  className="cursor-pointer touch-none"
                   style={{
                     width: widthCells * previewCellSize,
                     height: heightCells * previewCellSize,
