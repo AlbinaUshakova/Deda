@@ -32,7 +32,7 @@ const FAVORITES_KEY = 'deda_fav_ge';
 const OLD_FAVORITES_KEY = 'deda_favorite_words';
 
 function normalizeRu(str: string) {
-  return str.trim().toLowerCase();
+  return str.trim().toLowerCase().replace(/ё/g, 'е');
 }
 
 /**

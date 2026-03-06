@@ -227,7 +227,7 @@ export default function HomePage() {
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(50);
   const [cachedLetterStatusByChar, setCachedLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
-  const alphabetDefaultInitializedRef = useRef(false);
+  const alphabetUserToggledRef = useRef(false);
 
   useEffect(() => {
     const init = async () => {
@@ -331,19 +331,19 @@ export default function HomePage() {
         !!lessonsRect &&
         alphabetRect.right + 16 <= lessonsRect.left;
       setAlphabetOverlapsLessons(!canFitWithoutOverlap);
-      if (!alphabetDefaultInitializedRef.current) {
+      if (!alphabetUserToggledRef.current) {
         setShowAlphabet(canFitWithoutOverlap);
-        alphabetDefaultInitializedRef.current = true;
       }
     };
 
     updateAlphabetLayoutMode();
     window.addEventListener('resize', updateAlphabetLayoutMode);
     return () => window.removeEventListener('resize', updateAlphabetLayoutMode);
-  }, []);
+  }, [eps.length, Object.keys(lettersByEp).length]);
 
   useEffect(() => {
     const onToggleAlphabet = () => {
+      alphabetUserToggledRef.current = true;
       setShowAlphabet(v => !v);
     };
     window.addEventListener('deda:toggle-alphabet', onToggleAlphabet as EventListener);
@@ -515,14 +515,17 @@ export default function HomePage() {
         <div className="relative mx-auto w-full">
           <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[86px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[188px] sm:w-[210px] md:w-[224px] xl:w-[246px] pointer-events-none`}>
             <div
-              className={`home-alphabet-panel pointer-events-auto origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)] transition-all duration-200 ${showAlphabet ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none select-none'}`}
+              className={`home-alphabet-panel origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)] transition-all duration-200 ${showAlphabet ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none select-none'}`}
               aria-hidden={!showAlphabet}
             >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="home-alphabet-title text-sm font-semibold tracking-[-0.01em] text-slate-700">ანბანი</h3>
                 <button
                   type="button"
-                  onClick={() => setShowAlphabet(v => !v)}
+                  onClick={() => {
+                    alphabetUserToggledRef.current = true;
+                    setShowAlphabet(v => !v);
+                  }}
                   className="home-alphabet-close h-6 w-6 rounded-md border border-slate-300 bg-white text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
                   aria-label="Скрыть алфавит"
                   title="Скрыть алфавит"
@@ -676,6 +679,7 @@ export default function HomePage() {
             >
               <span aria-hidden>📚</span>
               <span>{allLessonsSpecial.title.replace(/^⭐\s*/, '')}</span>
+              {!allLessonsReady && <span aria-hidden>🔒</span>}
             </a>
           </Link>
         )}
