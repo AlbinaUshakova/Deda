@@ -16,6 +16,12 @@
     },
     {
       "type": "word",
+      "ge_text": "ერთი",
+      "reading": "erti",
+      "ru_meaning": "1"
+    },
+    {
+      "type": "word",
       "ge_text": "ორი",
       "reading": "ori",
       "ru_meaning": "2"
@@ -28,15 +34,21 @@
     },
     {
       "type": "word",
-      "ge_text": "ერთი",
-      "reading": "erti",
-      "ru_meaning": "1"
+      "ge_text": "ერთი თარო",
+      "reading": "erti taro",
+      "ru_meaning": "1 полка"
     },
     {
       "type": "word",
       "ge_text": "ხე",
       "reading": "khe",
       "ru_meaning": "дерево"
+    },
+    {
+      "type": "word",
+      "ge_text": "ორი ხე",
+      "reading": "ori khe",
+      "ru_meaning": "2 дерева"
     },
     {
       "type": "word",
@@ -58,51 +70,15 @@
     },
     {
       "type": "word",
-      "ge_text": "დედა",
-      "reading": "deda",
-      "ru_meaning": "мама"
+      "ge_text": "ეს რა არის?",
+      "reading": "es ra aris?",
+      "ru_meaning": "что это"
     },
     {
       "type": "word",
-      "ge_text": "და",
-      "reading": "da",
-      "ru_meaning": "и/сестра"
-    },
-    {
-      "type": "word",
-      "ge_text": "ბარათი",
-      "reading": "barati",
-      "ru_meaning": "карточка"
-    },
-    {
-      "type": "word",
-      "ge_text": "ბაბუა",
-      "reading": "babua",
-      "ru_meaning": "дедушка"
-    },
-    {
-      "type": "word",
-      "ge_text": "ბებია",
-      "reading": "bebia",
-      "ru_meaning": "бабушка"
-    },
-    {
-      "type": "word",
-      "ge_text": "სად",
-      "reading": "sad",
-      "ru_meaning": "где"
-    },
-    {
-      "type": "word",
-      "ge_text": "ერთი თარო",
-      "reading": "erti taro",
-      "ru_meaning": "1 полка"
-    },
-    {
-      "type": "word",
-      "ge_text": "ორი ხე",
-      "reading": "ori khe",
-      "ru_meaning": "2 дерева"
+      "ge_text": "რა არის ეს?",
+      "reading": "ra aris es?",
+      "ru_meaning": "что это"
     },
     {
       "type": "word",
@@ -118,18 +94,6 @@
     },
     {
       "type": "word",
-      "ge_text": "ეს რა არის?",
-      "reading": "es ra aris?",
-      "ru_meaning": "что это"
-    },
-    {
-      "type": "word",
-      "ge_text": "რა არის ეს?",
-      "reading": "ra aris es?",
-      "ru_meaning": "что это"
-    },
-    {
-      "type": "word",
       "ge_text": "ეს არის თარო",
       "reading": "es aris taro",
       "ru_meaning": "это полка"
@@ -139,6 +103,18 @@
       "ge_text": "ეს თაროა",
       "reading": "es taroa",
       "ru_meaning": "это полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა",
+      "reading": "deda",
+      "ru_meaning": "мама"
+    },
+    {
+      "type": "word",
+      "ge_text": "და",
+      "reading": "da",
+      "ru_meaning": "и/сестра"
     },
     {
       "type": "word",
@@ -154,6 +130,24 @@
     },
     {
       "type": "word",
+      "ge_text": "ბარათი",
+      "reading": "barati",
+      "ru_meaning": "карточка"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ორი ბარათი",
+      "reading": "ai ori barati",
+      "ru_meaning": "вот 2 карточки"
+    },
+    {
+      "type": "word",
+      "ge_text": "სად",
+      "reading": "sad",
+      "ru_meaning": "где"
+    },
+    {
+      "type": "word",
       "ge_text": "სად არის დედა?",
       "reading": "sad aris deda?",
       "ru_meaning": "где мама"
@@ -163,6 +157,18 @@
       "ge_text": "სად არის ბარათი?",
       "reading": "sad aris barati?",
       "ru_meaning": "где карточка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ბაბუა",
+      "reading": "babua",
+      "ru_meaning": "дедушка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ბებია",
+      "reading": "bebia",
+      "ru_meaning": "бабушка"
     },
     {
       "type": "word",
@@ -181,6 +187,18 @@
       "ge_text": "ეს ოთახია",
       "reading": "es otakhia",
       "ru_meaning": "это комната"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედის ოთახი",
+      "reading": "dedis otakhi",
+      "ru_meaning": "комната мамы"
+    },
+    {
+      "type": "word",
+      "ge_text": "დის საათი",
+      "reading": "dis saati",
+      "ru_meaning": "часы сестры"
     },
     {
       "type": "word",
@@ -205,24 +223,6 @@
       "ge_text": "ეს არაა უთო",
       "reading": "es araa uto",
       "ru_meaning": "это не утюг"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი ორი ბარათი",
-      "reading": "ai ori barati",
-      "ru_meaning": "вот 2 карточки"
-    },
-    {
-      "type": "word",
-      "ge_text": "დედის ოთახი",
-      "reading": "dedis otakhi",
-      "ru_meaning": "комната мамы"
-    },
-    {
-      "type": "word",
-      "ge_text": "დის საათი",
-      "reading": "dis saati",
-      "ru_meaning": "часы сестры"
     }
   ]
 }

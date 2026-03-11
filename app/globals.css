@@ -6,13 +6,13 @@
 
 :root {
     color-scheme: light;
-    --bg-main: #f3f4f6;
+    --bg-main: #f3f3f3;
     --bg-surface: #ffffff;
     --bg-panel: #ffffff;
     --bg-card: #ffffff;
-    --bg-card-hover: #f5f5f7;
-    --border-soft: #e3e3ea;
-    --shadow-soft: 0 6px 20px rgba(16, 24, 40, 0.06);
+    --bg-card-hover: #f8f8f8;
+    --border-soft: #d4d4d4;
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
     --text-primary: #202123;
     --text-secondary: #5f6368;
     --text-tertiary: #8b8f97;
@@ -23,24 +23,24 @@
     --progress-bg: #e6e7eb;
     --progress: #f97316;
     --progress-good: #22c55e;
-    --progress-low: #eab308;
-    --progress-current: #f4b26a;
+    --progress-low: #ff7a00;
+    --progress-current: #facc15;
     --alphabet-bg: var(--bg-panel);
-    --alphabet-key: #f3f4f6;
-    --alphabet-key-hover: #eceef2;
+    --alphabet-key: #f5f5f5;
+    --alphabet-key-hover: #ebebeb;
     --button-bg: #ffffff;
-    --button-hover: #f3f4f6;
+    --button-hover: #f5f5f5;
     --button-text: #202123;
     --menu-bg: #ffffff;
-    --menu-border: #e3e3ea;
-    --menu-shadow: 0 12px 28px rgba(16, 24, 40, 0.12);
+    --menu-border: #d4d4d4;
+    --menu-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     --menu-text: #202123;
     --menu-text-muted: #777b84;
-    --menu-hover: #f3f4f6;
-    --menu-active: #eceef2;
+    --menu-hover: #f5f5f5;
+    --menu-active: #e8e8e8;
     --menu-divider: #e6e8ed;
     --menu-focus: rgba(16, 163, 127, 0.25);
-    --menu-segment-bg: #f3f4f6;
+    --menu-segment-bg: #f5f5f5;
     --menu-segment-border: #e3e3ea;
     --menu-segment-idle: #4d525a;
     --menu-segment-idle-hover: #ffffff;
@@ -63,7 +63,7 @@
     --header-border: #e3e3ea;
     --premium-gold: #c6a15b;
     --phrases-label: #4f545c;
-    --btn-active-bg: #eceef2;
+    --btn-active-bg: #ebebeb;
     --btn-active-border: #d1d5dc;
     --btn-active-text: #202123;
     --btn-active-shadow: 0 0 0 2px rgba(32, 33, 35, 0.06);
@@ -77,14 +77,14 @@
 
 html[data-theme='dark'] {
     color-scheme: dark;
-    --bg-main: #212121;
-    --bg-card: #2f2f2f;
-    --bg-card-hover: #3a3a3a;
-    --bg-panel: #2b2b2b;
+    --bg-main: #1e1e1e;
+    --bg-card: #2d2d30;
+    --bg-card-hover: #343438;
+    --bg-panel: #252526;
     --border-soft: #454545;
     --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.25);
-    --text-primary: #ececec;
-    --text-secondary: #b4b4b4;
+    --text-primary: #d4d4d4;
+    --text-secondary: #a6a6a6;
     --text-tertiary: #8f8f8f;
     --accent: #f97316;
     --accent-hover: #fb923c;
@@ -92,24 +92,24 @@ html[data-theme='dark'] {
     --focus-ring: rgba(16, 163, 127, 0.32);
     --progress: #f97316;
     --progress-good: #22c55e;
-    --progress-low: #eab308;
-    --progress-current: #f4b26a;
-    --progress-bg: #3f3f3f;
+    --progress-low: #ff7a00;
+    --progress-current: #facc15;
+    --progress-bg: #3a3a3c;
     --alphabet-bg: var(--bg-panel);
-    --alphabet-key: #3a3a3a;
-    --alphabet-key-hover: #474747;
-    --button-bg: #353535;
-    --button-hover: #424242;
+    --alphabet-key: #333336;
+    --alphabet-key-hover: #3c3c40;
+    --button-bg: #2d2d30;
+    --button-hover: #38383d;
     --button-text: #ececec;
-    --menu-bg: #2b2b2b;
+    --menu-bg: #252526;
     --menu-border: rgba(255, 255, 255, 0.1);
     --menu-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
     --menu-text: #ececec;
     --menu-text-muted: #b4b4b4;
-    --menu-hover: rgba(255, 255, 255, 0.06);
-    --menu-active: rgba(255, 255, 255, 0.1);
+    --menu-hover: #2a2d2e;
+    --menu-active: #31363a;
     --menu-divider: rgba(255, 255, 255, 0.1);
-    --menu-focus: rgba(96, 165, 250, 0.35);
+    --menu-focus: rgba(0, 122, 204, 0.45);
     --menu-segment-bg: rgba(255, 255, 255, 0.06);
     --menu-segment-border: rgba(255, 255, 255, 0.1);
     --menu-segment-idle: #e5eaf3;
@@ -125,12 +125,12 @@ html[data-theme='dark'] {
     --shape-yellow: #facc15;
     --grid-cell: #3d3d3d;
     --grid-cell-hover: #4a4a4a;
-    --grid-bg: #2b2b2b;
+    --grid-bg: #252526;
     --app-bg: var(--bg-main);
     --app-text: var(--text-primary);
-    --header-bg: #212121;
+    --header-bg: #252526;
     --header-text: #ececec;
-    --header-border: #3f3f3f;
+    --header-border: #3c3c3c;
     --premium-gold: #e7c37a;
     --phrases-label: rgba(255, 255, 255, 0.92);
     --btn-active-bg: rgba(255, 255, 255, 0.08);
@@ -158,7 +158,7 @@ body {
 .home-lesson-card {
     background: var(--bg-card) !important;
     border-color: var(--border-soft) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+    box-shadow: var(--shadow-soft) !important;
 }
 
 .home-lesson-card.lesson-card--interactive:hover {
@@ -180,15 +180,15 @@ body {
 }
 
 .home-lesson-letter--mastered {
-    color: #ff7a00 !important;
+    color: var(--progress-good) !important;
 }
 
 .home-lesson-letter--almost {
-    color: #ff7a00 !important;
+    color: var(--progress-low) !important;
 }
 
 .home-lesson-letter--current {
-    color: #ff7a00 !important;
+    color: var(--progress-current) !important;
 }
 
 .home-lesson-letter--locked {
@@ -196,7 +196,7 @@ body {
 }
 
 .home-lesson-letter--unknown {
-    color: #ff7a00 !important;
+    color: var(--ui-accent) !important;
 }
 
 .home-progress-bg {
@@ -220,7 +220,7 @@ body {
 }
 
 .home-progress-fill--almost {
-    background: var(--accent) !important;
+    background: var(--progress-low) !important;
 }
 
 .flashcard-dialog-line {
@@ -432,11 +432,11 @@ html[data-theme='dark'] .header-control-btn--active {
 }
 
 .home-alphabet-letter--almost {
-    color: var(--accent) !important;
+    color: var(--progress-low) !important;
 }
 
 .home-alphabet-letter--current {
-    color: var(--progress-low) !important;
+    color: var(--progress-current) !important;
 }
 
 .home-alphabet-letter--locked {
@@ -476,12 +476,12 @@ html[data-theme='dark'] .header-control-btn--active {
 html[data-theme='dark'] .play-tab--secondary {
     border-color: rgba(255, 255, 255, 0.15) !important;
     color: #ececec !important;
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: var(--button-bg) !important;
 }
 
 html[data-theme='dark'] .play-tab--secondary:hover {
     border-color: rgba(255, 255, 255, 0.2) !important;
-    background: rgba(255, 255, 255, 0.14) !important;
+    background: var(--button-hover) !important;
     color: #fff !important;
 }
 
@@ -527,13 +527,13 @@ html[data-theme='dark'] .blocks-grid-hover-cell {
 }
 
 html[data-theme='dark'] .home-lesson-card {
-    background: #353535 !important;
+    background: var(--bg-card) !important;
     border-color: var(--border-soft) !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
 }
 
 html[data-theme='dark'] .home-lesson-card.lesson-card--interactive:hover {
-    background: #404040 !important;
+    background: var(--bg-card-hover) !important;
     border-color: #475569 !important;
 }
 
@@ -548,19 +548,19 @@ html[data-theme='dark'] .home-progress-score {
 
 html[data-theme='dark'] .home-lesson-letter {
     color: var(--accent) !important;
-    text-shadow: 0 2px 8px rgba(249, 115, 22, 0.22);
+    text-shadow: none;
 }
 
 html[data-theme='dark'] .home-lesson-letter--mastered {
-    color: #ff7a00 !important;
+    color: var(--progress-good) !important;
 }
 
 html[data-theme='dark'] .home-lesson-letter--almost {
-    color: #ff7a00 !important;
+    color: var(--progress-low) !important;
 }
 
 html[data-theme='dark'] .home-lesson-letter--current {
-    color: #ff7a00 !important;
+    color: var(--progress-current) !important;
 }
 
 html[data-theme='dark'] .home-lesson-letter--locked {
@@ -568,7 +568,7 @@ html[data-theme='dark'] .home-lesson-letter--locked {
 }
 
 html[data-theme='dark'] .home-lesson-letter--unknown {
-    color: #ff7a00 !important;
+    color: var(--ui-accent) !important;
 }
 
 html[data-theme='dark'] .home-progress-bg {
@@ -592,7 +592,7 @@ html[data-theme='dark'] .home-progress-fill--mastered {
 }
 
 html[data-theme='dark'] .home-progress-fill--almost {
-    background: var(--accent) !important;
+    background: var(--progress-low) !important;
 }
 
 html[data-theme='dark'] .home-progress-fill--current {
@@ -629,7 +629,7 @@ html[data-theme='dark'] .home-special-btn:hover {
 }
 
 html[data-theme='dark'] .home-alphabet-panel {
-    background: linear-gradient(to bottom, rgba(43, 43, 43, 0.98), rgba(38, 38, 38, 0.98)) !important;
+    background: linear-gradient(to bottom, rgba(37, 37, 38, 0.98), rgba(30, 30, 30, 0.98)) !important;
     border-color: var(--border-soft) !important;
     box-shadow: var(--shadow-soft) !important;
 }
@@ -664,7 +664,7 @@ html[data-theme='dark'] .home-alphabet-letter--mastered {
 }
 
 html[data-theme='dark'] .home-alphabet-letter--almost {
-    color: var(--accent) !important;
+    color: var(--progress-low) !important;
 }
 
 html[data-theme='dark'] .home-alphabet-letter--current {

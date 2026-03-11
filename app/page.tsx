@@ -104,11 +104,11 @@ const geLetterName: Record<string, string> = {
 };
 
 const alphabetLetterColorByStatus: Record<AlphabetLetterStatus, string> = {
-  mastered: 'text-emerald-600',
-  almost: 'text-orange-600',
+  mastered: 'text-[var(--progress-good)]',
+  almost: 'text-[var(--progress-low)]',
   current: 'text-[var(--progress-current)]',
-  locked: 'text-slate-500',
-  unknown: 'text-indigo-600',
+  locked: 'text-[var(--text-tertiary)]',
+  unknown: 'text-[var(--ui-accent)]',
 };
 
 const geLetterAudioMap: Record<string, string> = {
@@ -662,7 +662,7 @@ export default function HomePage() {
                                 key={ch}
                                 className={`home-lesson-letter home-lesson-letter--${status ?? 'unknown'} flex flex-col items-center`}
                               >
-                                <span className="text-[clamp(1.08rem,1.7vw,2.05rem)] leading-none">{ch}</span>
+                                <span className="text-[clamp(1.22rem,1.5vw,2.25rem)] leading-none">{ch}</span>
                               </div>
                             );
                           })}

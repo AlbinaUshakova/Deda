@@ -106,13 +106,13 @@ export default function ProgressPanel({
           <div className="space-y-0 text-xs leading-[1.15] text-[var(--menu-text)]">
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-5 rounded-full bg-emerald-400/90" />
+                <span className="h-2 w-5 rounded-full bg-[var(--progress-good)]" />
                 <span>Освоен</span>
-                <span className="text-[11px] leading-none text-emerald-500">✓</span>
+                <span className="text-[11px] leading-none text-[var(--progress-good)]">✓</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-5 rounded-full bg-orange-300/90" />
+              <span className="h-2 w-5 rounded-full bg-[var(--progress-low)]" />
               <span>В процессе</span>
               <span className="text-[11px] leading-none text-[var(--menu-text-muted)]">●</span>
             </div>
@@ -124,7 +124,7 @@ export default function ProgressPanel({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-5 rounded-full bg-slate-400/80" />
+              <span className="h-2 w-5 rounded-full bg-[var(--text-tertiary)]" />
               <span className="flex items-center gap-1.5">
                 <span>Закрыт для изучения</span>
                 <span className="text-[11px] leading-none text-[var(--menu-text-muted)]">🔒</span>

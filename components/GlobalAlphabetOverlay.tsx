@@ -30,11 +30,11 @@ const letterTranslit: Record<string, string> = {
 };
 
 const alphabetLetterColorByStatus: Record<AlphabetLetterStatus, string> = {
-  mastered: 'text-emerald-600',
-  almost: 'text-orange-600',
+  mastered: 'text-[var(--progress-good)]',
+  almost: 'text-[var(--progress-low)]',
   current: 'text-[var(--progress-current)]',
-  locked: 'text-slate-500',
-  unknown: 'text-indigo-600',
+  locked: 'text-[var(--text-tertiary)]',
+  unknown: 'text-[var(--ui-accent)]',
 };
 
 const geLetterAudioMap: Record<string, string> = {
