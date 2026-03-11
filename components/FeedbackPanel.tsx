@@ -74,8 +74,8 @@ export default function FeedbackPanel({
     };
 
     return (
-        <div className="fixed right-2 sm:right-4 top-[86px] z-[230]">
-            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-118px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 space-y-2 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+        <div className="menu-floating-anchor">
+            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-108px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 space-y-2 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                 <div className="relative flex h-10 items-center justify-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
                     {onBack && (
                         <button

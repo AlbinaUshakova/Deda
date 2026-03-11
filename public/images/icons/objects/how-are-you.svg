@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="how are you dialog">
+  <rect x="14" y="24" width="74" height="48" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="3"/>
+  <path d="M36 72l-2 14 14-12" fill="#eff6ff" stroke="#93c5fd" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="44" y="56" width="70" height="44" rx="11" fill="#fff7ed" stroke="#fdba74" stroke-width="3"/>
+  <path d="M96 100l2 13-13-11" fill="#fff7ed" stroke="#fdba74" stroke-width="3" stroke-linejoin="round"/>
+  <line x1="28" y1="42" x2="70" y2="42" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+  <line x1="28" y1="52" x2="62" y2="52" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
+  <line x1="56" y1="72" x2="100" y2="72" stroke="#fb923c" stroke-width="3" stroke-linecap="round"/>
+  <line x1="56" y1="82" x2="90" y2="82" stroke="#fdba74" stroke-width="3" stroke-linecap="round"/>
+</svg>

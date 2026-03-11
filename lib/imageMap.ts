@@ -56,6 +56,13 @@ const ENTRIES: Entry[] = [
   { test: /(ручк|карандаш|пис)/i, path: '/images/icons/objects/pen.png' },
   { test: /(стол)/i, path: '/images/icons/objects/table.png' },
   { test: /(стул)/i, path: '/images/icons/objects/chair.png' },
+  { test: /(пакет|пакета|пакеты)/i, path: '/images/icons/objects/bag.svg' },
+  { test: /(чек|квитанц)/i, path: '/images/icons/objects/receipt.svg' },
+  { test: /(картой|карта|наличн)/i, path: '/images/icons/objects/card-payment.svg' },
+  { test: /(как дела|привет, как дела)/i, path: '/images/icons/objects/how-are-you.svg' },
+  { test: /(привет|здравствуй|здравствуйте|доброе утро|добрый вечер|добрый день)/i, path: '/images/icons/objects/greeting.svg' },
+  { test: /(до свидания|пока|прощай|всего хорошего)/i, path: '/images/icons/objects/farewell.svg' },
+  { test: /(спасибо|благодарю|благодарность|не за что)/i, path: '/images/icons/objects/thanks.svg' },
 
   // Colors
   { test: /(красн)/i, path: '/images/icons/colors/red.png' },
@@ -84,6 +91,10 @@ const GE_FAST_MAP: Record<string, string> = {
   "თევზი": "/images/icons/animals/fish.png",
   "სახლი": "/images/icons/home/house.png",
   "წიგნი": "/images/icons/objects/book.png",
+  "როგორ ხარ": "/images/icons/objects/how-are-you.svg",
+  "გამარჯობა": "/images/icons/objects/greeting.svg",
+  "ნახვამდის": "/images/icons/objects/farewell.svg",
+  "მადლობა": "/images/icons/objects/thanks.svg",
 };
 
 export function pickImageForCard(card: CardLite): string | null {

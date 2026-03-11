@@ -4,24 +4,6 @@
   "cards": [
     {
       "type": "word",
-      "ge_text": "საღამო მშვიდობისა",
-      "ru_meaning": "добрый вечер",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს ქართული სკოლაა",
-      "ru_meaning": "это грузинская школа",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მამა მაღაზიაშია",
-      "ru_meaning": "папа в магазине",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "ქართველი",
       "ru_meaning": "грузин",
       "audio_url": ""
@@ -82,6 +64,42 @@
     },
     {
       "type": "word",
+      "ge_text": "სახლები",
+      "ru_meaning": "дома",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ხეები",
+      "ru_meaning": "деревья",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მაგიდები",
+      "ru_meaning": "столы",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "საღამო მშვიდობისა",
+      "ru_meaning": "добрый вечер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ქართული სკოლაა",
+      "ru_meaning": "это грузинская школа",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მამა მაღაზიაშია",
+      "ru_meaning": "папа в магазине",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "დილა მშვიდობისა",
       "ru_meaning": "доброе утро",
       "audio_url": ""
@@ -114,24 +132,6 @@
       "type": "word",
       "ge_text": "ეს კარგი დღეა",
       "ru_meaning": "это хороший день",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "სახლები",
-      "ru_meaning": "дома",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ხეები",
-      "ru_meaning": "деревья",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მაგიდები",
-      "ru_meaning": "столы",
       "audio_url": ""
     },
     {

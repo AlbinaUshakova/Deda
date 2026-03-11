@@ -2,7 +2,7 @@
 'use client';
 
 import { getSettings, setSettings } from '@/lib/settings';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SettingsPanel({
     onClose,
@@ -11,54 +11,19 @@ export default function SettingsPanel({
     onClose: () => void;
     onBack?: () => void;
 }) {
-    const [lessonTargetScoreInput, setLessonTargetScoreInput] = useState('50');
-    const [initialTargetInput, setInitialTargetInput] = useState('50');
+    const [lessonTargetScoreInput, setLessonTargetScoreInput] = useState('25');
     const [translationDirection, setTranslationDirection] = useState<'ge-ru' | 'ru-ge'>('ge-ru');
-    const [initialDirection, setInitialDirection] = useState<'ge-ru' | 'ru-ge'>('ge-ru');
-    const [resetPulse, setResetPulse] = useState(false);
-    const [feedback, setFeedback] = useState<{ text: string; emoji: string } | null>(null);
-    const [feedbackVisible, setFeedbackVisible] = useState(false);
-    const resetPulseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const feedbackFadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const feedbackClearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         const s = getSettings();
         const value = String(s.lessonTargetScore);
         setLessonTargetScoreInput(value);
-        setInitialTargetInput(value);
         setTranslationDirection(s.translationDirection);
-        setInitialDirection(s.translationDirection);
     }, []);
-
-    useEffect(() => {
-        return () => {
-            if (resetPulseTimeoutRef.current) clearTimeout(resetPulseTimeoutRef.current);
-            if (feedbackFadeTimeoutRef.current) clearTimeout(feedbackFadeTimeoutRef.current);
-            if (feedbackClearTimeoutRef.current) clearTimeout(feedbackClearTimeoutRef.current);
-        };
-    }, []);
-
-    const showFeedback = (emoji: string, text: string, durationMs = 1600) => {
-        if (feedbackFadeTimeoutRef.current) clearTimeout(feedbackFadeTimeoutRef.current);
-        if (feedbackClearTimeoutRef.current) clearTimeout(feedbackClearTimeoutRef.current);
-        setFeedback({ emoji, text });
-        setFeedbackVisible(true);
-
-        const fadeDelay = Math.max(700, durationMs - 320);
-        feedbackFadeTimeoutRef.current = setTimeout(() => {
-            setFeedbackVisible(false);
-            feedbackFadeTimeoutRef.current = null;
-        }, fadeDelay);
-        feedbackClearTimeoutRef.current = setTimeout(() => {
-            setFeedback(null);
-            feedbackClearTimeoutRef.current = null;
-        }, durationMs);
-    };
 
     const applyAndExit = (afterApply: () => void) => {
         const parsed = Number(lessonTargetScoreInput);
-        const safe = Number.isFinite(parsed) ? parsed : 50;
+        const safe = Number.isFinite(parsed) ? parsed : 25;
         const next = Math.max(10, Math.min(100, Math.round(safe)));
         setSettings({
             lessonTargetScore: next,
@@ -77,22 +42,12 @@ export default function SettingsPanel({
     };
 
     const clampTarget = (value: number) => Math.max(10, Math.min(100, Math.round(value)));
-    const triggerResetPulse = () => {
-        setResetPulse(true);
-        if (resetPulseTimeoutRef.current) clearTimeout(resetPulseTimeoutRef.current);
-        resetPulseTimeoutRef.current = setTimeout(() => setResetPulse(false), 260);
-    };
-    const handleResetToDefault = () => {
-        setLessonTargetScoreInput('50');
-        triggerResetPulse();
-        showFeedback('↺', 'Сброшено до 50');
-    };
     const parsedTarget = Number(lessonTargetScoreInput);
-    const safeTarget = Number.isFinite(parsedTarget) ? parsedTarget : 50;
+    const safeTarget = Number.isFinite(parsedTarget) ? parsedTarget : 25;
 
     return (
-        <div className="fixed right-2 sm:right-4 top-[86px] z-[230]">
-            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-118px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+        <div className="menu-floating-anchor">
+            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-108px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                 <div className="relative flex h-10 items-center justify-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
                     {onBack && (
                         <button
@@ -122,8 +77,9 @@ export default function SettingsPanel({
                             onClick={() => {
                                 setTranslationDirection('ge-ru');
                             }}
+                            aria-pressed={translationDirection === 'ge-ru'}
                             className={`relative rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors ${translationDirection === 'ge-ru'
-                                ? 'border-transparent bg-[linear-gradient(135deg,#6C6CFF,#5B59E8)] text-white shadow-[0_2px_10px_rgba(91,89,232,0.35)]'
+                                ? 'border-[var(--btn-active-border)] bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] shadow-[var(--btn-active-shadow)]'
                                 : 'border-[#3E4B5E] bg-transparent text-[#A8B3C7] hover:bg-white/5 hover:border-[#6C6CFF] hover:text-[var(--menu-text)]'
                                 }`}
                         >
@@ -134,8 +90,9 @@ export default function SettingsPanel({
                             onClick={() => {
                                 setTranslationDirection('ru-ge');
                             }}
+                            aria-pressed={translationDirection === 'ru-ge'}
                             className={`relative rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors ${translationDirection === 'ru-ge'
-                                ? 'border-transparent bg-[linear-gradient(135deg,#6C6CFF,#5B59E8)] text-white shadow-[0_2px_10px_rgba(91,89,232,0.35)]'
+                                ? 'border-[var(--btn-active-border)] bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] shadow-[var(--btn-active-shadow)]'
                                 : 'border-[#3E4B5E] bg-transparent text-[#A8B3C7] hover:bg-white/5 hover:border-[#6C6CFF] hover:text-[var(--menu-text)]'
                                 }`}
                         >
@@ -149,13 +106,12 @@ export default function SettingsPanel({
                 <div className="pt-2.5">
                     <div className="grid grid-cols-[auto_auto] items-center gap-x-2 gap-y-1">
                         <div className="text-xs text-[var(--menu-text)]">Цель по очкам</div>
-                        <div className={`inline-flex items-center rounded-xl border border-[var(--menu-stepper-border)] bg-transparent ${resetPulse ? 'animate-settings-bump' : ''}`}>
+                        <div className="inline-flex items-center rounded-xl border border-[var(--menu-stepper-border)] bg-transparent">
                             <button
                                 type="button"
                                 className="h-9 w-9 rounded-l-xl border-r border-[var(--menu-stepper-border)] text-sm font-semibold text-[var(--menu-text)] hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)] active:scale-[0.97] transition"
                                 onClick={() => {
                                     setLessonTargetScoreInput(String(clampTarget(safeTarget - 1)));
-                                    showFeedback('✅', 'Цель обновлена');
                                 }}
                                 aria-label="Уменьшить цель"
                                 title="Уменьшить цель"
@@ -175,7 +131,7 @@ export default function SettingsPanel({
                                 }}
                                 onBlur={() => {
                                     if (!lessonTargetScoreInput) {
-                                        setLessonTargetScoreInput('50');
+                                        setLessonTargetScoreInput('25');
                                         return;
                                     }
                                     setLessonTargetScoreInput(String(clampTarget(Number(lessonTargetScoreInput))));
@@ -187,7 +143,6 @@ export default function SettingsPanel({
                                 className="h-9 w-9 rounded-r-xl border-l border-[var(--menu-stepper-border)] text-sm font-semibold text-[var(--menu-text)] hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)] active:scale-[0.97] transition"
                                 onClick={() => {
                                     setLessonTargetScoreInput(String(clampTarget(safeTarget + 1)));
-                                    showFeedback('✅', 'Цель обновлена');
                                 }}
                                 aria-label="Увеличить цель"
                                 title="Увеличить цель"
@@ -195,27 +150,8 @@ export default function SettingsPanel({
                                 +
                             </button>
                         </div>
-                        <div />
-                        <button
-                            type="button"
-                            className="justify-self-start inline-flex items-center gap-1 rounded-md bg-transparent px-0 py-0 text-[10px] text-[var(--menu-text-muted)] hover:text-[var(--menu-text)] active:scale-[0.98] transition"
-                            onClick={handleResetToDefault}
-                        >
-                            <span>Сбросить до 50</span>
-                            <span className="inline-block -translate-y-[1px] text-[11px] leading-none">⟳</span>
-                        </button>
                     </div>
                 </div>
-
-                {feedback && (
-                    <div
-                        className={`rounded-lg bg-[var(--menu-active)] px-2.5 py-1 text-[11px] text-[var(--menu-text)] transition-opacity duration-300 ${feedbackVisible ? 'opacity-100' : 'opacity-0'
-                            }`}
-                    >
-                        <span className="mr-1">{feedback.emoji}</span>
-                        <span>{feedback.text}</span>
-                    </div>
-                )}
 
             </div>
         </div>

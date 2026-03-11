@@ -14,6 +14,8 @@ export type ProgressMap = Record<string, number>;
 
 // ключ локального хранилища (новая версия)
 const LS_KEY = 'deda_progress_v2';
+const LEGACY_LS_KEYS = ['deda_progress', 'deda_progress_v1'];
+const DEFAULT_EPISODE_IDS = Array.from({ length: 9 }, (_, i) => `ep${i + 1}`);
 
 // ===== ЛОКАЛЬНЫЙ ПРОГРЕСС =====
 
@@ -29,6 +31,15 @@ function getLocalProgressArray(): Progress[] {
 function setLocalProgressArray(p: Progress[]) {
   if (typeof window === 'undefined') return;
   localStorage.setItem(LS_KEY, JSON.stringify(p));
+}
+
+function clearLegacyLocalProgress() {
+  if (typeof window === 'undefined') return;
+  for (const key of LEGACY_LS_KEYS) {
+    try {
+      localStorage.removeItem(key);
+    } catch {}
+  }
 }
 
 // обновляем локальный прогресс и возвращаем новый best
@@ -148,22 +159,56 @@ export async function upsertProgress(episodeId: string, score: number) {
 
 // сброс прогресса: локально всегда, на сервере — если есть авторизованный пользователь
 export async function resetProgress() {
-  setLocalProgressArray([]);
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('deda:progress-updated'));
+  // Перезаписываем локально дефолтные значения (все уроки = 0).
+  const defaultLocalProgress: Progress[] = DEFAULT_EPISODE_IDS.map(episodeId => ({
+    episodeId,
+    best: 0,
+  }));
+  setLocalProgressArray(defaultLocalProgress);
+  clearLegacyLocalProgress();
+
+  // Если backend не подключен — достаточно локального сброса.
+  if (!supabase) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('deda:progress-updated'));
+    }
+    return;
   }
 
-  if (!supabase) return;
-
   const { data: userData, error: userErr } = await supabase.auth.getUser();
-  if (userErr || !userData.user) return;
+  if (userErr || !userData.user) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('deda:progress-updated'));
+    }
+    return;
+  }
 
-  const { error } = await supabase
+  const { error: deleteError } = await supabase
     .from('progress')
     .delete()
     .eq('user_id', userData.user.id);
 
-  if (error) {
-    console.error('reset progress error', error);
+  if (deleteError) {
+    console.error('reset progress delete error', deleteError);
+  }
+
+  // Жёсткая перезапись дефолта на сервере (на случай, если delete заблокирован политиками).
+  const toUpsert = DEFAULT_EPISODE_IDS.map(episodeId => ({
+    user_id: userData.user.id,
+    episode_id: episodeId,
+    best: 0,
+  }));
+  const { error: upsertError } = await supabase
+    .from('progress')
+    .upsert(toUpsert, { onConflict: 'user_id,episode_id' });
+
+  if (upsertError) {
+    console.error('reset progress upsert error', upsertError);
+  }
+
+  // Обновляем UI только после попытки серверного удаления,
+  // чтобы не успевали вернуться старые значения.
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('deda:progress-updated'));
   }
 }

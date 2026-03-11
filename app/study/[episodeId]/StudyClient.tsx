@@ -24,13 +24,17 @@ export default function StudyClient({
         const parsed = JSON.parse(raw);
         const found = parsed.episodes.find((e: any) => e.id === episodeId);
         if (found) {
-          ep = {
+          const cachedEpisode = {
             ...found,
             cards: found.cards.map((c: any) => ({
               ...c,
               ge_text: normalizeGeorgianText(c.ge_text),
             })),
           };
+          // Не даём устаревшему кэшу затирать свежий bundled контент.
+          if (!ep || (cachedEpisode.cards?.length ?? 0) >= (ep.cards?.length ?? 0)) {
+            ep = cachedEpisode;
+          }
         }
       }
     } catch { }
@@ -54,19 +58,19 @@ export default function StudyClient({
       : `/play/${episodeId}`;
 
   return (
-    <main className="min-h-screen bg-transparent text-slate-800">
+    <main className="min-h-screen bg-transparent text-[var(--text-primary)]">
       <div className="mx-auto w-full px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
         <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
           <div className="relative flex min-h-[52px] items-center justify-end">
             <div className="ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">
             <Link
-              className="play-tab--secondary inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-slate-900"
+              className="play-tab--secondary inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-[var(--text-secondary)] shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-[var(--text-primary)]"
               href="/"
             >
               Главная
             </Link>
             <Link
-              className="play-tab--primary inline-flex items-center justify-center rounded-xl border border-indigo-600 bg-indigo-600 px-3.5 sm:px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:border-indigo-500 hover:bg-indigo-500"
+              className="play-tab--secondary inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-3.5 sm:px-4 py-2 text-sm font-medium text-[var(--text-secondary)] shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-[var(--text-primary)]"
               href={playHref as Route}
             >
               Играть

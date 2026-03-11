@@ -32,7 +32,7 @@ const letterTranslit: Record<string, string> = {
 const alphabetLetterColorByStatus: Record<AlphabetLetterStatus, string> = {
   mastered: 'text-emerald-600',
   almost: 'text-orange-600',
-  current: 'text-yellow-600',
+  current: 'text-[var(--progress-current)]',
   locked: 'text-slate-500',
   unknown: 'text-indigo-600',
 };
@@ -96,7 +96,7 @@ export default function GlobalAlphabetOverlay() {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
-  const [lessonTargetScore, setLessonTargetScore] = useState(50);
+  const [lessonTargetScore, setLessonTargetScore] = useState(25);
   const [letterStatusByChar, setLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
 
   useEffect(() => {
@@ -187,10 +187,7 @@ export default function GlobalAlphabetOverlay() {
       const target = getSettings().lessonTargetScore;
       if (cancelled) return;
 
-      const progressMap: ProgressMap = { ...progress };
-      for (const [ep, best] of Object.entries(merged)) {
-        progressMap[ep] = Math.max(progressMap[ep] ?? 0, best as number);
-      }
+      const progressMap: ProgressMap = { ...merged };
       setProgress(progressMap);
       setLettersByEp(lettersByEpisode);
       setLessonTargetScore(target);
@@ -284,14 +281,14 @@ export default function GlobalAlphabetOverlay() {
   return (
     <div
       ref={overlayRef}
-      className={`block fixed left-2 sm:left-3 md:left-4 top-[86px] z-[140] w-[188px] sm:w-[210px] md:w-[224px] xl:w-[246px] transition-all duration-200 ease-out ${
+      className={`block fixed left-2 sm:left-3 md:left-4 top-[78px] z-[140] w-[244px] transition-all duration-200 ease-out ${
         open
           ? 'opacity-100 translate-y-0 scale-100'
           : 'opacity-0 -translate-y-1 scale-[0.98] pointer-events-none select-none'
       }`}
       aria-hidden={!open}
     >
-      <div className="home-alphabet-panel origin-top-left scale-[0.94] max-h-[calc(100dvh-112px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 xl:p-3.5 shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
+      <div className="home-alphabet-panel max-h-[calc(100dvh-102px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
         <div className="flex items-center justify-between gap-2">
           <h3 className="home-alphabet-title text-sm font-semibold tracking-[-0.01em] text-slate-700">ანბანი</h3>
           <button

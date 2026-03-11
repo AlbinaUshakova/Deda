@@ -34,6 +34,42 @@
     },
     {
       "type": "word",
+      "ge_text": "გამარჯობა",
+      "ru_meaning": "здравствуйте",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "გაუმარჯოს",
+      "ru_meaning": "за здоровье!",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ძმა",
+      "ru_meaning": "брат",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "რძე",
+      "ru_meaning": "молоко",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ძვირი",
+      "ru_meaning": "дорогой",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი ყავა",
+      "ru_meaning": "мой кофе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მე მყავს",
       "ru_meaning": "у меня есть",
       "audio_url": ""
@@ -76,36 +112,6 @@
     },
     {
       "type": "word",
-      "ge_text": "გამარჯობა",
-      "ru_meaning": "здравствуйте",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "გაუმარჯოს",
-      "ru_meaning": "ура",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ძმა",
-      "ru_meaning": "брат",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "რძე",
-      "ru_meaning": "молоко",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ძვირი",
-      "ru_meaning": "дорогой",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "მე მიყვარს ჩემი ძმა",
       "ru_meaning": "я люблю своего брата",
       "audio_url": ""
@@ -114,12 +120,6 @@
       "type": "word",
       "ge_text": "მე მიყვარს რძე",
       "ru_meaning": "я люблю молоко",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ჩემი ყავა",
-      "ru_meaning": "мой кофе",
       "audio_url": ""
     },
     {

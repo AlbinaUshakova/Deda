@@ -121,7 +121,7 @@ export default function AuthStatus() {
                 </button>
 
                 {open && (
-                    <div className="animate-modal-in fixed right-2 sm:right-4 top-[86px] z-[230] w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-118px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+                    <div className="menu-floating-anchor animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-108px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                         {/* шапка с именем и почтой */}
                         <div className="relative flex h-10 items-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
                             <button
@@ -184,9 +184,10 @@ export default function AuthStatus() {
                                         setSettings({ theme: 'light' });
                                         setTheme('light');
                                     }}
+                                    aria-pressed={theme === 'light'}
                                     className={`rounded-lg px-2 py-1 text-[12px] font-medium transition ${focusRingClass} ${
                                         theme === 'light'
-                                            ? 'bg-[var(--menu-segment-active)] text-white shadow-[var(--menu-segment-active-shadow)]'
+                                            ? 'bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] border border-[var(--btn-active-border)] shadow-[var(--btn-active-shadow)]'
                                             : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
                                     }`}
                                 >
@@ -198,9 +199,10 @@ export default function AuthStatus() {
                                         setSettings({ theme: 'dark' });
                                         setTheme('dark');
                                     }}
+                                    aria-pressed={theme === 'dark'}
                                     className={`rounded-lg px-2 py-1 text-[12px] font-medium transition ${focusRingClass} ${
                                         theme === 'dark'
-                                            ? 'bg-[var(--menu-segment-active)] text-white shadow-[var(--menu-segment-active-shadow)]'
+                                            ? 'bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] border border-[var(--btn-active-border)] shadow-[var(--btn-active-shadow)]'
                                             : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
                                     }`}
                                 >

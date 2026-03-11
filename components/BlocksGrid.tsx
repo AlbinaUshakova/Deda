@@ -792,8 +792,8 @@ export default function BlocksGrid({
           className="flex flex-col items-stretch relative"
           style={{ width: boardPixelSize }}
         >
-          <div className="mb-2 px-1 relative z-[70]">
-            <div className="blocks-grid-score mt-1 text-center text-[16px] font-semibold tracking-[-0.01em] text-slate-700">
+          <div className="mb-1 px-1 relative z-[70]">
+            <div className="blocks-grid-score mt-0 text-center text-[20px] font-semibold tracking-[-0.01em] text-slate-700 opacity-80">
               {score} / {bestScore}
             </div>
           </div>
@@ -900,14 +900,14 @@ export default function BlocksGrid({
             aria-label="Подсказка по выбору языка"
             className="absolute left-0 z-[60] select-none"
             style={{
-              top: -cellSize * 1.3,
+              top: -cellSize * 1.31,
               left: -cellSize * 0.02,
               width: cellSize * 2.2,
             }}
           >
             {catReaction && (
               <div
-                className={`pointer-events-none absolute -top-4 right-0 rounded-full bg-white/92 px-1.5 py-0.5 text-[15px] shadow-[0_2px_8px_rgba(15,23,42,0.16)] transition-opacity duration-300 ${
+                className={`pointer-events-none absolute top-1 right-0 rounded-full bg-white/92 px-1.5 py-0.5 text-[15px] shadow-[0_2px_8px_rgba(15,23,42,0.16)] transition-opacity duration-300 ${
                   catReactionVisible ? 'opacity-100' : 'opacity-0'
                 } ${catReaction.bounce ? 'animate-bounce' : ''}
                 `}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="receipt">
+  <rect x="28" y="12" width="72" height="104" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  <path d="M28 100l8 8 8-8 8 8 8-8 8 8 8-8 8 8 8-8v16H28z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="38" y="26" width="30" height="10" rx="3" fill="#ffedd5"/>
+  <line x1="38" y1="50" x2="90" y2="50" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <line x1="38" y1="62" x2="90" y2="62" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/>
+  <line x1="38" y1="74" x2="90" y2="74" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/>
+  <line x1="38" y1="86" x2="74" y2="86" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+</svg>

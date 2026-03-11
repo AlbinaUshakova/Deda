@@ -36,6 +36,12 @@
   "cards": [
     {
       "type": "word",
+      "ge_text": "დათო",
+      "reading": "dato",
+      "ru_meaning": "Дато"
+    },
+    {
+      "type": "word",
       "ge_text": "კაბა",
       "reading": "k’aba",
       "ru_meaning": "платье"
@@ -50,7 +56,7 @@
       "type": "word",
       "ge_text": "კარგი",
       "reading": "k’argi",
-      "ru_meaning": "хорошо"
+      "ru_meaning": "хороший/хорошая"
     },
     {
       "type": "word",
@@ -78,18 +84,6 @@
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს",
-      "reading": "me makvs",
-      "ru_meaning": "у меня есть"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მქვია",
-      "reading": "me mkvia",
-      "ru_meaning": "меня зовут"
-    },
-    {
-      "type": "word",
       "ge_text": "ექვსი",
       "reading": "ekvsi",
       "ru_meaning": "шесть"
@@ -99,6 +93,18 @@
       "ge_text": "შაქარი",
       "reading": "shakari",
       "ru_meaning": "сахар"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს",
+      "reading": "me makvs",
+      "ru_meaning": "у меня есть"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია",
+      "reading": "me mkvia",
+      "ru_meaning": "меня зовут"
     },
     {
       "type": "word",

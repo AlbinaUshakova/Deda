@@ -39,6 +39,12 @@
   "cards": [
     {
       "type": "word",
+      "ge_text": "დათო",
+      "reading": "dato",
+      "ru_meaning": "Дато"
+    },
+    {
+      "type": "word",
       "ge_text": "ხორცი",
       "reading": "khortsi",
       "ru_meaning": "мясо"
@@ -69,9 +75,21 @@
     },
     {
       "type": "word",
-      "ge_text": "აი ცხრა ქათამი და თევზი",
-      "reading": "ai tskhra katami da tevzi",
-      "ru_meaning": "вот 9 куриц и рыба"
+      "ge_text": "ზეთი",
+      "reading": "zeti",
+      "ru_meaning": "масло"
+    },
+    {
+      "type": "word",
+      "ge_text": "ხატი",
+      "reading": "khati",
+      "ru_meaning": "икона"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ცხრა ქათამი",
+      "reading": "ai tskhra katami",
+      "ru_meaning": "вот 9 куриц"
     },
     {
       "type": "word",
@@ -114,18 +132,6 @@
       "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
       "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
       "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
-    },
-    {
-      "type": "word",
-      "ge_text": "ზეთი",
-      "reading": "zeti",
-      "ru_meaning": "масло"
-    },
-    {
-      "type": "word",
-      "ge_text": "ხატი",
-      "reading": "khati",
-      "ru_meaning": "икона"
     },
     {
       "type": "word",

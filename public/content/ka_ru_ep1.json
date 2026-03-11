@@ -13,15 +13,33 @@
   "cards": [
     {
       "type": "word",
+      "ge_text": "აი",
+      "reading": "ai",
+      "ru_meaning": "вот"
+    },
+    {
+      "type": "word",
       "ge_text": "ია",
       "reading": "ia",
       "ru_meaning": "фиалка"
     },
     {
       "type": "word",
-      "ge_text": "აი",
-      "reading": "ai",
-      "ru_meaning": "вот"
+      "ge_text": "აი ია",
+      "reading": "ai ia",
+      "ru_meaning": "вот фиалка"
+    },
+    {
+      "type": "word",
+      "ge_text": "სოსო",
+      "reading": "soso",
+      "ru_meaning": "Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სოსო",
+      "reading": "ai soso",
+      "ru_meaning": "вот Сосо"
     },
     {
       "type": "word",
@@ -31,9 +49,9 @@
     },
     {
       "type": "word",
-      "ge_text": "ოთხი",
-      "reading": "otkhi",
-      "ru_meaning": "4"
+      "ge_text": "აი საათი",
+      "reading": "ai saati",
+      "ru_meaning": "вот часы"
     },
     {
       "type": "word",
@@ -43,27 +61,21 @@
     },
     {
       "type": "word",
-      "ge_text": "აი ასი თხა",
-      "reading": "ai asi tkha",
-      "ru_meaning": "вот 100 коз"
+      "ge_text": "ხუთი",
+      "reading": "khuti",
+      "ru_meaning": "5"
     },
     {
       "type": "word",
-      "ge_text": "აი სოსოს ოთხი უთო",
-      "reading": "ai sosos otkhi uto",
-      "ru_meaning": "вот 4 утюга Сосо"
+      "ge_text": "აი ხუთი უთო",
+      "reading": "ai khuti uto",
+      "ru_meaning": "вот 5 утюгов"
     },
     {
       "type": "word",
-      "ge_text": "ათი",
-      "reading": "ati",
-      "ru_meaning": "10"
-    },
-    {
-      "type": "word",
-      "ge_text": "ასი",
-      "reading": "asi",
-      "ru_meaning": "100"
+      "ge_text": "ოთხი",
+      "reading": "otkhi",
+      "ru_meaning": "4"
     },
     {
       "type": "word",
@@ -73,15 +85,63 @@
     },
     {
       "type": "word",
+      "ge_text": "აი ოთხი თხა",
+      "reading": "ai otkhi tkha",
+      "ru_meaning": "вот 4 козы"
+    },
+    {
+      "type": "word",
+      "ge_text": "ათი",
+      "reading": "ati",
+      "ru_meaning": "10"
+    },
+    {
+      "type": "word",
+      "ge_text": "ათი საათია",
+      "reading": "ati saatia",
+      "ru_meaning": "сейчас десять часов"
+    },
+    {
+      "type": "word",
+      "ge_text": "ასი",
+      "reading": "asi",
+      "ru_meaning": "100"
+    },
+    {
+      "type": "word",
+      "ge_text": "სოსოს ასი საათი",
+      "reading": "sosos asi saati",
+      "ru_meaning": "у Сосо сто часов"
+    },
+    {
+      "type": "word",
       "ge_text": "ოთახი",
       "reading": "otakhi",
       "ru_meaning": "комната"
     },
     {
       "type": "word",
-      "ge_text": "ხუთი",
-      "reading": "khuti",
-      "ru_meaning": "5"
+      "ge_text": "აი სოსოს ოთახი",
+      "reading": "ai sosos otakhi",
+      "ru_meaning": "вот комната Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "თათია",
+      "reading": "tatia",
+      "ru_meaning": "Татия"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი თათიას ათი თხა",
+      "reading": "ai tatias ati tkha",
+      "ru_meaning": "вот 10 коз Татии"
+    },
+    {
+      "type": "word",
+      "ge_text": "ათასი",
+      "reading": "atasi",
+      "ru_meaning": "1000"
     },
     {
       "type": "word",
@@ -94,60 +154,6 @@
       "ge_text": "აი იას საათი",
       "reading": "ai ias saati",
       "ru_meaning": "вот часы Ии"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი თათიას ათი თხა",
-      "reading": "ai tatias ati tkha",
-      "ru_meaning": "вот 10 коз Татии"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი სოსოს ოთახი",
-      "reading": "ai sosos otakhi",
-      "ru_meaning": "вот комната Сосо"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი ხუთი უთო",
-      "reading": "ai khuti uto",
-      "ru_meaning": "вот 5 утюгов"
-    },
-    {
-      "type": "word",
-      "ge_text": "სია",
-      "reading": "sia",
-      "ru_meaning": "список"
-    },
-    {
-      "type": "word",
-      "ge_text": "სოსო",
-      "reading": "soso",
-      "ru_meaning": "Сосо"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი ათი საათი",
-      "reading": "ai ati saati",
-      "ru_meaning": "вот десять часов"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი ათასი საათი",
-      "reading": "ai atasi saati",
-      "ru_meaning": "вот тысяча часов"
-    },
-    {
-      "type": "word",
-      "ge_text": "სოსოს ასი საათი",
-      "reading": "sosos asi saati",
-      "ru_meaning": "у Сосо сто часов"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი საათი",
-      "reading": "ai saati",
-      "ru_meaning": "вот часы"
     }
   ]
 }

@@ -26,6 +26,17 @@ type AnswerState = 'idle' | 'wrong' | 'correct';
 type LetterCellState = 'correct' | 'present' | 'absent';
 type TranslationDirection = 'ge-ru' | 'ru-ge';
 const RECENT_WORD_GAP = 4;
+const NUMBER_WORDS_RU: Record<string, number> = {
+  'ноль': 0, 'один': 1, 'два': 2, 'три': 3, 'четыре': 4, 'пять': 5,
+  'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9, 'десять': 10,
+  'одиннадцать': 11, 'двенадцать': 12, 'тринадцать': 13, 'четырнадцать': 14,
+  'пятнадцать': 15, 'шестнадцать': 16, 'семнадцать': 17, 'восемнадцать': 18,
+  'девятнадцать': 19, 'двадцать': 20, 'тридцать': 30, 'сорок': 40,
+  'пятьдесят': 50, 'шестьдесят': 60, 'семьдесят': 70, 'восемьдесят': 80,
+  'девяносто': 90, 'сто': 100, 'двести': 200, 'триста': 300, 'четыреста': 400,
+  'пятьсот': 500, 'шестьсот': 600, 'семьсот': 700, 'восемьсот': 800,
+  'девятьсот': 900, 'тысяча': 1000,
+};
 
 // ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
 const FAVORITES_KEY = 'deda_fav_ge';
@@ -141,18 +152,6 @@ function normalizeNumberForms(str: string): string {
 
 // --- пытаемся распарсить числовую фразу в цифры (например "два" -> "2")
 function parseNumberWordToDigits(str: string): string | null {
-  const smallNumbers: Record<string, number> = {
-    'ноль': 0, 'один': 1, 'два': 2, 'три': 3, 'четыре': 4, 'пять': 5,
-    'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9, 'десять': 10,
-    'одиннадцать': 11, 'двенадцать': 12, 'тринадцать': 13, 'четырнадцать': 14,
-    'пятнадцать': 15, 'шестнадцать': 16, 'семнадцать': 17, 'восемнадцать': 18,
-    'девятнадцать': 19, 'двадцать': 20, 'тридцать': 30, 'сорок': 40,
-    'пятьдесят': 50, 'шестьдесят': 60, 'семьдесят': 70, 'восемьдесят': 80,
-    'девяносто': 90, 'сто': 100, 'двести': 200, 'триста': 300, 'четыреста': 400,
-    'пятьсот': 500, 'шестьсот': 600, 'семьсот': 700, 'восемьсот': 800,
-    'девятьсот': 900, 'тысяча': 1000,
-  };
-
   const words = str
     .toLowerCase()
     .replace(/[^а-яё\s-]/g, ' ')
@@ -167,7 +166,7 @@ function parseNumberWordToDigits(str: string): string | null {
   let matched = false;
 
   for (const w of words) {
-    const val = smallNumbers[w];
+    const val = NUMBER_WORDS_RU[w];
     if (val === undefined) {
       // если встретили слово, которое не входит в числительные — прекращаем
       return null;
@@ -189,11 +188,62 @@ function parseNumberWordToDigits(str: string): string | null {
   return String(result);
 }
 
+// Приводит числа внутри фразы к единому цифровому виду: "два стула" -> "2 стула"
+function normalizeNumbersInText(str: string): string {
+  const tokens = normalizeRu(str)
+    .replace(/[^а-яё0-9\s-]/g, ' ')
+    .replace(/-+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const out: string[] = [];
+  let i = 0;
+  while (i < tokens.length) {
+    const token = tokens[i];
+    if (/^\d+$/.test(token)) {
+      out.push(token);
+      i += 1;
+      continue;
+    }
+    if (!(token in NUMBER_WORDS_RU)) {
+      out.push(token);
+      i += 1;
+      continue;
+    }
+
+    let j = i;
+    while (j < tokens.length && tokens[j] in NUMBER_WORDS_RU) {
+      j += 1;
+    }
+    const parsed = parseNumberWordToDigits(tokens.slice(i, j).join(' '));
+    if (parsed !== null) {
+      out.push(parsed);
+      i = j;
+      continue;
+    }
+
+    out.push(token);
+    i += 1;
+  }
+
+  return out.join(' ');
+}
+
 // нормализуем строку для сравнения: только буквы и цифры
 function normalizeForCompare(str: string): string {
   const base = normalizeRu(str);
   // оставляем только буквы и цифры (любые юникод-буквы + числа)
   return base.replace(/[^\p{L}\p{N}]+/gu, '');
+}
+
+// Нормализуем "фразу": переносы строк/пунктуация -> пробел, лишние пробелы схлопываем.
+// Нужна для кейсов вида:
+// "Пакет?\nНет, спасибо." == "Пакет нет спасибо"
+function normalizeSentenceForCompare(str: string): string {
+  return normalizeRu(str)
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
 }
 
 function tokenizeAnswerCells(str: string): string[] {
@@ -260,8 +310,17 @@ function isSameAnswer(userInput: string, correctAnswer: string): boolean {
   // 2) сравниваем только буквы/цифры, игнорируя запятые, точки, пробелы и т.п.
   const cleanUser = normalizeForCompare(userInput);
   const cleanCorrect = normalizeForCompare(correctAnswer);
+  if (cleanUser === cleanCorrect) return true;
 
-  return cleanUser === cleanCorrect;
+  // 2.1) сравниваем как фразы с сохранением слов, но без пунктуации/переносов
+  const sentenceUser = normalizeSentenceForCompare(userInput);
+  const sentenceCorrect = normalizeSentenceForCompare(correctAnswer);
+  if (sentenceUser === sentenceCorrect) return true;
+
+  // 3) сравнение c числами внутри фраз: "2 стула" == "два стула"
+  const numericUser = normalizeForCompare(normalizeNumbersInText(userInput));
+  const numericCorrect = normalizeForCompare(normalizeNumbersInText(correctAnswer));
+  return numericUser === numericCorrect;
 }
 
 /**
@@ -825,20 +884,20 @@ export default function BlocksGame({
   }, [answer, currentCorrectAnswer, question, showCorrect]);
 
   return (
-    <div className="flex w-full justify-center -mt-3 md:-mt-4">
+    <div className="flex w-full justify-center lg:justify-start -mt-3 md:-mt-4">
       <div
         className={
-          'relative flex w-full max-w-5xl rounded-[28px] bg-transparent px-1 sm:px-3 md:px-6 py-3 md:py-5 lg:py-7 ' +
+          'relative flex w-full max-w-5xl rounded-[28px] bg-transparent px-1 sm:px-3 md:px-6 py-2 md:py-4 lg:py-5 ' +
           (isNarrowLayout
-            ? 'flex-col items-center gap-3'
-            : 'flex-row items-start gap-2 sm:gap-4 md:gap-6 lg:gap-8')
+            ? 'flex-col items-center gap-2'
+            : 'flex-row items-start gap-1 sm:gap-1.5 md:gap-2 lg:gap-2 xl:gap-2')
         }
       >
         {/* ЛЕВАЯ ОБЛАСТЬ: задание / фигуры */}
         <div
           className={
             (isNarrowLayout
-              ? 'w-full max-w-[420px] shrink-0 ml-0'
+              ? 'w-full max-w-[420px] shrink-0 ml-0 px-2'
               : 'w-[clamp(220px,33vw,390px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]') +
             (showQuestionStage ? '' : ' hidden')
           }
@@ -861,9 +920,9 @@ export default function BlocksGame({
                   {hasWords && question && (
                     <div className="w-full lg:translate-x-3 rounded-3xl bg-transparent p-2.5 sm:p-3 md:p-4">
                       {/* строка с грузинским словом и кнопкой избранного */}
-                      <div className="labelRow mb-3 sm:mb-4 md:mb-5 flex items-center gap-2">
+                      <div className="labelRow mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
                         <div
-                          className="max-w-full break-words overflow-visible text-slate-700 font-normal tracking-[-0.01em] text-[clamp(22px,2.5vw,34px)] leading-[1.22]"
+                          className="blocks-prompt-text max-w-full break-words overflow-visible text-[var(--text-primary)] font-semibold tracking-[-0.01em] text-[clamp(26px,2.8vw,34px)] leading-[1.18]"
                           style={{
                             overflowWrap: 'break-word',
                             wordBreak: 'normal',
@@ -873,13 +932,7 @@ export default function BlocksGame({
                         </div>
                       </div>
 
-                      <div
-                        className={`-mt-2 mb-2 w-full rounded-2xl transition-all duration-200 ${
-                          isAnswerRowActive
-                            ? 'bg-indigo-50/35 shadow-[0_6px_14px_rgba(99,102,241,0.1)]'
-                            : 'bg-transparent'
-                        }`}
-                      >
+                      <div className="-mt-1 mb-1 w-full rounded-2xl bg-transparent transition-all duration-200">
                         <form onSubmit={handleSubmit} className="w-full md:-mt-0.5">
                           <textarea
                             ref={answerInputRef}
@@ -927,11 +980,11 @@ export default function BlocksGame({
                         </form>
                       </div>
 
-                      <div className="mt-2 inline-flex w-full items-center gap-[clamp(6px,1.1vw,12px)] flex-wrap">
+                      <div className="mt-1 inline-flex w-full items-center gap-[clamp(6px,1.1vw,12px)] flex-wrap">
                         <button
                           type="button"
                           onClick={handleSkipQuestion}
-                          className="inline-flex h-[clamp(36px,5vh,48px)] items-center gap-2 rounded-lg border border-transparent bg-transparent px-[clamp(6px,1.2vw,10px)] text-[clamp(17px,2.1vw,24px)] font-medium text-[#556182] transition-all duration-150 hover:bg-slate-100/60 hover:text-[#3f4967]"
+                          className="blocks-refresh-btn inline-flex h-[clamp(36px,5vh,48px)] items-center gap-2 rounded-lg border border-transparent bg-transparent px-[clamp(6px,1.2vw,10px)] text-[clamp(17px,2.1vw,24px)] font-medium transition-all duration-150 focus:outline-none [-webkit-tap-highlight-color:transparent]"
                           disabled={showCorrect}
                         >
                           <span className="inline-block -translate-y-[3px] text-[clamp(24px,3.1vw,34px)] leading-none font-normal">⟳</span>
@@ -945,7 +998,7 @@ export default function BlocksGame({
                               'h-[clamp(36px,5vh,48px)] w-[clamp(36px,5vh,48px)] inline-flex shrink-0 items-center justify-center rounded-xl border-0 bg-transparent text-[clamp(22px,2.8vw,30px)] transition-all duration-150 ' +
                               (isCurrentFavorite
                                 ? 'text-amber-500 hover:text-amber-600'
-                                : 'text-slate-400 hover:text-slate-600')
+                                : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]')
                             }
                             title={
                               isCurrentFavorite
@@ -992,8 +1045,8 @@ export default function BlocksGame({
           className={
             'min-w-0 flex flex-col items-center ' +
             (isNarrowLayout
-              ? 'w-full max-w-[540px]'
-              : 'flex-1 justify-center lg:justify-start ml-0 lg:ml-1 xl:ml-2 -mt-2 md:-mt-4 lg:-mt-6') +
+              ? 'w-full max-w-[540px] px-2'
+              : 'flex-1 justify-center lg:justify-start ml-0 lg:ml-0 xl:ml-0 -mt-2 md:-mt-4 lg:-mt-6') +
             (showBoardStage ? '' : ' hidden')
           }
         >

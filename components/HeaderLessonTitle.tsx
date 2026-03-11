@@ -18,6 +18,7 @@ function buildHeaderTitle(pathname: string): string {
   if (match) return `Урок ${match[1]}`;
   if (episodeId === 'favorites') return 'Избранное';
   if (episodeId === 'all') return 'Все уроки';
+  if (episodeId === 'phrases') return 'Разговорные ситуации';
 
   return episodeId;
 }

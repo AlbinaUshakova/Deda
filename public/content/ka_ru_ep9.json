@@ -34,38 +34,8 @@
     },
     {
       "type": "word",
-      "ge_text": "მე მინდა",
-      "ru_meaning": "я хочу",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მინდა წვენი",
-      "ru_meaning": "я хочу сок",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "მწვადი",
       "ru_meaning": "шашлык",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე ვარ სასტუმროში",
-      "ru_meaning": "я в отеле",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მინდა წყალი",
-      "ru_meaning": "я хочу воды",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მიყვარს მწვადი",
-      "ru_meaning": "я люблю шашлык",
       "audio_url": ""
     },
     {
@@ -96,6 +66,36 @@
       "type": "word",
       "ge_text": "ხაჭაპური",
       "ru_meaning": "хачапури",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა",
+      "ru_meaning": "я хочу",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა წვენი",
+      "ru_meaning": "я хочу сок",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ სასტუმროში",
+      "ru_meaning": "я в отеле",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა წყალი",
+      "ru_meaning": "я хочу воду",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს მწვადი",
+      "ru_meaning": "я люблю шашлык",
       "audio_url": ""
     },
     {

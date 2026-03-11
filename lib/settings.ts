@@ -8,7 +8,7 @@ export type Settings = {
 
 const KEY = 'deda_settings_v1';
 const DEFAULT_SETTINGS: Settings = {
-  lessonTargetScore: 50,
+  lessonTargetScore: 25,
   translationDirection: 'ge-ru',
   theme: 'light',
 };

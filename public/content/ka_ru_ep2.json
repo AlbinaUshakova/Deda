@@ -10,6 +10,12 @@
   "cards": [
     {
       "type": "word",
+      "ge_text": "სოსო",
+      "reading": "soso",
+      "ru_meaning": "Сосо"
+    },
+    {
+      "type": "word",
       "ge_text": "ორი",
       "reading": "ori",
       "ru_meaning": "2"
@@ -88,12 +94,6 @@
     },
     {
       "type": "word",
-      "ge_text": "აი სოსოს ორი თარო",
-      "reading": "ai sosos ori taro",
-      "ru_meaning": "вот 2 полки Сосо"
-    },
-    {
-      "type": "word",
       "ge_text": "ერთი თარო",
       "reading": "erti taro",
       "ru_meaning": "1 полка"
@@ -103,18 +103,6 @@
       "ge_text": "ორი ხე",
       "reading": "ori khe",
       "ru_meaning": "2 дерева"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს არის ოთახი",
-      "reading": "es aris otakhi",
-      "ru_meaning": "это комната"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს ოთახია",
-      "reading": "es otakhia",
-      "ru_meaning": "это комната"
     },
     {
       "type": "word",
@@ -142,18 +130,6 @@
     },
     {
       "type": "word",
-      "ge_text": "ეს არ არის თარო",
-      "reading": "es ar aris taro",
-      "ru_meaning": "это не полка"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს არაა თარო",
-      "reading": "es araa taro",
-      "ru_meaning": "это не полка"
-    },
-    {
-      "type": "word",
       "ge_text": "ეს არის თარო",
       "reading": "es aris taro",
       "ru_meaning": "это полка"
@@ -163,18 +139,6 @@
       "ge_text": "ეს თაროა",
       "reading": "es taroa",
       "ru_meaning": "это полка"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს არ არის უთო",
-      "reading": "es ar aris uto",
-      "ru_meaning": "это не утюг"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს არაა უთო",
-      "reading": "es araa uto",
-      "ru_meaning": "это не утюг"
     },
     {
       "type": "word",
@@ -190,12 +154,6 @@
     },
     {
       "type": "word",
-      "ge_text": "აი ორი ბარათი",
-      "reading": "ai ori barati",
-      "ru_meaning": "вот 2 карточки"
-    },
-    {
-      "type": "word",
       "ge_text": "სად არის დედა?",
       "reading": "sad aris deda?",
       "ru_meaning": "где мама"
@@ -205,6 +163,54 @@
       "ge_text": "სად არის ბარათი?",
       "reading": "sad aris barati?",
       "ru_meaning": "где карточка"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სოსოს ორი თარო",
+      "reading": "ai sosos ori taro",
+      "ru_meaning": "вот 2 полки Сосо"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არის ოთახი",
+      "reading": "es aris otakhi",
+      "ru_meaning": "это комната"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ოთახია",
+      "reading": "es otakhia",
+      "ru_meaning": "это комната"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არ არის თარო",
+      "reading": "es ar aris taro",
+      "ru_meaning": "это не полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არაა თარო",
+      "reading": "es araa taro",
+      "ru_meaning": "это не полка"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არ არის უთო",
+      "reading": "es ar aris uto",
+      "ru_meaning": "это не утюг"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს არაა უთო",
+      "reading": "es araa uto",
+      "ru_meaning": "это не утюг"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ორი ბარათი",
+      "reading": "ai ori barati",
+      "ru_meaning": "вот 2 карточки"
     },
     {
       "type": "word",

@@ -4,6 +4,12 @@
   "cards": [
     {
       "type": "word",
+      "ge_text": "მარი",
+      "ru_meaning": "Мари",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მანქანა",
       "ru_meaning": "машина",
       "audio_url": ""
@@ -34,12 +40,6 @@
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს მანქანა",
-      "ru_meaning": "у меня есть машина",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "ჟურნალი",
       "ru_meaning": "журнал",
       "audio_url": ""
@@ -48,24 +48,6 @@
       "type": "word",
       "ge_text": "არაჟანი",
       "ru_meaning": "сметана",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მიყვარს არაჟანი",
-      "ru_meaning": "я люблю сметану",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს ღვინო და ყველი",
-      "ru_meaning": "у меня есть вино и сыр",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ჩემი დედა მენეჯერია",
-      "ru_meaning": "моя мама — менеджер",
       "audio_url": ""
     },
     {
@@ -106,6 +88,30 @@
     },
     {
       "type": "word",
+      "ge_text": "მე მაქვს მანქანა",
+      "ru_meaning": "у меня есть машина",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს არაჟანი",
+      "ru_meaning": "я люблю сметану",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ღვინო და ყველი",
+      "ru_meaning": "у меня есть вино и сыр",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი დედა მენეჯერია",
+      "ru_meaning": "моя мама — менеджер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მე მაქვს პური",
       "ru_meaning": "у меня есть хлеб",
       "audio_url": ""
@@ -125,7 +131,7 @@
     {
       "type": "word",
       "ge_text": "სად არის ფული?",
-      "ru_meaning": "где деньги",
+      "ru_meaning": "где деньги?",
       "audio_url": ""
     },
     {
