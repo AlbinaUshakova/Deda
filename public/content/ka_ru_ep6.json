@@ -82,20 +82,14 @@
     },
     {
       "type": "word",
-      "ge_text": "საღამო მშვიდობისა",
-      "ru_meaning": "добрый вечер",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს ქართული სკოლაა",
-      "ru_meaning": "это грузинская школа",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "მამა მაღაზიაშია",
       "ru_meaning": "папа в магазине",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "საღამო მშვიდობისა",
+      "ru_meaning": "добрый вечер",
       "audio_url": ""
     },
     {
@@ -112,26 +106,32 @@
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ საქართველოში",
-      "ru_meaning": "я в Грузии",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "დედა სახლშია",
       "ru_meaning": "мама дома",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ მაღაზიაში",
-      "ru_meaning": "я в магазине",
+      "ge_text": "ეს ქართული სკოლაა",
+      "ru_meaning": "это грузинская школа",
       "audio_url": ""
     },
     {
       "type": "word",
       "ge_text": "ეს კარგი დღეა",
       "ru_meaning": "это хороший день",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ საქართველოში",
+      "ru_meaning": "я в Грузии",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე ვარ მაღაზიაში",
+      "ru_meaning": "я в магазине",
       "audio_url": ""
     },
     {

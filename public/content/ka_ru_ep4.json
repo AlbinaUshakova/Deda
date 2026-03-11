@@ -96,33 +96,15 @@
     },
     {
       "type": "word",
+      "ge_text": "აი სამი სკამი",
+      "reading": "ai sami sk’ami",
+      "ru_meaning": "вот 3 стула"
+    },
+    {
+      "type": "word",
       "ge_text": "მე მაქვს",
       "reading": "me makvs",
       "ru_meaning": "у меня есть"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მქვია",
-      "reading": "me mkvia",
-      "ru_meaning": "меня зовут"
-    },
-    {
-      "type": "word",
-      "ge_text": "რა გქვია?",
-      "reading": "ra gkvia?",
-      "ru_meaning": "как тебя зовут"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მქვია დათო",
-      "reading": "me mkvia dato",
-      "ru_meaning": "меня зовут Дато"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს ექვსი კაბა",
-      "reading": "me makvs ekvsi k’aba",
-      "ru_meaning": "у меня есть 6 платьев"
     },
     {
       "type": "word",
@@ -138,6 +120,48 @@
     },
     {
       "type": "word",
+      "ge_text": "მე მაქვს სკამი",
+      "reading": "me makvs sk’ami",
+      "ru_meaning": "у меня есть стул"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ექვსი კაბა",
+      "reading": "me makvs ekvsi k’aba",
+      "ru_meaning": "у меня есть 6 платьев"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს კარგი კაბა",
+      "reading": "me makvs k’argi k’aba",
+      "ru_meaning": "у меня есть хорошее платье"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია",
+      "reading": "me mkvia",
+      "ru_meaning": "меня зовут"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია დათო",
+      "reading": "me mkvia dato",
+      "ru_meaning": "меня зовут Дато"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ჩაი",
+      "reading": "me makvs chai",
+      "ru_meaning": "у меня есть чай"
+    },
+    {
+      "type": "word",
+      "ge_text": "რა გქვია?",
+      "reading": "ra gkvia?",
+      "ru_meaning": "как тебя зовут"
+    },
+    {
+      "type": "word",
       "ge_text": "ეს კარგი გოგოა",
       "reading": "es k’argi gogoa",
       "ru_meaning": "это хорошая девочка"
@@ -150,33 +174,9 @@
     },
     {
       "type": "word",
-      "ge_text": "აი სამი სკამი",
-      "reading": "ai sami sk’ami",
-      "ru_meaning": "вот 3 стула"
-    },
-    {
-      "type": "word",
       "ge_text": "კა ქა კი ქი კე ქე კუ ქუ კო ქო",
       "reading": "k’a ka k’i ki k’e ke k’u ku k’o ko",
       "ru_meaning": "ка ки кэ ку ко"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს სკამი",
-      "reading": "me makvs sk’ami",
-      "ru_meaning": "у меня есть стул"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს კარგი კაბა",
-      "reading": "me makvs k’argi k’aba",
-      "ru_meaning": "у меня есть хорошее платье"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს ჩაი",
-      "reading": "me makvs chai",
-      "ru_meaning": "у меня есть чай"
     }
   ]
 }

@@ -80,23 +80,6 @@ function splitDialogLines(text: string): string[] {
     .filter(Boolean);
 }
 
-function detectSituationLabel(card?: Card | null): string | null {
-  if (!card) return null;
-  const ge = card.ge_text || '';
-  const ru = card.ru_meaning || '';
-
-  if (/პაკეტ/i.test(ge) || /пакет/i.test(ru)) return 'Пакет';
-  if (/ბარათ|ნაღდ/i.test(ge) || /карт|налич/i.test(ru)) return 'Карта или наличные';
-  if (/ჩეკ/i.test(ge) || /чек/i.test(ru)) return 'Чек';
-  if (/როგორ ხარ|როგორ ხართ|შენ როგორ ხარ/i.test(ge) || /как дела/i.test(ru)) return 'Как дела?';
-  if (/უკაცრავად|ბოდიში/i.test(ge) || /извините|простите|прошу прощения/i.test(ru)) return 'Извините';
-  if (/ნახვამდის|მშვიდობით|დროებით/i.test(ge) || /до свидания|пока|всего хорошего/i.test(ru)) return 'До свидания';
-  if (/მადლობა|გმადლობ|спасибо|благодар/i.test(ge) || /спасибо|благодар/i.test(ru)) return 'Спасибо';
-  if (/გამარჯობა|სალამი|დილა მშვიდობისა|საღამო მშვიდობისა|გაუმარჯოს|გაგიმარჯოს/i.test(ge) || /привет|здравствуй|здравствуйте|доброе утро|добрый вечер|добрый день/i.test(ru)) return 'Приветствие';
-
-  return null;
-}
-
 export default function FlashcardDeck({
   cards,
   lessonTitle,
@@ -134,6 +117,7 @@ export default function FlashcardDeck({
   const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
   const [shuffled, setShuffled] = useState(false);
   const [brokenImages, setBrokenImages] = useState<Record<string, true>>({});
+  const [imageLoadState, setImageLoadState] = useState<Record<string, 'loaded' | 'error'>>({});
 
   const autoRef = useRef<number | null>(null);
   const speedMenuRef = useRef<HTMLDivElement | null>(null);
@@ -210,7 +194,6 @@ export default function FlashcardDeck({
 
   const card = visible[order[idx]];
   const hasCard = !!card;
-  const situationLabel = detectSituationLabel(card);
   const geDialogLines = splitDialogLines(card?.ge_text || '');
   const ruDialogLines = splitDialogLines(card?.ru_meaning || '');
   const isGeDialog = geDialogLines.length > 1;
@@ -225,7 +208,10 @@ export default function FlashcardDeck({
     return pickImageForCard(card);
   }, [card]);
   const imageKey = card?.id || card?.ge_text || '';
-  const showCardImage = !!cardImageSrc && !!imageKey && !brokenImages[imageKey];
+  const imageStateKey = cardImageSrc && imageKey ? `${imageKey}::${cardImageSrc}` : '';
+  const imageState = imageStateKey ? imageLoadState[imageStateKey] : undefined;
+  const canAttemptCardImage = !!cardImageSrc && !!imageKey && !brokenImages[imageKey];
+  const showCardImage = canAttemptCardImage && imageState === 'loaded';
 
   const onPrev = useCallback(() => {
     if (!visible.length) return;
@@ -391,9 +377,9 @@ export default function FlashcardDeck({
   const canPrev = hasCard && total > 1;
   const canNext = hasCard && total > 1;
   const playControl =
-    'h-10 w-10 rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[28px] leading-none';
+    'h-[clamp(27px,6.4vw,51px)] w-[clamp(27px,6.4vw,51px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(19px,4.8vw,38px)] leading-none';
   const shuffleControl =
-    'h-10 w-10 rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[32px] leading-none';
+    'h-[clamp(27px,6.4vw,51px)] w-[clamp(27px,6.4vw,51px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(21px,5.1vw,42px)] leading-none';
   const glassMiniControl =
     'inline-flex items-center justify-center rounded-xl border-0 bg-transparent text-[var(--text-primary)] shadow-none transition-all duration-200';
   const navLikeMiniControl =
@@ -599,11 +585,6 @@ export default function FlashcardDeck({
                 </button>
               </div>
 
-              {situationLabel && (
-                <div className="flashcard-situation-badge pointer-events-none absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.01em]">
-                  Ситуация: {situationLabel}
-                </div>
-              )}
             </>
           )}
 
@@ -618,7 +599,7 @@ export default function FlashcardDeck({
             ) : !flipped ? (
               <div key={`front-${idx}`} className="flex flex-col items-center justify-center gap-3">
                 <div
-                  className="flashcard-ge-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(32px,5.5vw,64px)] leading-tight text-slate-800"
+                  className="flashcard-ge-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(33px,5.61vw,66px)] leading-tight text-slate-800"
                   style={{
                     fontFamily:
                       "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
@@ -666,19 +647,27 @@ export default function FlashcardDeck({
               </div>
             ) : (
               <div key={`back-${idx}`} className="flex flex-col items-center justify:center gap-3">
-                {showCardImage && cardImageSrc && (
+                {canAttemptCardImage && cardImageSrc && (
                   <img
+                    key={imageStateKey}
                     src={cardImageSrc}
                     alt={card.ru_meaning || card.ge_text}
-                    className="h-[140px] w-[140px] rounded-2xl object-contain border border-slate-200 bg-slate-50 p-2"
+                    className={`h-[140px] w-[140px] rounded-2xl object-contain border border-slate-200 bg-slate-50 p-2 ${showCardImage ? '' : 'invisible'}`}
                     loading="lazy"
+                    onLoad={() => {
+                      if (!imageStateKey) return;
+                      setImageLoadState(prev => ({ ...prev, [imageStateKey]: 'loaded' }));
+                    }}
                     onError={() => {
+                      if (imageStateKey) {
+                        setImageLoadState(prev => ({ ...prev, [imageStateKey]: 'error' }));
+                      }
                       if (!imageKey) return;
                       setBrokenImages(prev => ({ ...prev, [imageKey]: true }));
                     }}
                   />
                 )}
-                <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(22px,3.6vw,38px)] leading-tight text-[var(--text-primary)]">
+                <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(23px,3.67vw,38px)] leading-tight text-[var(--text-primary)]">
                   {isRuDialog ? (
                     <div className="flex flex-col items-center gap-1.5">
                       {ruDialogLines.map((line, lineIdx) => (
@@ -701,7 +690,7 @@ export default function FlashcardDeck({
           </div>
 
           {/* котик внизу слева */}
-          <div className="pointer-events-none absolute z-[30] hidden select-none md:block left-[-78px] min-[1512px]:left-[-92px] min-[1920px]:left-[-104px] bottom-[-151px]">
+          <div className="pointer-events-none absolute z-[30] hidden select-none md:block left-[-78px] min-[1512px]:left-[-92px] min-[1920px]:left-[-104px] bottom-[-118px]">
             <Image
               src="/images/deda-cat_2.png"
               alt="Deda cat"
@@ -715,26 +704,24 @@ export default function FlashcardDeck({
         </div>
 
         {/* Controls: below card, centered by the card wrapper */}
-        <div className="mt-1 relative h-12 w-full">
-          <div className="absolute left-1/2 top-1/2 grid h-12 w-[220px] -translate-x-1/2 -translate-y-1/2 grid-cols-[1fr_auto_1fr] items-center">
-            <div className="flex items-center justify-center">
-              <button
-                onClick={() => {
-                  setShuffled(s => {
-                    const next = !s;
-                    setOrder(next ? shuffleArr(order) : visible.map((_, i) => i));
-                    return next;
-                  });
-                }}
-                className={`flashcard-shuffle-btn ${shuffleControl}`}
-                title="Перемешать"
-                aria-pressed={shuffled}
-              >
-                <span className="relative inline-flex h-full w-full items-center justify-center">
-                  <span>⇄</span>
-                </span>
-              </button>
-            </div>
+        <div className="mt-1 relative h-[clamp(35px,8vw,64px)] w-full">
+          <div className="flashcard-controls-compact absolute left-1/2 top-1/2 inline-flex h-[clamp(35px,8vw,64px)] -translate-x-1/2 -translate-y-1/2 items-center gap-0">
+            <button
+              onClick={() => {
+                setShuffled(s => {
+                  const next = !s;
+                  setOrder(next ? shuffleArr(order) : visible.map((_, i) => i));
+                  return next;
+                });
+              }}
+              className={`flashcard-shuffle-btn ${shuffleControl}`}
+              title="Перемешать"
+              aria-pressed={shuffled}
+            >
+              <span className="relative inline-flex h-full w-full items-center justify-center">
+                <span>⇄</span>
+              </span>
+            </button>
 
             <button
               onClick={() => setAuto(a => !a)}
@@ -753,7 +740,7 @@ export default function FlashcardDeck({
               <button
                 type="button"
                 onClick={() => setSpeedMenuOpen(v => !v)}
-                className="flashcard-speed-btn h-10 w-10 rounded-full border-0 bg-transparent text-[12px] leading-none font-semibold text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
+                className="flashcard-speed-btn h-[clamp(27px,6.4vw,51px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(2px,0.64vw,3px)] text-[clamp(10px,2.4vw,16px)] leading-none font-semibold text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
                 aria-label="Скорость автопрокрутки"
                 title={`Скорость: ${currentSpeedLabel}`}
                 aria-haspopup="menu"

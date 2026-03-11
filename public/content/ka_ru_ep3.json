@@ -106,6 +106,18 @@
     },
     {
       "type": "word",
+      "ge_text": "აი დედის მაგიდა",
+      "reading": "ai dedis magida",
+      "ru_meaning": "вот стол мамы"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი მამის მაგიდა",
+      "reading": "ai mamis magida",
+      "ru_meaning": "вот стол папы"
+    },
+    {
+      "type": "word",
       "ge_text": "აი გოგოს ოთხი ბარათი",
       "reading": "ai gogos otkhi barati",
       "ru_meaning": "вот 4 карточки девочки"
@@ -136,12 +148,6 @@
     },
     {
       "type": "word",
-      "ge_text": "აი დედის მაგიდა",
-      "reading": "ai dedis magida",
-      "ru_meaning": "вот стол мамы"
-    },
-    {
-      "type": "word",
       "ge_text": "ეს დედის ვარდია",
       "reading": "es dedis vardia",
       "ru_meaning": "это роза мамы"
@@ -151,12 +157,6 @@
       "ge_text": "ეს დათოს გოგოა",
       "reading": "es datos gogoa",
       "ru_meaning": "это девочка Дато"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი მამის მაგიდა",
-      "reading": "ai mamis magida",
-      "ru_meaning": "вот стол папы"
     }
   ]
 }

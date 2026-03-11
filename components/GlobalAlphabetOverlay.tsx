@@ -3,14 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { getSettings } from '@/lib/settings';
-import { loadProgressMap, getLocalProgress, type ProgressMap } from '@/lib/supabase';
+import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
+import { loadProgressMapCached, getLocalProgress, type ProgressMap } from '@/lib/supabase';
 
 type Ep = { id: string; title: string };
-type EpisodesApiResponse = {
-  ok: boolean;
-  episodes?: Ep[];
-  lettersByEpisode?: Record<string, string[]>;
-};
 
 type LessonStatus = 'mastered' | 'almost' | 'current' | 'locked';
 type AlphabetLetterStatus = LessonStatus | 'unknown';
@@ -72,18 +68,6 @@ const geLetterAudioMap: Record<string, string> = {
   'ჯ': '/audio/letters/32-jani.mp3',
   'ჰ': '/audio/letters/33-hae.mp3',
 };
-
-async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: Record<string, string[]> }> {
-  const res = await fetch('/api/content/episodes', { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error('Failed to load episodes');
-  }
-  const json = (await res.json()) as EpisodesApiResponse;
-  return {
-    episodes: json.episodes ?? [],
-    lettersByEpisode: json.lettersByEpisode ?? {},
-  };
-}
 
 export default function GlobalAlphabetOverlay() {
   const pathname = usePathname();
@@ -168,7 +152,10 @@ export default function GlobalAlphabetOverlay() {
     if (pathname === '/') return;
     let cancelled = false;
 
-    const load = async () => {
+    const load = async (forceRefresh = false) => {
+      const cachedEpisodes = getEpisodesDataSync();
+      setLettersByEp(cachedEpisodes.lettersByEpisode);
+
       const local = getLocalProgress();
       const localMap: ProgressMap = {};
       for (const row of local) localMap[row.episodeId] = Math.max(localMap[row.episodeId] ?? 0, row.best);
@@ -182,8 +169,10 @@ export default function GlobalAlphabetOverlay() {
         }
       } catch {}
 
-      const { episodes, lettersByEpisode } = await loadEpisodesData();
-      const merged = await loadProgressMap();
+      const [{ episodes, lettersByEpisode }, merged] = await Promise.all([
+        getEpisodesDataCached(forceRefresh),
+        loadProgressMapCached(forceRefresh),
+      ]);
       const target = getSettings().lessonTargetScore;
       if (cancelled) return;
 
@@ -239,7 +228,7 @@ export default function GlobalAlphabetOverlay() {
 
     load();
     const onRefresh = () => {
-      load();
+      load(true);
     };
     window.addEventListener('deda:progress-updated' as any, onRefresh);
     window.addEventListener('deda:settings-updated' as any, onRefresh);

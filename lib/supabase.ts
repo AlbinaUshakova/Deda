@@ -16,6 +16,13 @@ export type ProgressMap = Record<string, number>;
 const LS_KEY = 'deda_progress_v2';
 const LEGACY_LS_KEYS = ['deda_progress', 'deda_progress_v1'];
 const DEFAULT_EPISODE_IDS = Array.from({ length: 9 }, (_, i) => `ep${i + 1}`);
+const PROGRESS_CACHE_TTL_MS = 5000;
+let progressMapCache: { value: ProgressMap; at: number } | null = null;
+let progressMapPromise: Promise<ProgressMap> | null = null;
+
+function invalidateProgressCache() {
+  progressMapCache = null;
+}
 
 // ===== ЛОКАЛЬНЫЙ ПРОГРЕСС =====
 
@@ -52,6 +59,7 @@ export function upsertLocalProgress(episodeId: string, score: number): number {
     p[i].best = Math.max(p[i].best, score);
   }
   setLocalProgressArray(p);
+  invalidateProgressCache();
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('deda:progress-updated'));
@@ -130,9 +138,37 @@ export async function loadProgressMap(): Promise<ProgressMap> {
   return map;
 }
 
+export async function loadProgressMapCached(forceRefresh = false): Promise<ProgressMap> {
+  const now = Date.now();
+  if (
+    !forceRefresh &&
+    progressMapCache &&
+    now - progressMapCache.at < PROGRESS_CACHE_TTL_MS
+  ) {
+    return { ...progressMapCache.value };
+  }
+
+  if (!forceRefresh && progressMapPromise) {
+    return progressMapPromise;
+  }
+
+  progressMapPromise = (async () => {
+    const map = await loadProgressMap();
+    progressMapCache = { value: map, at: Date.now() };
+    return map;
+  })();
+
+  try {
+    return await progressMapPromise;
+  } finally {
+    progressMapPromise = null;
+  }
+}
+
 // универсальный апдейт прогресса: сначала локально, потом (если есть юзер) на сервер
 export async function upsertProgress(episodeId: string, score: number) {
   const best = upsertLocalProgress(episodeId, score);
+  invalidateProgressCache();
 
   if (!supabase) return;
 
@@ -166,6 +202,7 @@ export async function resetProgress() {
   }));
   setLocalProgressArray(defaultLocalProgress);
   clearLegacyLocalProgress();
+  invalidateProgressCache();
 
   // Если backend не подключен — достаточно локального сброса.
   if (!supabase) {

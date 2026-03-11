@@ -87,27 +87,27 @@
     },
     {
       "type": "word",
-      "ge_text": "აი ცხრა ქათამი",
-      "reading": "ai tskhra katami",
-      "ru_meaning": "вот 9 куриц"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს არის ეზო",
-      "reading": "es aris ezo",
-      "ru_meaning": "это двор"
-    },
-    {
-      "type": "word",
-      "ge_text": "დედა ოთახშია",
-      "reading": "deda otakhshia",
-      "ru_meaning": "мама в комнате"
+      "ge_text": "ბათუმი",
+      "reading": "batumi",
+      "ru_meaning": "Батуми"
     },
     {
       "type": "word",
       "ge_text": "გოგო ეზოშია",
       "reading": "gogo ezoshia",
       "ru_meaning": "девочка во дворе"
+    },
+    {
+      "type": "word",
+      "ge_text": "თევზი მაგიდაზეა",
+      "reading": "tevzi magidazea",
+      "ru_meaning": "рыба на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "გზა შორია",
+      "reading": "gza shoria",
+      "ru_meaning": "дорога далёкая"
     },
     {
       "type": "word",
@@ -123,21 +123,15 @@
     },
     {
       "type": "word",
-      "ge_text": "თევზი მაგიდაზეა",
-      "reading": "tevzi magidazea",
-      "ru_meaning": "рыба на столе"
-    },
-    {
-      "type": "word",
-      "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
-      "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
-      "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
-    },
-    {
-      "type": "word",
       "ge_text": "გზა კარგია",
       "reading": "gza kargia",
       "ru_meaning": "дорога хорошая"
+    },
+    {
+      "type": "word",
+      "ge_text": "თევზი კარგია",
+      "reading": "tevzi kargia",
+      "ru_meaning": "рыба хорошая"
     },
     {
       "type": "word",
@@ -147,9 +141,21 @@
     },
     {
       "type": "word",
-      "ge_text": "გზა შორია",
-      "reading": "gza shoria",
-      "ru_meaning": "дорога далёкая"
+      "ge_text": "დედა ეზოშია",
+      "reading": "deda ezoshia",
+      "ru_meaning": "мама во дворе"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა ოთახშია",
+      "reading": "deda otakhshia",
+      "ru_meaning": "мама в комнате"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ცხრა ქათამი",
+      "reading": "ai tskhra katami",
+      "ru_meaning": "вот 9 куриц"
     },
     {
       "type": "word",
@@ -165,21 +171,21 @@
     },
     {
       "type": "word",
-      "ge_text": "დედა ეზოშია",
-      "reading": "deda ezoshia",
-      "ru_meaning": "мама во дворе"
-    },
-    {
-      "type": "word",
-      "ge_text": "თევზი კარგია",
-      "reading": "tevzi kargia",
-      "ru_meaning": "рыба хорошая"
+      "ge_text": "ეს არის ეზო",
+      "reading": "es aris ezo",
+      "ru_meaning": "это двор"
     },
     {
       "type": "word",
       "ge_text": "მე მინდა თევზი",
       "reading": "me minda tevzi",
       "ru_meaning": "я хочу рыбу"
+    },
+    {
+      "type": "word",
+      "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
+      "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
+      "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
     }
   ]
 }

@@ -3,23 +3,18 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { getSettings } from '@/lib/settings';
+import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
 import {
-  loadProgressMap,
+  loadProgressMapCached,
   getLocalProgress,
   type ProgressMap,
 } from '@/lib/supabase';
 
 type Ep = { id: string; title: string; best?: number };
-type EpisodesApiResponse = {
-  ok: boolean;
-  episodes?: Ep[];
-  lettersByEpisode?: Record<string, string[]>;
-};
 type LessonStatus = 'mastered' | 'almost' | 'current' | 'locked';
 type AlphabetLetterStatus = LessonStatus | 'unknown';
 const ALPHABET_STATUS_CACHE_KEY = 'deda:alphabet-letter-status-cache:v1';
 const LOCKED_LESSON_TOOLTIP_DELAY_MS = 240;
-const EPISODES_DATA_CACHE_KEY = 'deda:episodes-data-cache:v1';
 
 const letterTranslit: Record<string, string> = {
   'ა': 'a',
@@ -147,74 +142,6 @@ const geLetterAudioMap: Record<string, string> = {
   'ჰ': '/audio/letters/33-hae.mp3',
 };
 
-async function loadEpisodesData(): Promise<{ episodes: Ep[]; lettersByEpisode: Record<string, string[]> }> {
-  const res = await fetch('/api/content/episodes', { cache: 'no-store' });
-  if (!res.ok) {
-    throw new Error('Failed to load episodes');
-  }
-  const json = (await res.json()) as EpisodesApiResponse;
-  return {
-    episodes: json.episodes ?? [],
-    lettersByEpisode: json.lettersByEpisode ?? {},
-  };
-}
-
-function loadEpisodesDataFromCache(): {
-  episodes: Ep[];
-  lettersByEpisode: Record<string, string[]>;
-} {
-  if (typeof window === 'undefined') {
-    return { episodes: [], lettersByEpisode: {} };
-  }
-  try {
-    const raw = window.localStorage.getItem(EPISODES_DATA_CACHE_KEY);
-    if (!raw) return { episodes: [], lettersByEpisode: {} };
-    const parsed = JSON.parse(raw) as {
-      episodes?: Ep[];
-      lettersByEpisode?: Record<string, string[]>;
-    };
-    return {
-      episodes: Array.isArray(parsed.episodes) ? parsed.episodes : [],
-      lettersByEpisode:
-        parsed.lettersByEpisode && typeof parsed.lettersByEpisode === 'object'
-          ? parsed.lettersByEpisode
-          : {},
-    };
-  } catch {
-    return { episodes: [], lettersByEpisode: {} };
-  }
-}
-
-function loadEpisodesFromLocalStorageFallback(): {
-  episodes: Ep[];
-  lettersByEpisode: Record<string, string[]>;
-} {
-  if (typeof window === 'undefined') {
-    return { episodes: [], lettersByEpisode: {} };
-  }
-  try {
-    const raw = window.localStorage.getItem('deda_content_json');
-    if (!raw) return { episodes: [], lettersByEpisode: {} };
-    const parsed = JSON.parse(raw) as {
-      episodes?: Array<{ id: string; title?: string; cards?: Array<{ type?: string; ge_text?: string }> }>;
-    };
-    const episodes = (parsed.episodes ?? []).map(ep => ({
-      id: ep.id,
-      title: ep.title ?? ep.id,
-    }));
-    const lettersByEpisode: Record<string, string[]> = {};
-    for (const ep of parsed.episodes ?? []) {
-      const letters = (ep.cards ?? [])
-        .filter(c => c.type === 'letter' && typeof c.ge_text === 'string' && c.ge_text.length > 0)
-        .map(c => c.ge_text as string);
-      if (letters.length > 0) lettersByEpisode[ep.id] = letters;
-    }
-    return { episodes, lettersByEpisode };
-  } catch {
-    return { episodes: [], lettersByEpisode: {} };
-  }
-}
-
 export default function HomePage() {
   const [eps, setEps] = useState<Ep[]>([]);
   const [showAlphabet, setShowAlphabet] = useState(false);
@@ -234,13 +161,9 @@ export default function HomePage() {
   useEffect(() => {
     const init = async () => {
       // 1) Быстрый клиентский prefill из local cache (после монтирования, без hydration mismatch)
-      const cachedEpisodes = loadEpisodesDataFromCache();
-      const fallbackEpisodes =
-        cachedEpisodes.episodes.length > 0
-          ? cachedEpisodes
-          : loadEpisodesFromLocalStorageFallback();
-      setEps(fallbackEpisodes.episodes);
-      setLettersByEp(fallbackEpisodes.lettersByEpisode);
+      const cachedEpisodes = getEpisodesDataSync();
+      setEps(cachedEpisodes.episodes as Ep[]);
+      setLettersByEp(cachedEpisodes.lettersByEpisode);
 
       const local = getLocalProgress();
       const localMap: ProgressMap = {};
@@ -262,22 +185,16 @@ export default function HomePage() {
 
       // 2) Актуализация с API
       try {
-        const { episodes, lettersByEpisode } = await loadEpisodesData();
-        setEps(episodes);
+        const { episodes, lettersByEpisode } = await getEpisodesDataCached();
+        setEps(episodes as Ep[]);
         setLettersByEp(lettersByEpisode);
-        try {
-          window.localStorage.setItem(
-            EPISODES_DATA_CACHE_KEY,
-            JSON.stringify({ episodes, lettersByEpisode }),
-          );
-        } catch {}
       } catch (e) {
         console.error('Failed to load episodes API, fallback to local storage', e);
       }
 
       // тянем merged-прогресс (локалка+сервер) и мёрджим поверх текущего
       try {
-        const merged = await loadProgressMap();
+        const merged = await loadProgressMapCached();
         setProgress(merged);
       } catch (e) {
         console.error('Failed to load progress map', e);
@@ -288,7 +205,7 @@ export default function HomePage() {
 
     const onUpd = async () => {
       try {
-        const merged = await loadProgressMap();
+        const merged = await loadProgressMapCached(true);
         setProgress(merged);
       } catch (e) {
         console.error('Failed to refresh progress map', e);

@@ -70,50 +70,26 @@
     },
     {
       "type": "word",
+      "ge_text": "ჩემი ძმა კარგია",
+      "ru_meaning": "мой брат хороший",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მე მყავს",
       "ru_meaning": "у меня есть",
       "audio_url": ""
     },
     {
       "type": "word",
+      "ge_text": "მე მყავს ძმა",
+      "ru_meaning": "у меня есть брат",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მე მიყვარს",
       "ru_meaning": "я люблю",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს ჩემი დედაა",
-      "ru_meaning": "это моя мама",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მიყვარს ყავა და ყველი",
-      "ru_meaning": "я люблю кофе и сыр",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მყავს დედა და და",
-      "ru_meaning": "у меня есть мама и сестра",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე არ მიყვარს ჩაი",
-      "ru_meaning": "я не люблю чай",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ყა ყე ყი ყო ყუ",
-      "ru_meaning": "кьа кье кьи кьо кьу",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მიყვარს ჩემი ძმა",
-      "ru_meaning": "я люблю своего брата",
       "audio_url": ""
     },
     {
@@ -130,14 +106,38 @@
     },
     {
       "type": "word",
-      "ge_text": "ჩემი ძმა კარგია",
-      "ru_meaning": "мой брат хороший",
+      "ge_text": "მე მიყვარს ჩემი ძმა",
+      "ru_meaning": "я люблю своего брата",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მყავს ძმა",
-      "ru_meaning": "у меня есть брат",
+      "ge_text": "მე არ მიყვარს ჩაი",
+      "ru_meaning": "я не люблю чай",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს ყავა და ყველი",
+      "ru_meaning": "я люблю кофе и сыр",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მყავს დედა და და",
+      "ru_meaning": "у меня есть мама и сестра",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ჩემი დედაა",
+      "ru_meaning": "это моя мама",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ყა ყე ყი ყო ყუ",
+      "ru_meaning": "кьа кье кьи кьо кьу",
       "audio_url": ""
     }
   ]

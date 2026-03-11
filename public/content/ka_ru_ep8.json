@@ -4,86 +4,20 @@
   "cards": [
     {
       "type": "word",
-      "ge_text": "მარი",
-      "ru_meaning": "Мари",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "მანქანა",
       "ru_meaning": "машина",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მენეჯერი",
-      "ru_meaning": "менеджер",
+      "ge_text": "მარი",
+      "ru_meaning": "Мари",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ბანანი",
-      "ru_meaning": "банан",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ანანასი",
-      "ru_meaning": "ананас",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ღვინო",
-      "ru_meaning": "вино",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ჟურნალი",
-      "ru_meaning": "журнал",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "არაჟანი",
-      "ru_meaning": "сметана",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ფული",
-      "ru_meaning": "деньги",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "კაფე",
-      "ru_meaning": "кафе",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ოფისი",
-      "ru_meaning": "офис",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "პური",
-      "ru_meaning": "хлеб",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "პარკი",
-      "ru_meaning": "парк",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "პროფესორი",
-      "ru_meaning": "профессор",
+      "ge_text": "მარის მანქანა",
+      "ru_meaning": "машина Мари",
       "audio_url": ""
     },
     {
@@ -94,32 +28,20 @@
     },
     {
       "type": "word",
-      "ge_text": "მე მიყვარს არაჟანი",
-      "ru_meaning": "я люблю сметану",
+      "ge_text": "მენეჯერი",
+      "ru_meaning": "менеджер",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს ღვინო და ყველი",
-      "ru_meaning": "у меня есть вино и сыр",
+      "ge_text": "მარი მენეჯერია",
+      "ru_meaning": "Мари менеджер",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ჩემი დედა მენეჯერია",
-      "ru_meaning": "моя мама — менеджер",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს პური",
-      "ru_meaning": "у меня есть хлеб",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ის ოფისშია",
-      "ru_meaning": "он в офисе",
+      "ge_text": "კაფე",
+      "ru_meaning": "кафе",
       "audio_url": ""
     },
     {
@@ -130,8 +52,50 @@
     },
     {
       "type": "word",
-      "ge_text": "სად არის ფული?",
-      "ru_meaning": "где деньги?",
+      "ge_text": "ოფისი",
+      "ru_meaning": "офис",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ის ოფისშია",
+      "ru_meaning": "он в офисе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "პარკი",
+      "ru_meaning": "парк",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მარი პარკშია",
+      "ru_meaning": "Мари в парке",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჟურნალი",
+      "ru_meaning": "журнал",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მარის ჟურნალი",
+      "ru_meaning": "журнал Мари",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "პური",
+      "ru_meaning": "хлеб",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ძვირი",
+      "ru_meaning": "дорогой",
       "audio_url": ""
     },
     {
@@ -142,8 +106,116 @@
     },
     {
       "type": "word",
+      "ge_text": "ეს პურია",
+      "ru_meaning": "это хлеб",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს პური",
+      "ru_meaning": "у меня есть хлеб",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ღვინო",
+      "ru_meaning": "вино",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ღვინოა",
+      "ru_meaning": "это вино",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ღვინო",
+      "ru_meaning": "у меня есть вино",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "არაჟანი",
+      "ru_meaning": "сметана",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს არაჟანი",
+      "ru_meaning": "я люблю сметану",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სად",
+      "ru_meaning": "где",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ფული",
+      "ru_meaning": "деньги",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სად არის ფული?",
+      "ru_meaning": "где деньги?",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სად არის მარი?",
+      "ru_meaning": "где Мари?",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ბანანი",
+      "ru_meaning": "банан",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ბანანები",
+      "ru_meaning": "бананы",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ანანასი",
+      "ru_meaning": "ананас",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ანანასები",
+      "ru_meaning": "ананасы",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მაგიდაზე ანანასები და ბანანებია",
+      "ru_meaning": "на столе ананасы и бананы",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "პროფესორი",
+      "ru_meaning": "профессор",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "ჩემი დედა პროფესორია",
       "ru_meaning": "моя мама — профессор",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ღვინო და ყველი",
+      "ru_meaning": "у меня есть вино и сыр",
       "audio_url": ""
     }
   ]

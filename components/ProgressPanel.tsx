@@ -3,8 +3,9 @@
 
 import { useEffect, useState } from 'react';
 import { resetProgress } from '@/lib/supabase';
-import { loadProgressMap } from '@/lib/supabase';
+import { loadProgressMapCached } from '@/lib/supabase';
 import { getSettings } from '@/lib/settings';
+import { getEpisodesDataCached } from '@/lib/clientContentCache';
 
 export default function ProgressPanel({
   onClose,
@@ -23,15 +24,13 @@ export default function ProgressPanel({
 
     const loadSummary = async () => {
       try {
-        const [episodesRes, progressMap] = await Promise.all([
-          fetch('/api/content/episodes', { cache: 'no-store' }),
-          loadProgressMap(),
+        const [episodesData, progressMap] = await Promise.all([
+          getEpisodesDataCached(),
+          loadProgressMapCached(),
         ]);
-        if (!episodesRes.ok) return;
-        const data = await episodesRes.json();
         if (cancelled) return;
 
-        const episodes = Array.isArray(data?.episodes) ? data.episodes : [];
+        const episodes = episodesData.episodes;
         const normalEpisodes = episodes.filter((ep: any) => /^ep\d+$/i.test(String(ep?.id ?? '')));
         const target = getSettings().lessonTargetScore;
         const mastered = normalEpisodes.filter((ep: any) => (progressMap[ep.id] ?? 0) >= target).length;

@@ -785,6 +785,23 @@ html[data-theme='dark'] .flashcard-speed-option {
     color: var(--control-text-hover) !important;
 }
 
+.flashcard-controls-compact {
+    gap: 0 !important;
+}
+
+.flashcard-controls-compact .flashcard-play-btn,
+.flashcard-controls-compact .flashcard-shuffle-btn,
+.flashcard-controls-compact .flashcard-speed-btn {
+    margin: 0 !important;
+}
+
+.flashcard-controls-compact .flashcard-speed-btn {
+    width: auto !important;
+    min-width: clamp(27px, 6.4vw, 42px);
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
 .flashcard-progress-track {
     background: #e5eaf3 !important;
 }

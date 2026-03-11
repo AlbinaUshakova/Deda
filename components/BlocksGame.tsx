@@ -984,7 +984,7 @@ export default function BlocksGame({
                         <button
                           type="button"
                           onClick={handleSkipQuestion}
-                          className="blocks-refresh-btn inline-flex h-[clamp(36px,5vh,48px)] items-center gap-2 rounded-lg border border-transparent bg-transparent px-[clamp(6px,1.2vw,10px)] text-[clamp(17px,2.1vw,24px)] font-medium transition-all duration-150 focus:outline-none [-webkit-tap-highlight-color:transparent]"
+                          className="blocks-refresh-btn inline-flex h-[clamp(36px,5vh,48px)] items-center gap-2 rounded-lg border border-transparent bg-transparent px-[clamp(6px,1.2vw,10px)] text-[clamp(14px,1.68vw,19px)] font-medium transition-all duration-150 focus:outline-none [-webkit-tap-highlight-color:transparent]"
                           disabled={showCorrect}
                         >
                           <span className="inline-block -translate-y-[3px] text-[clamp(24px,3.1vw,34px)] leading-none font-normal">⟳</span>
@@ -995,7 +995,7 @@ export default function BlocksGame({
                             type="button"
                             onClick={() => toggleFavorite(question.ge)}
                             className={
-                              'h-[clamp(36px,5vh,48px)] w-[clamp(36px,5vh,48px)] inline-flex shrink-0 items-center justify-center rounded-xl border-0 bg-transparent text-[clamp(22px,2.8vw,30px)] transition-all duration-150 ' +
+                              'h-[clamp(29px,4vh,38px)] w-[clamp(29px,4vh,38px)] inline-flex shrink-0 items-center justify-center rounded-xl border-0 bg-transparent text-[clamp(18px,2.24vw,24px)] transition-all duration-150 ' +
                               (isCurrentFavorite
                                 ? 'text-amber-500 hover:text-amber-600'
                                 : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]')
