@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import AuthStatus from "@/components/AuthStatus";
 import BrandToggle from "@/components/BrandToggle";
 import GlobalAlphabetOverlay from "@/components/GlobalAlphabetOverlay";
@@ -46,6 +47,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
+        <Analytics />
       </body>
     </html>
   );
