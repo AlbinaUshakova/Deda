@@ -792,8 +792,8 @@ export default function BlocksGrid({
           className="flex flex-col items-stretch relative"
           style={{ width: boardPixelSize }}
         >
-          <div className="mb-1 px-1 relative z-[70]">
-            <div className="blocks-grid-score mt-0 text-center text-[20px] font-semibold tracking-[-0.01em] text-slate-700 opacity-80">
+          <div className="mb-[clamp(4px,0.8vh,8px)] px-1 relative z-[70]">
+            <div className="blocks-grid-score mt-0 text-center text-[14px] font-semibold tracking-[-0.01em] text-slate-700 opacity-80">
               {score} / {bestScore}
             </div>
           </div>
@@ -816,10 +816,7 @@ export default function BlocksGrid({
               width: '100%',
               aspectRatio: '1 / 1',
               minHeight: 240,
-              marginTop:
-                palettePlacement === 'bottom'
-                  ? `-${Math.max(8, cellSize * 0.2)}px`
-                  : 0,
+              marginTop: 0,
             }}
           >
             {board.map((row, r) =>

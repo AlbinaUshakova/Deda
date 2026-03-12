@@ -62,11 +62,14 @@ export default function AuthStatus() {
     }, []);
 
     useEffect(() => {
-        const syncTheme = () => setTheme(getSettings().theme);
-        syncTheme();
-        window.addEventListener('deda:settings-updated', syncTheme as EventListener);
+        const syncSettings = () => {
+            const settings = getSettings();
+            setTheme(settings.theme);
+        };
+        syncSettings();
+        window.addEventListener('deda:settings-updated', syncSettings as EventListener);
         return () => {
-            window.removeEventListener('deda:settings-updated', syncTheme as EventListener);
+            window.removeEventListener('deda:settings-updated', syncSettings as EventListener);
         };
     }, []);
 

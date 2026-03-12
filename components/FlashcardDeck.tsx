@@ -242,6 +242,43 @@ export default function FlashcardDeck({
     setRevealCount(0);
   }, [visible.length]);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.tagName === 'BUTTON' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      if (e.code === 'Space') {
+        if (!hasCard) return;
+        e.preventDefault();
+        setFlipped(f => !f);
+        return;
+      }
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        onNext();
+        return;
+      }
+
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        onPrev();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [hasCard, onNext, onPrev]);
+
   const persistFav = useCallback((map: Record<string, true>) => {
     try {
       localStorage.setItem(LS_FAV, JSON.stringify(Object.keys(map)));
@@ -377,9 +414,9 @@ export default function FlashcardDeck({
   const canPrev = hasCard && total > 1;
   const canNext = hasCard && total > 1;
   const playControl =
-    'h-[clamp(27px,6.4vw,51px)] w-[clamp(27px,6.4vw,51px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(19px,4.8vw,38px)] leading-none';
+    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(16px,4.1vw,31px)] leading-none';
   const shuffleControl =
-    'h-[clamp(27px,6.4vw,51px)] w-[clamp(27px,6.4vw,51px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(21px,5.1vw,42px)] leading-none';
+    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(18px,4.4vw,34px)] leading-none';
   const glassMiniControl =
     'inline-flex items-center justify-center rounded-xl border-0 bg-transparent text-[var(--text-primary)] shadow-none transition-all duration-200';
   const navLikeMiniControl =
@@ -405,11 +442,11 @@ export default function FlashcardDeck({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full min-w-[320px]">
       {/* Верх: счётчик и заголовок */}
-      <div className="mb-4 flex w-full flex-col items-center justify-center gap-2">
-        <div className="w-full max-w-[860px] px-3 sm:px-4 md:px-0 lg:-translate-x-10 xl:-translate-x-12 2xl:-translate-x-14">
-          <div className="flashcard-counter text-center text-xs tracking-wide text-[var(--text-secondary)]">
+      <div className="mb-1 flex w-full flex-col items-center justify-center gap-1.5">
+        <div className="w-full max-w-[860px] px-3 sm:px-4 md:px-0">
+          <div className="flashcard-counter text-center text-xs max-[900px]:text-[11px] tracking-wide text-[var(--text-secondary)] opacity-70">
             {counter}
           </div>
         </div>
@@ -489,10 +526,47 @@ export default function FlashcardDeck({
       </div>
 
       {/* Карточка */}
-      <div className="relative mx-auto w-full max-w-[860px] px-3 sm:px-4 md:px-0 lg:-translate-x-10 xl:-translate-x-12 2xl:-translate-x-14">
+      <div className="relative mx-auto flex w-full max-w-[860px] flex-col items-center justify-center px-3 pt-2 pb-6 sm:px-4 md:px-0 md:pt-3 md:pb-8">
+        {canPrev && (
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onPrev();
+            }}
+            className="flashcard-nav-arrow flashcard-nav-arrow--outside absolute top-1/2 z-20 hidden -translate-y-1/2 min-[1201px]:inline-flex items-center justify-center h-13 w-13 rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98]"
+            style={{ left: 'calc(50% - 320px - 54px)' }}
+            title="Назад"
+            aria-label="Назад"
+          >
+            <svg className="block -scale-x-100 mx-auto" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        )}
+
+        {canNext && (
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onNext();
+            }}
+            className="flashcard-next-btn flashcard-nav-arrow flashcard-nav-arrow--outside absolute top-1/2 z-20 hidden -translate-y-1/2 min-[1201px]:inline-flex items-center justify-center h-13 w-13 rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98]"
+            style={{ right: 'calc(50% - 320px - 54px)' }}
+            title="Вперёд"
+            aria-label="Вперёд"
+          >
+            <svg className="block mx-auto" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        )}
+
         <div
-          className="flashcard-main-card relative z-10 mx-auto rounded-3xl border border-slate-200 bg-white"
-          style={{ height: '56vh', minHeight: 360, maxHeight: 720 }}
+          className={`flashcard-main-card group relative z-10 mx-auto cursor-pointer rounded-3xl border border-slate-200 bg-white ${
+            flipped ? 'flashcard-main-card--flipped' : ''
+          } ${revealCount > 0 ? 'flashcard-main-card--hinted' : ''} ${
+            auto ? 'flashcard-main-card--auto' : ''
+          }`}
           onClick={() => hasCard && setFlipped(f => !f)}
           role="button"
           tabIndex={0}
@@ -509,12 +583,12 @@ export default function FlashcardDeck({
                 e.stopPropagation();
                 onPrev();
               }}
-              className="absolute left-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:bg-transparent hover:shadow-none hover:scale-[1.04] active:scale-[0.98]"
+              className="flashcard-nav-arrow flashcard-nav-arrow--inside absolute left-[12px] top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98] min-[1201px]:hidden"
               title="Назад"
               aria-label="Назад"
             >
-              <svg className="block -scale-x-100 mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+              <svg className="block -scale-x-100 mx-auto" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           )}
@@ -525,12 +599,12 @@ export default function FlashcardDeck({
                 e.stopPropagation();
                 onNext();
               }}
-              className="flashcard-next-btn absolute right-3 top-1/2 z-20 -translate-y-1/2 h-12 w-12 rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:bg-transparent hover:shadow-none hover:scale-[1.04] active:scale-[0.98]"
+              className="flashcard-next-btn flashcard-nav-arrow flashcard-nav-arrow--inside absolute right-[12px] top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98] min-[1201px]:hidden"
               title="Вперёд"
               aria-label="Вперёд"
             >
-              <svg className="block mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" />
+              <svg className="block mx-auto" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           )}
@@ -539,7 +613,7 @@ export default function FlashcardDeck({
             <>
               {/* Подсказка */}
               <button
-                className={`flashcard-hint-btn flashcard-mini-btn group absolute left-4 top-4 z-10 h-10 px-3 text-xs md:text-sm ${navLikeMiniControl}`}
+                className={`flashcard-hint-btn flashcard-secondary-label flashcard-top-muted flashcard-mini-btn group absolute left-[clamp(24px,2.2vw,28px)] top-[clamp(20px,2vw,24px)] z-10 h-8 px-2 text-[11px] md:text-xs ${navLikeMiniControl}`}
                 onClick={e => {
                   e.stopPropagation();
                   const t = (card?.ru_meaning || '').trim();
@@ -555,14 +629,18 @@ export default function FlashcardDeck({
                 }}
                 aria-pressed={revealCount > 0}
               >
-                <span className="text-lg leading-none">💡</span>
-                <span className="ml-1">{revealCount === 0 ? 'подсказка' : hintText}</span>
+                <span className="text-[13px] leading-none">💡</span>
+                {revealCount === 0 ? (
+                  <span className="flashcard-hint-label ml-1">подсказка</span>
+                ) : (
+                  <span className="flashcard-hint-value ml-1">{hintText}</span>
+                )}
               </button>
 
               {/* Справа сверху: избранное, транслит */}
-              <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
+              <div className="absolute right-[clamp(24px,2.2vw,28px)] top-[clamp(20px,2vw,24px)] z-10 flex items-center gap-2">
                 <button
-                  className={`flashcard-mini-btn h-10 w-10 text-lg ${navLikeMiniControl}`}
+                  className={`flashcard-favorite-btn flashcard-top-muted flashcard-mini-btn h-6 w-6 text-[13px] ${navLikeMiniControl}`}
                   onClick={e => {
                     e.stopPropagation();
                     toggleFav(card.ge_text);
@@ -573,7 +651,7 @@ export default function FlashcardDeck({
                   {isFav ? '⭐' : '☆'}
                 </button>
                 <button
-                  className={`flashcard-mini-btn flashcard-translit-btn h-10 min-w-10 px-3 text-sm md:text-base ${navLikeMiniControl}`}
+                  className={`flashcard-top-muted flashcard-mini-btn flashcard-translit-btn h-6 min-w-6 px-1 text-[10px] md:text-[11px] ${navLikeMiniControl}`}
                   onClick={e => {
                     e.stopPropagation();
                     setShowTranslit(v => !v);
@@ -589,7 +667,7 @@ export default function FlashcardDeck({
           )}
 
           {/* Контент */}
-          <div className="grid h-full w-full select-none place-items-center px-14 sm:px-16 md:px-20 text-center">
+          <div className="flashcard-content grid h-full w-full select-none place-items-center text-center">
             {!hasCard ? (
               <div className="text-[var(--text-secondary)]">
                 {isFavoritesPage
@@ -597,9 +675,9 @@ export default function FlashcardDeck({
                   : 'Нет карточек'}
               </div>
             ) : !flipped ? (
-              <div key={`front-${idx}`} className="flex flex-col items-center justify-center gap-3">
+              <div key={`front-${idx}`} className="flex -translate-y-[23px] flex-col items-center justify-center gap-3">
                 <div
-                  className="flashcard-ge-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(33px,5.61vw,66px)] leading-tight text-slate-800"
+                  className="flashcard-ge-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(34px,5vw,56px)] leading-[1.12] tracking-[0.012em] text-slate-800"
                   style={{
                     fontFamily:
                       "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
@@ -646,7 +724,7 @@ export default function FlashcardDeck({
                 )}
               </div>
             ) : (
-              <div key={`back-${idx}`} className="flex flex-col items-center justify:center gap-3">
+              <div key={`back-${idx}`} className="flex -translate-y-[23px] flex-col items-center justify:center gap-3">
                 {canAttemptCardImage && cardImageSrc && (
                   <img
                     key={imageStateKey}
@@ -667,7 +745,7 @@ export default function FlashcardDeck({
                     }}
                   />
                 )}
-                <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(23px,3.67vw,38px)] leading-tight text-[var(--text-primary)]">
+                <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(30px,5vw,48px)] leading-tight text-[var(--text-primary)]">
                   {isRuDialog ? (
                     <div className="flex flex-col items-center gap-1.5">
                       {ruDialogLines.map((line, lineIdx) => (
@@ -689,23 +767,28 @@ export default function FlashcardDeck({
             )}
           </div>
 
-          {/* котик внизу слева */}
-          <div className="pointer-events-none absolute z-[30] hidden select-none md:block left-[-78px] min-[1512px]:left-[-92px] min-[1920px]:left-[-104px] bottom-[-118px]">
+          <div
+            className="flashcard-corner-fold pointer-events-none absolute bottom-[clamp(12px,1.8vw,18px)] right-[clamp(16px,1.8vw,22px)] z-10"
+            aria-hidden="true"
+          />
+
+        </div>
+
+        {/* Controls: below card, centered by the card wrapper */}
+        <div className="flashcard-controls-wrap relative h-[clamp(31px,7.2vw,56px)] min-w-[320px]">
+          <div className="flashcard-cat-inline pointer-events-none absolute z-[20] hidden select-none md:block">
             <Image
               src="/images/deda-cat_2.png"
               alt="Deda cat"
-              width={208}
-              height={139}
+              width={160}
+              height={107}
               priority
               className="flashcard-cat drop-shadow-[0_2px_8px_rgba(15,23,42,0.06)]"
               style={{ filter: 'saturate(0.9) brightness(1)' }}
             />
           </div>
-        </div>
 
-        {/* Controls: below card, centered by the card wrapper */}
-        <div className="mt-1 relative h-[clamp(35px,8vw,64px)] w-full">
-          <div className="flashcard-controls-compact absolute left-1/2 top-1/2 inline-flex h-[clamp(35px,8vw,64px)] -translate-x-1/2 -translate-y-1/2 items-center gap-0">
+          <div className="flashcard-controls-compact absolute left-1/2 top-1/2 inline-flex h-[clamp(31px,7.2vw,56px)] -translate-x-1/2 -translate-y-1/2 items-center gap-0">
             <button
               onClick={() => {
                 setShuffled(s => {
@@ -740,7 +823,7 @@ export default function FlashcardDeck({
               <button
                 type="button"
                 onClick={() => setSpeedMenuOpen(v => !v)}
-                className="flashcard-speed-btn h-[clamp(27px,6.4vw,51px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(2px,0.64vw,3px)] text-[clamp(10px,2.4vw,16px)] leading-none font-semibold text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
+                className="flashcard-speed-btn h-[clamp(24px,5.9vw,44px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(2px,0.6vw,3px)] text-[clamp(9px,2.1vw,14px)] leading-none font-medium text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
                 aria-label="Скорость автопрокрутки"
                 title={`Скорость: ${currentSpeedLabel}`}
                 aria-haspopup="menu"
@@ -759,9 +842,9 @@ export default function FlashcardDeck({
                         setSpeedMenuOpen(false);
                       }}
                       title={`Установить скорость ${option.label}`}
-                      className={`flashcard-speed-option min-w-0 px-1 py-0.5 text-right text-[12px] leading-none transition-all duration-150 active:scale-[0.99] ${
+                      className={`flashcard-speed-option min-w-0 px-1 py-0.5 text-right text-[11px] leading-none transition-all duration-150 active:scale-[0.99] ${
                         autoSpeedMs === option.value
-                          ? 'font-semibold text-current'
+                          ? 'font-medium text-current'
                           : 'text-current'
                       }`}
                     >

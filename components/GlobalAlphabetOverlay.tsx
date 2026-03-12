@@ -160,7 +160,8 @@ export default function GlobalAlphabetOverlay() {
       const localMap: ProgressMap = {};
       for (const row of local) localMap[row.episodeId] = Math.max(localMap[row.episodeId] ?? 0, row.best);
       setProgress(localMap);
-      setLessonTargetScore(getSettings().lessonTargetScore);
+      const settings = getSettings();
+      setLessonTargetScore(settings.lessonTargetScore);
       try {
         const raw = window.localStorage.getItem(ALPHABET_STATUS_CACHE_KEY);
         if (raw) {
@@ -173,7 +174,8 @@ export default function GlobalAlphabetOverlay() {
         getEpisodesDataCached(forceRefresh),
         loadProgressMapCached(forceRefresh),
       ]);
-      const target = getSettings().lessonTargetScore;
+      const refreshedSettings = getSettings();
+      const target = refreshedSettings.lessonTargetScore;
       if (cancelled) return;
 
       const progressMap: ProgressMap = { ...merged };
@@ -300,7 +302,7 @@ export default function GlobalAlphabetOverlay() {
               title={`Озвучить букву ${ch}`}
               aria-label={`Озвучить букву ${ch}`}
             >
-              <div className={`home-alphabet-letter text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']} home-alphabet-letter--${letterStatusByChar[ch] ?? 'unknown'}`}>{ch}</div>
+              <div className="home-alphabet-letter text-[19px] leading-none text-black">{ch}</div>
               <div className="home-alphabet-translit mt-0.5 text-[10px] leading-none text-slate-500">{letterTranslit[ch] ?? ''}</div>
             </button>
           ))}

@@ -153,6 +153,7 @@ export default function HomePage() {
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
+  const [isTopAlphabetOpen, setIsTopAlphabetOpen] = useState(false);
   const [lockedLessonTooltipEpId, setLockedLessonTooltipEpId] = useState<string | null>(null);
   const [cachedLetterStatusByChar, setCachedLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
   const alphabetUserToggledRef = useRef(false);
@@ -172,7 +173,8 @@ export default function HomePage() {
       }
       setProgress(localMap);
 
-      setLessonTargetScore(getSettings().lessonTargetScore);
+      const settings = getSettings();
+      setLessonTargetScore(settings.lessonTargetScore);
       try {
         const raw = window.localStorage.getItem(ALPHABET_STATUS_CACHE_KEY);
         if (raw) {
@@ -214,7 +216,8 @@ export default function HomePage() {
 
     if (typeof window !== 'undefined') {
       const onSettingsUpd = () => {
-        setLessonTargetScore(getSettings().lessonTargetScore);
+        const settings = getSettings();
+        setLessonTargetScore(settings.lessonTargetScore);
       };
       window.addEventListener('deda:progress-updated' as any, onUpd);
       window.addEventListener('deda:settings-updated' as any, onSettingsUpd);
@@ -426,7 +429,6 @@ export default function HomePage() {
       }
     }
   }
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -481,7 +483,7 @@ export default function HomePage() {
                     title={`Озвучить букву ${ch}`}
                     aria-label={`Озвучить букву ${ch}`}
                   >
-                    <div className={`home-alphabet-letter text-[19px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']} home-alphabet-letter--${letterStatusByChar[ch] ?? 'unknown'}`}>{ch}</div>
+                    <div className="home-alphabet-letter text-[19px] leading-none text-black">{ch}</div>
                     <div className="home-alphabet-translit mt-0.5 text-[10px] leading-none text-slate-500">
                       {geLetterToTranslit(ch)}
                     </div>
@@ -493,17 +495,41 @@ export default function HomePage() {
                   {audioError}
                 </div>
               )}
-              <div className="-mt-4 mb-1 flex justify-end">
-                <img
-                  src="/images/deda-cat.png"
-                  alt="Кот Deda"
-                  className="pointer-events-none h-16 w-16 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
-                />
-              </div>
             </div>
           </aside>
           <div ref={lessonsWrapRef} className="relative z-[150] mx-auto w-full max-w-[980px] px-1 min-[420px]:px-2 sm:px-0 [@media(max-height:980px)]:max-w-[900px]">
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 [@media(max-height:980px)]:gap-2 justify-center">
+            <div className="mb-3 [@media(max-height:980px)]:mb-2 flex items-center justify-start gap-1">
+              <button
+                type="button"
+                onClick={() => setIsTopAlphabetOpen(v => !v)}
+                className="inline-flex h-10 w-10 items-center justify-center bg-transparent border-0 p-0"
+                aria-label={isTopAlphabetOpen ? 'Скрыть строку алфавита' : 'Показать строку алфавита'}
+                title={isTopAlphabetOpen ? 'Скрыть строку алфавита' : 'Показать строку алфавита'}
+              >
+                <img
+                  src="/images/deda-cat.png"
+                  alt="Deda cat"
+                  className="h-10 w-10 shrink-0 object-contain"
+                />
+              </button>
+
+              {isTopAlphabetOpen && (
+                <div className="alphabet-writing-area [@media(max-width:900px)]:hidden flex-1 min-w-0 -ml-1">
+                  <div className="alphabet-writing-row w-full">
+                    {GEORGIAN_ALPHABET.map(ch => (
+                      <span
+                        key={`progress-alpha-${ch}`}
+                        className={`alphabet-writing-letter text-[16px] [@media(max-width:900px)]:text-[14px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}
+                        aria-label={`Буква ${ch}`}
+                      >
+                        {ch}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-3 [@media(max-width:480px)]:grid-cols-1 gap-5 [@media(max-width:480px)]:gap-4 [@media(max-height:980px)]:gap-y-3 justify-center">
               {normalEpisodes.map((ep, i) => {
                 const best = progress[ep.id] ?? 0;
                 const letters = lettersByEp[ep.id] ?? [];
@@ -517,7 +543,7 @@ export default function HomePage() {
                   <div key={ep.id} className="relative w-full min-w-0 [@media(max-width:639px)]:mx-auto [@media(max-width:639px)]:max-w-[420px]">
                     <Link href={`/study/${ep.id}`} legacyBehavior>
                       <a
-                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} relative w-full aspect-[1/0.8] min-[1600px]:aspect-[1/0.72] [@media(max-height:980px)]:aspect-[1/0.68] rounded-2xl bg-white border border-slate-200 flex flex-col items-center justify-center gap-1 transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(15,23,42,0.12)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-indigo-300 hover:bg-slate-50' : 'cursor-not-allowed'}`}
+                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} relative grid w-full aspect-[2/1] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] pt-[clamp(6px,0.8vw,10px)] pb-[clamp(10px,1.2vw,14px)] transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(15,23,42,0.12)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-indigo-300 hover:bg-slate-50' : 'cursor-not-allowed'}`}
                         onMouseEnter={() => {
                           if (status !== 'locked') return;
                           scheduleLockedLessonTooltip(ep.id);
@@ -546,13 +572,12 @@ export default function HomePage() {
                         }}
                         aria-disabled={status === 'locked'}
                       >
-                        <div className="absolute top-3 left-4 flex flex-col">
-                          <span className="home-lesson-title text-[clamp(13px,1.05vw,16px)] font-semibold text-slate-700">Урок {i + 1}</span>
-                          <span className="home-lesson-subtitle text-[clamp(11px,0.92vw,14px)] text-slate-500">Изучаем</span>
+                        <div className="z-10 row-start-1 justify-self-start self-start pl-3 -mt-[1px] text-left">
+                          <span className="home-lesson-title text-[13px] [@media(max-width:900px)]:text-[11px] [@media(max-width:560px)]:text-[10px] font-normal text-slate-700">Урок {i + 1}</span>
                         </div>
                         <div className="absolute top-2 right-2 leading-none" aria-hidden="true">
                           {status === 'mastered' && (
-                            <span className="text-sm text-emerald-500">✓</span>
+                            <span className="inline-flex h-5 w-5 items-center justify-center text-[13px] font-semibold text-emerald-500">✓</span>
                           )}
                           {status === 'current' && (
                             <span className="home-recommended-paw text-[22px] leading-none">🐾</span>
@@ -571,19 +596,17 @@ export default function HomePage() {
                           )}
                         </div>
 
-                        {/* буквы с транскрипцией */}
-                        <div className="absolute left-3 right-3 top-[clamp(42px,5.4vw,56px)] bottom-[clamp(24px,3vw,34px)] flex flex-wrap content-center justify-center gap-1.5 sm:gap-2 overflow-visible">
+                        <div className="row-start-2 mx-auto flex h-full min-h-0 w-full -translate-y-[8px] [@media(max-width:1200px)]:-translate-y-[4px] [@media(max-width:900px)]:translate-y-0 flex-wrap content-center justify-center gap-0.5 sm:gap-1 overflow-hidden px-2 py-1 text-center">
                           {letters.map(ch => {
                             return (
                               <div
                                 key={ch}
                                 className={`home-lesson-letter home-lesson-letter--${status ?? 'unknown'} flex flex-col items-center`}
                               >
-                                <span className="text-[clamp(1.22rem,1.5vw,2.25rem)] leading-none">{ch}</span>
+                                <span className="block text-[32px] min-[1400px]:text-[36px] [@media(max-width:1200px)]:text-[22px] [@media(max-width:900px)]:text-[18px] [@media(max-width:560px)]:text-[15px] leading-[1.22] tracking-[0.015em] pb-[2px]">{ch}</span>
                               </div>
                             );
                           })}
-
                           {!letters.length && (
                             <span className="text-xs text-slate-400">
                               без новых букв
@@ -591,15 +614,15 @@ export default function HomePage() {
                           )}
                         </div>
 
-                        <div className="absolute bottom-3 left-4 w-[42%] max-w-[160px]">
-                          <div className="flex items-center gap-2">
-                            <div className="home-progress-bg h-[6px] flex-1 rounded-[4px] bg-slate-200 overflow-hidden">
+                        <div className="z-10 row-start-3 justify-self-start self-end w-[40%] max-w-[144px] min-w-[96px] [@media(max-width:480px)]:w-[34%] [@media(max-width:480px)]:max-w-[108px] [@media(max-width:480px)]:min-w-[72px] translate-y-[6px] [@media(max-width:480px)]:translate-y-[4px]">
+                          <div className="flex items-center gap-2 [@media(max-width:480px)]:gap-1">
+                            <div className="home-progress-bg h-[4px] [@media(max-width:480px)]:h-[3px] flex-1 rounded-[4px] bg-slate-200 overflow-hidden">
                               <div
                                 className={`home-progress-fill h-full rounded-full transition-all ${progressTone}`}
                                 style={{ width: `${progressPercent}%` }}
                               />
                             </div>
-                            <span className="home-progress-score text-[clamp(10px,0.82vw,11px)] text-slate-500 whitespace-nowrap">{best}/{lessonTargetScore}</span>
+                            <span className="home-progress-score text-[clamp(10px,1vw,12px)] [@media(max-width:480px)]:hidden text-slate-500 whitespace-nowrap">{best}/{lessonTargetScore}</span>
                           </div>
                         </div>
                         {status === 'locked' && lockedLessonTooltipEpId === ep.id && (
@@ -631,11 +654,11 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все уроки */}
-      <section className="relative z-[170] mt-3 min-[1512px]:mt-4 min-[1700px]:mt-6 [@media(max-height:980px)]:mt-1.5 flex flex-wrap justify-center gap-3 max-w-6xl mx-auto">
+      <section className="relative z-[170] mt-6 min-[1512px]:mt-7 min-[1700px]:mt-8 [@media(max-height:980px)]:mt-4 flex flex-wrap [@media(max-width:480px)]:flex-col [@media(max-width:480px)]:items-center justify-center gap-3 [@media(max-width:720px)]:gap-2 max-w-6xl mx-auto">
         {allLessonsSpecial && (
           <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
             <a
-              className={`home-special-btn h-11 min-w-[170px] px-4 rounded-2xl border text-sm flex items-center justify-center gap-2 transition-all duration-200 ${
+              className={`home-special-btn h-11 min-w-[170px] px-4 text-sm [@media(max-width:900px)]:h-10 [@media(max-width:900px)]:min-w-[148px] [@media(max-width:900px)]:px-3.5 [@media(max-width:900px)]:text-[13px] [@media(max-width:720px)]:h-9 [@media(max-width:720px)]:min-w-[132px] [@media(max-width:720px)]:px-3 [@media(max-width:720px)]:text-[12px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(94vw,320px)] rounded-2xl border flex items-center justify-center gap-2 transition-all duration-200 ${
                 allLessonsReady
                   ? 'bg-[#E6ECFF] border-[#c7d5ff] text-[#3B5BDB] shadow-[0_8px_18px_rgba(15,23,42,0.1)]'
                   : 'bg-white border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
@@ -655,7 +678,7 @@ export default function HomePage() {
         {favoritesSpecial && (
           <Link href={`/study/${favoritesSpecial.id}`} legacyBehavior>
             <a
-              className="home-special-btn h-11 min-w-[170px] px-4 rounded-2xl border border-slate-200 bg-transparent text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
+              className="home-special-btn h-11 min-w-[170px] px-4 text-sm [@media(max-width:900px)]:h-10 [@media(max-width:900px)]:min-w-[148px] [@media(max-width:900px)]:px-3.5 [@media(max-width:900px)]:text-[13px] [@media(max-width:720px)]:h-9 [@media(max-width:720px)]:min-w-[132px] [@media(max-width:720px)]:px-3 [@media(max-width:720px)]:text-[12px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(94vw,320px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
             >
               <span aria-hidden>⭐</span>
               <span>{favoritesSpecial.title.replace(/^⭐\s*/, '')}</span>
@@ -666,7 +689,7 @@ export default function HomePage() {
         {phrasesSpecial && (
           <Link href={`/study/${phrasesSpecial.id}`} legacyBehavior>
             <a
-              className="home-special-btn h-11 min-w-[170px] px-4 rounded-2xl border border-slate-200 bg-transparent text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
+              className="home-special-btn h-11 min-w-[170px] px-4 text-sm [@media(max-width:900px)]:h-10 [@media(max-width:900px)]:min-w-[148px] [@media(max-width:900px)]:px-3.5 [@media(max-width:900px)]:text-[13px] [@media(max-width:720px)]:h-9 [@media(max-width:720px)]:min-w-[132px] [@media(max-width:720px)]:px-3 [@media(max-width:720px)]:text-[12px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(94vw,320px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
             >
               <span aria-hidden>💬</span>
               <span className="phrases-label">{phrasesSpecial.title.replace(/^💬\s*/, '')}</span>

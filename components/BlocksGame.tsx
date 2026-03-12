@@ -562,7 +562,7 @@ export default function BlocksGame({
 
   useEffect(() => {
     const updateLayout = () => {
-      setIsNarrowLayout(window.innerWidth < 1024);
+      setIsNarrowLayout(window.innerWidth < 760);
     };
     updateLayout();
     window.addEventListener('resize', updateLayout);
@@ -870,7 +870,7 @@ export default function BlocksGame({
   const promptText = question
     ? (direction === 'ge-ru' ? question.ge : question.ru)
     : '';
-  const inputPlaceholder = 'Введите ответ';
+  const inputPlaceholder = 'Введите перевод';
   const isAnswerRowActive =
     mode === 'question' &&
     !showCorrect &&
@@ -884,7 +884,7 @@ export default function BlocksGame({
   }, [answer, currentCorrectAnswer, question, showCorrect]);
 
   return (
-    <div className="flex w-full justify-center lg:justify-start -mt-3 md:-mt-4">
+    <div className="flex w-full justify-center lg:justify-start mt-1 md:mt-2">
       <div
         className={
           'relative flex w-full max-w-5xl rounded-[28px] bg-transparent px-1 sm:px-3 md:px-6 py-2 md:py-4 lg:py-5 ' +
@@ -922,7 +922,7 @@ export default function BlocksGame({
                       {/* строка с грузинским словом и кнопкой избранного */}
                       <div className="labelRow mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
                         <div
-                          className="blocks-prompt-text max-w-full break-words overflow-visible text-[var(--text-primary)] font-semibold tracking-[-0.01em] text-[clamp(26px,2.8vw,34px)] leading-[1.18]"
+                          className="blocks-prompt-text max-w-full break-words overflow-visible text-[var(--text-primary)] font-semibold tracking-[0.3px] text-[clamp(30px,3.2vw,36px)] leading-[1.18]"
                           style={{
                             overflowWrap: 'break-word',
                             wordBreak: 'normal',
