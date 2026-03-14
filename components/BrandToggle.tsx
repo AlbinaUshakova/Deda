@@ -17,18 +17,21 @@ export default function BrandToggle() {
   }, []);
 
   return (
-    <button
-      type="button"
-      className={`header-control-btn inline-flex items-center justify-center px-4 ${
-        alphabetOpen ? 'header-control-btn--active' : ''
-      }`}
-      onClick={() => {
-        window.dispatchEvent(new CustomEvent('deda:toggle-alphabet'));
-      }}
-      aria-label="Показать или скрыть грузинский алфавит"
-      title="Показать/скрыть алфавит"
-    >
-      Алфавит
-    </button>
+    <div className="header-brand-wrap inline-flex items-center gap-4">
+      <span className="header-brand-label" aria-hidden="true">Deda</span>
+      <button
+        type="button"
+        className={`header-control-btn header-control-btn--alphabet header-control-btn--alphabet-secondary inline-flex items-center justify-center px-2.5 ${
+          alphabetOpen ? 'header-control-btn--active' : ''
+        }`}
+        onClick={() => {
+          window.dispatchEvent(new CustomEvent('deda:toggle-alphabet'));
+        }}
+        aria-label="Показать или скрыть грузинский алфавит"
+        title="Показать/скрыть алфавит"
+      >
+        Алфавит
+      </button>
+    </div>
   );
 }

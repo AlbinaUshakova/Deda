@@ -214,6 +214,14 @@ function canPlace(
   baseRow: number,
   baseCol: number,
 ): boolean {
+  const minRow = Math.min(...shape.cells.map(cell => cell.r));
+  const maxRow = Math.max(...shape.cells.map(cell => cell.r));
+  const minCol = Math.min(...shape.cells.map(cell => cell.c));
+  const maxCol = Math.max(...shape.cells.map(cell => cell.c));
+
+  if (baseRow + minRow < 0 || baseCol + minCol < 0) return false;
+  if (baseRow + maxRow >= BOARD_SIZE || baseCol + maxCol >= BOARD_SIZE) return false;
+
   for (const cell of shape.cells) {
     const r = baseRow + cell.r;
     const c = baseCol + cell.c;
@@ -231,6 +239,10 @@ function placePiece(
   baseCol: number,
   color: string,
 ) {
+  if (!canPlace(board, shape, baseRow, baseCol)) {
+    return board.map(row => [...row]);
+  }
+
   const next = board.map(row => [...row]);
   for (const cell of shape.cells) {
     const r = baseRow + cell.r;
@@ -793,7 +805,7 @@ export default function BlocksGrid({
           style={{ width: boardPixelSize }}
         >
           <div className="mb-[clamp(4px,0.8vh,8px)] px-1 relative z-[70]">
-            <div className="blocks-grid-score mt-0 text-center text-[14px] font-semibold tracking-[-0.01em] text-slate-700 opacity-80">
+            <div className="blocks-grid-score mt-0 text-center text-[clamp(11px,1.2vw,13px)] font-medium tracking-[-0.01em] text-slate-700 opacity-72">
               {score} / {bestScore}
             </div>
           </div>
@@ -897,14 +909,14 @@ export default function BlocksGrid({
             aria-label="Подсказка по выбору языка"
             className="absolute left-0 z-[60] select-none"
             style={{
-              top: -cellSize * 1.31,
+              top: -cellSize * 1.48,
               left: -cellSize * 0.02,
               width: cellSize * 2.2,
             }}
           >
             {catReaction && (
               <div
-                className={`pointer-events-none absolute top-1 right-0 rounded-full bg-white/92 px-1.5 py-0.5 text-[15px] shadow-[0_2px_8px_rgba(15,23,42,0.16)] transition-opacity duration-300 ${
+                className={`pointer-events-none absolute top-1 right-0 px-1.5 py-0.5 text-[15px] transition-opacity duration-300 ${
                   catReactionVisible ? 'opacity-100' : 'opacity-0'
                 } ${catReaction.bounce ? 'animate-bounce' : ''}
                 `}
@@ -973,7 +985,7 @@ export default function BlocksGrid({
             style={
               palettePlacement === 'bottom'
                 ? undefined
-                : { transform: `translateY(-${Math.round(cellSize * 0.85)}px)` }
+                : undefined
             }
           >
             {bag.map(piece => {

@@ -58,8 +58,8 @@ export default function StudyClient({
       : `/play/${episodeId}`;
 
   return (
-    <main className="min-h-screen bg-transparent text-[var(--text-primary)]">
-      <div className="mx-auto w-full px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
+    <main className="study-card-screen min-h-screen bg-transparent text-[var(--text-primary)]">
+      <div className="mx-auto w-full px-[clamp(14px,3.6vw,48px)] py-[clamp(16px,2.6vh,32px)] lg:pl-[124px]">
         <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
           <div className="relative flex min-h-[52px] items-center justify-end">
             <div className="topButtons ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">
@@ -80,7 +80,7 @@ export default function StudyClient({
         </div>
 
         {hasWords ? (
-          <div className="relative z-0 mt-1 md:mt-0 lg:-mt-6 xl:-mt-8">
+          <div className="relative z-0 mt-[clamp(2px,0.8vh,10px)]">
             <FlashcardDeck
               cards={words}
               lessonTitle={ep.title || episodeId}

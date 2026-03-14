@@ -442,7 +442,7 @@ export default function FlashcardDeck({
   };
 
   return (
-    <div className="relative w-full min-w-[320px]">
+    <div className="flashcard-screen-root relative w-full min-w-0">
       {/* Верх: счётчик и заголовок */}
       <div className="mb-1 flex w-full flex-col items-center justify-center gap-1.5">
         <div className="w-full max-w-[860px] px-3 sm:px-4 md:px-0">
@@ -526,7 +526,7 @@ export default function FlashcardDeck({
       </div>
 
       {/* Карточка */}
-      <div className="relative mx-auto flex w-full max-w-[860px] flex-col items-center justify-center px-3 pt-2 pb-6 sm:px-4 md:px-0 md:pt-3 md:pb-8">
+      <div className="flashcard-stage relative mx-auto flex w-full max-w-[900px] flex-col items-center justify-center px-[clamp(14px,3.6vw,40px)] pt-[clamp(8px,1.4vh,18px)] pb-[clamp(24px,4vh,44px)]">
         {canPrev && (
           <button
             onClick={e => {
@@ -775,7 +775,7 @@ export default function FlashcardDeck({
         </div>
 
         {/* Controls: below card, centered by the card wrapper */}
-        <div className="flashcard-controls-wrap relative h-[clamp(31px,7.2vw,56px)] min-w-[320px]">
+        <div className="flashcard-controls-wrap relative h-[clamp(31px,7.2vw,56px)] min-w-0">
           <div className="flashcard-cat-inline pointer-events-none absolute z-[20] hidden select-none md:block">
             <Image
               src="/images/deda-cat_2.png"

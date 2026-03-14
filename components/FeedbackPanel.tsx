@@ -75,12 +75,12 @@ export default function FeedbackPanel({
 
     return (
         <div className="menu-floating-anchor">
-            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-108px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 space-y-2 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+            <div className="menu-panel-shell menu-panel-size animate-modal-in overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-[clamp(8px,1.5vw,10px)] space-y-2 text-[clamp(11px,1.8vw,12px)] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                 <div className="relative flex h-10 items-center justify-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
                     {onBack && (
                         <button
                             aria-label="Назад в меню"
-                            className="absolute left-1 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                            className="absolute left-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                             onClick={onBack}
                             disabled={sending}
                         >
@@ -89,10 +89,10 @@ export default function FeedbackPanel({
                             </svg>
                         </button>
                     )}
-                    <div className="px-10 text-center text-[14px] font-semibold text-[var(--menu-text)]">Обратная связь</div>
+                    <div className="px-10 text-center text-[clamp(12px,2.2vw,14px)] font-semibold text-[var(--menu-text)]">Обратная связь</div>
                     <button
                         aria-label="Закрыть"
-                        className="absolute right-1 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                         onClick={onClose}
                         disabled={sending}
                     >
@@ -100,13 +100,13 @@ export default function FeedbackPanel({
                     </button>
                 </div>
 
-                <p className="pt-0.5 text-[11px] text-[var(--menu-text-muted)] leading-relaxed mb-1">
+                <p className="pt-0.5 text-[clamp(10px,1.65vw,11px)] text-[var(--menu-text-muted)] leading-relaxed mb-1">
                     Поделитесь, что можно улучшить 🤍
                 </p>
 
                 <div className="space-y-1 mt-1.5">
                     <textarea
-                        className="w-full rounded-lg bg-[var(--menu-segment-bg)] border border-[var(--menu-segment-border)] px-2 py-1 text-[11px] text-[var(--menu-text)] outline-none focus:border-[var(--menu-segment-active)] focus:ring-1 focus:ring-[var(--menu-focus)] resize-none min-h-[96px]"
+                        className="w-full rounded-lg bg-[var(--menu-segment-bg)] border border-[var(--menu-segment-border)] px-2 py-1 text-[clamp(10px,1.65vw,11px)] text-[var(--menu-text)] outline-none focus:border-[var(--menu-segment-active)] focus:ring-1 focus:ring-[var(--menu-focus)] resize-none min-h-[96px]"
                         value={message}
                         onChange={e => {
                             setMessage(e.target.value);
@@ -118,11 +118,11 @@ export default function FeedbackPanel({
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-[11px] text-[var(--menu-text-muted)]">
+                    <label className="text-[clamp(10px,1.65vw,11px)] text-[var(--menu-text-muted)]">
                         Контакт (необязательно)
                     </label>
                     <input
-                        className="w-full rounded-lg bg-[var(--menu-segment-bg)] border border-[var(--menu-segment-border)] px-2 py-1 text-[11px] text-[var(--menu-text)] outline-none focus:border-[var(--menu-segment-active)] focus:ring-1 focus:ring-[var(--menu-focus)]"
+                        className="w-full rounded-lg bg-[var(--menu-segment-bg)] border border-[var(--menu-segment-border)] px-2 py-1 text-[clamp(10px,1.65vw,11px)] text-[var(--menu-text)] outline-none focus:border-[var(--menu-segment-active)] focus:ring-1 focus:ring-[var(--menu-focus)]"
                         value={contact}
                         onChange={e => {
                             setContact(e.target.value);
@@ -134,20 +134,20 @@ export default function FeedbackPanel({
                 </div>
 
                 {error && (
-                    <div className="text-[11px] text-red-500">
+                    <div className="text-[clamp(10px,1.65vw,11px)] text-red-500">
                         {error}
                     </div>
                 )}
 
                 {success && (
-                    <div className="text-[11px] text-emerald-500 animate-settings-bump">
+                    <div className="text-[clamp(10px,1.65vw,11px)] text-emerald-500 animate-settings-bump">
                         Спасибо! Сообщение отправлено 💌
                     </div>
                 )}
 
                 <div className="pt-2">
                     <button
-                        className="w-full px-3 py-1.5 text-[12px] rounded-lg bg-[var(--menu-segment-active)] text-white font-semibold hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                        className="w-full px-3 py-1.5 text-[clamp(10px,1.7vw,12px)] rounded-lg bg-[var(--menu-segment-active)] text-white font-semibold hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                         onClick={handleSend}
                         disabled={!canSend}
                     >

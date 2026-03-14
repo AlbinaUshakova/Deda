@@ -47,12 +47,12 @@ export default function SettingsPanel({
 
     return (
         <div className="menu-floating-anchor">
-            <div className="animate-modal-in w-[min(244px,calc(100vw-24px))] max-h-[calc(100dvh-108px)] overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-2.5 text-[12px] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+            <div className="menu-panel-shell menu-panel-size animate-modal-in overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-[clamp(8px,1.5vw,10px)] text-[clamp(11px,1.8vw,12px)] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                 <div className="relative flex h-10 items-center justify-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
                     {onBack && (
                         <button
                             aria-label="Назад в меню"
-                            className="absolute left-1 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                            className="absolute left-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                             onClick={handleBack}
                         >
                             <svg viewBox="0 0 20 20" className="mx-auto h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -60,17 +60,17 @@ export default function SettingsPanel({
                             </svg>
                         </button>
                     )}
-                    <div className="px-10 text-center text-[14px] font-semibold text-[var(--menu-text)]">Настройки игры</div>
+                    <div className="px-10 text-center text-[clamp(12px,2.2vw,14px)] font-semibold text-[var(--menu-text)]">Настройки игры</div>
                     <button
                         aria-label="Закрыть"
-                        className="absolute right-1 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                         onClick={handleClose}
                     >
                         ✕
                     </button>
                 </div>
                 <div className="pt-2.5">
-                    <div className="text-xs mb-2 text-[var(--menu-text)]">Направление перевода</div>
+                    <div className="mb-2 text-[clamp(10px,1.8vw,12px)] text-[var(--menu-text)]">Направление перевода</div>
                     <div className="grid grid-cols-2 gap-2">
                         <button
                             type="button"
@@ -78,7 +78,7 @@ export default function SettingsPanel({
                                 setTranslationDirection('ge-ru');
                             }}
                             aria-pressed={translationDirection === 'ge-ru'}
-                            className={`relative rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors ${translationDirection === 'ge-ru'
+                            className={`relative rounded-xl border px-2 py-1.5 text-[clamp(10px,1.65vw,11px)] font-semibold transition-colors ${translationDirection === 'ge-ru'
                                 ? 'border-[var(--btn-active-border)] bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] shadow-[var(--btn-active-shadow)]'
                                 : 'border-[#3E4B5E] bg-transparent text-[#A8B3C7] hover:bg-white/5 hover:border-[#6C6CFF] hover:text-[var(--menu-text)]'
                                 }`}
@@ -91,7 +91,7 @@ export default function SettingsPanel({
                                 setTranslationDirection('ru-ge');
                             }}
                             aria-pressed={translationDirection === 'ru-ge'}
-                            className={`relative rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors ${translationDirection === 'ru-ge'
+                            className={`relative rounded-xl border px-2 py-1.5 text-[clamp(10px,1.65vw,11px)] font-semibold transition-colors ${translationDirection === 'ru-ge'
                                 ? 'border-[var(--btn-active-border)] bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] shadow-[var(--btn-active-shadow)]'
                                 : 'border-[#3E4B5E] bg-transparent text-[#A8B3C7] hover:bg-white/5 hover:border-[#6C6CFF] hover:text-[var(--menu-text)]'
                                 }`}
@@ -105,11 +105,11 @@ export default function SettingsPanel({
 
                 <div className="pt-2.5">
                     <div className="grid grid-cols-[auto_auto] items-center gap-x-2 gap-y-1">
-                        <div className="text-xs text-[var(--menu-text)]">Цель по очкам</div>
+                        <div className="text-[clamp(10px,1.8vw,12px)] text-[var(--menu-text)]">Цель по очкам</div>
                         <div className="inline-flex items-center rounded-xl border border-[var(--menu-stepper-border)] bg-transparent">
                             <button
                                 type="button"
-                                className="h-9 w-9 rounded-l-xl border-r border-[var(--menu-stepper-border)] text-sm font-semibold text-[var(--menu-text)] hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)] active:scale-[0.97] transition"
+                                className="h-9 w-9 rounded-l-xl border-r border-[var(--menu-stepper-border)] text-[clamp(11px,1.8vw,14px)] font-semibold text-[var(--menu-text)] hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)] active:scale-[0.97] transition"
                                 onClick={() => {
                                     setLessonTargetScoreInput(String(clampTarget(safeTarget - 1)));
                                 }}
@@ -136,11 +136,11 @@ export default function SettingsPanel({
                                     }
                                     setLessonTargetScoreInput(String(clampTarget(Number(lessonTargetScoreInput))));
                                 }}
-                                className="menu-stepper-input h-9 w-11 bg-transparent text-center text-[12px] leading-none text-[var(--menu-text)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className="menu-stepper-input h-9 w-11 bg-transparent text-center text-[clamp(10px,1.7vw,12px)] leading-none text-[var(--menu-text)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             />
                             <button
                                 type="button"
-                                className="h-9 w-9 rounded-r-xl border-l border-[var(--menu-stepper-border)] text-sm font-semibold text-[var(--menu-text)] hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)] active:scale-[0.97] transition"
+                                className="h-9 w-9 rounded-r-xl border-l border-[var(--menu-stepper-border)] text-[clamp(11px,1.8vw,14px)] font-semibold text-[var(--menu-text)] hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)] active:scale-[0.97] transition"
                                 onClick={() => {
                                     setLessonTargetScoreInput(String(clampTarget(safeTarget + 1)));
                                 }}

@@ -153,7 +153,6 @@ export default function HomePage() {
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
-  const [isTopAlphabetOpen, setIsTopAlphabetOpen] = useState(false);
   const [lockedLessonTooltipEpId, setLockedLessonTooltipEpId] = useState<string | null>(null);
   const [cachedLetterStatusByChar, setCachedLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
   const alphabetUserToggledRef = useRef(false);
@@ -440,15 +439,15 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen bg-[var(--app-bg)] px-3 sm:px-5 lg:px-6 min-[1366px]:px-7 min-[1512px]:px-8 min-[1920px]:px-9 py-3 min-[1920px]:py-6 [@media(max-height:980px)]:py-2 relative overflow-hidden flex flex-col"
+      className="min-h-screen bg-[var(--app-bg)] px-[clamp(20px,4.8vw,36px)] [@media(max-width:900px)]:px-[clamp(28px,8vw,44px)] [@media(max-width:700px)]:px-[clamp(24px,9vw,40px)] pt-3 pb-1 min-[1920px]:pt-6 min-[1920px]:pb-2 [@media(max-height:980px)]:pt-2 [@media(max-height:980px)]:pb-1 relative overflow-hidden flex flex-col"
     >
-      <div className="relative mx-auto w-full flex-1 flex flex-col justify-start">
+      <div className="relative mx-auto w-full flex-1 flex flex-col justify-start pb-[clamp(32px,4.5vh,40px)]">
       {/* алфавит + сетка эпизодов */}
-      <section className="mt-4 min-[1512px]:mt-4 min-[1700px]:mt-5 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-2.5">
+      <section className="mt-16 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
         <div className="relative mx-auto w-full">
-          <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[78px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[244px] pointer-events-none`}>
+          <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[clamp(184px,31vw,244px)] pointer-events-none`}>
             <div
-              className={`home-alphabet-panel max-h-[calc(100dvh-102px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 shadow-[0_6px_14px_rgba(15,23,42,0.09)] transition-all duration-200 ${showAlphabet ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none select-none'}`}
+              className={`home-alphabet-panel max-h-[calc(100dvh-102px)] overflow-y-auto rounded-[clamp(20px,3vw,30px)] border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-[clamp(7px,1.2vw,10px)] shadow-[0_6px_14px_rgba(15,23,42,0.09)] transition-all duration-200 ${showAlphabet ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none select-none'}`}
               aria-hidden={!showAlphabet}
             >
               <div className="flex items-center justify-between gap-2">
@@ -459,32 +458,32 @@ export default function HomePage() {
                     alphabetUserToggledRef.current = true;
                     setShowAlphabet(v => !v);
                   }}
-                  className="home-alphabet-close h-6 w-6 rounded-md border border-slate-300 bg-white text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                  className="home-alphabet-close h-6 w-6 rounded-md text-xs transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                   aria-label="Скрыть алфавит"
                   title="Скрыть алфавит"
                 >
                   ✕
                 </button>
               </div>
-              <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-slate-500">
+              <div className="mt-1 flex items-center gap-1.5 text-[clamp(9px,1.55vw,11px)] text-slate-500">
                 <span className="relative inline-flex h-2 w-2" aria-hidden="true">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#7C8CFF] opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-[#7C8CFF]" />
                 </span>
-                <span>Нажми букву</span>
+                <span>Нажми на букву и послушай</span>
               </div>
-              <div className="mt-2.5 grid grid-cols-6 gap-x-2 gap-y-2">
+              <div className="mt-2 grid grid-cols-6 gap-x-[clamp(3px,0.8vw,7px)] gap-y-[clamp(3px,0.8vw,6px)]">
                 {GEORGIAN_ALPHABET.map(ch => (
                   <button
                     key={ch}
                     type="button"
                     onClick={() => speakLetter(ch)}
-                    className="home-alphabet-key cursor-pointer rounded-lg border border-slate-200 bg-white py-0.5 text-center shadow-sm hover:bg-slate-50 transition-colors"
+                    className="home-alphabet-key cursor-pointer rounded-lg border border-slate-200 bg-white py-[1px] text-center shadow-sm hover:bg-slate-50 transition-colors"
                     title={`Озвучить букву ${ch}`}
                     aria-label={`Озвучить букву ${ch}`}
                   >
-                    <div className="home-alphabet-letter text-[19px] leading-none text-black">{ch}</div>
-                    <div className="home-alphabet-translit mt-0.5 text-[10px] leading-none text-slate-500">
+                    <div className="home-alphabet-letter text-[clamp(14px,2.7vw,19px)] leading-none text-black">{ch}</div>
+                    <div className="home-alphabet-translit mt-0 text-[clamp(8px,1.5vw,10px)] leading-none text-slate-500">
                       {geLetterToTranslit(ch)}
                     </div>
                   </button>
@@ -497,39 +496,31 @@ export default function HomePage() {
               )}
             </div>
           </aside>
-          <div ref={lessonsWrapRef} className="relative z-[150] mx-auto w-full max-w-[980px] px-1 min-[420px]:px-2 sm:px-0 [@media(max-height:980px)]:max-w-[900px]">
-            <div className="mb-3 [@media(max-height:980px)]:mb-2 flex items-center justify-start gap-1">
-              <button
-                type="button"
-                onClick={() => setIsTopAlphabetOpen(v => !v)}
-                className="inline-flex h-10 w-10 items-center justify-center bg-transparent border-0 p-0"
-                aria-label={isTopAlphabetOpen ? 'Скрыть строку алфавита' : 'Показать строку алфавита'}
-                title={isTopAlphabetOpen ? 'Скрыть строку алфавита' : 'Показать строку алфавита'}
-              >
+          <div ref={lessonsWrapRef} className="relative z-[150] mx-auto w-[min(88vw,980px)] [@media(max-width:900px)]:w-[min(84vw,980px)] [@media(max-width:700px)]:w-[min(82vw,980px)] [@media(max-height:980px)]:w-[min(88vw,900px)] [@media(max-width:900px)_and_(max-height:980px)]:w-[min(84vw,900px)] [@media(max-width:700px)_and_(max-height:980px)]:w-[min(82vw,900px)]">
+            <div className="-mt-3 md:-mt-5 mb-4 [@media(max-height:980px)]:-mt-3 [@media(max-height:980px)]:mb-3 flex items-center justify-start gap-1 pl-[clamp(72px,10.5vw,148px)]">
+              <div className="inline-flex h-[clamp(28px,3.1vw,40px)] w-[clamp(28px,3.1vw,40px)] items-center justify-center p-0">
                 <img
                   src="/images/deda-cat.png"
                   alt="Deda cat"
-                  className="h-10 w-10 shrink-0 object-contain"
+                  className="h-[clamp(28px,3.1vw,40px)] w-[clamp(28px,3.1vw,40px)] shrink-0 object-contain"
                 />
-              </button>
+              </div>
 
-              {isTopAlphabetOpen && (
-                <div className="alphabet-writing-area [@media(max-width:900px)]:hidden flex-1 min-w-0 -ml-1">
-                  <div className="alphabet-writing-row w-full">
-                    {GEORGIAN_ALPHABET.map(ch => (
-                      <span
-                        key={`progress-alpha-${ch}`}
-                        className={`alphabet-writing-letter text-[16px] [@media(max-width:900px)]:text-[14px] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}
-                        aria-label={`Буква ${ch}`}
-                      >
-                        {ch}
-                      </span>
-                    ))}
-                  </div>
+              <div className="alphabet-writing-area min-w-0 -ml-1 w-[72%] max-w-[72%]">
+                <div className="alphabet-writing-row w-full">
+                  {GEORGIAN_ALPHABET.map(ch => (
+                    <span
+                      key={`progress-alpha-${ch}`}
+                      className={`alphabet-writing-letter text-[clamp(11px,1.55vw,19px)] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}
+                      aria-label={`Буква ${ch}`}
+                    >
+                      {ch}
+                    </span>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
-            <div className="grid grid-cols-3 [@media(max-width:480px)]:grid-cols-1 gap-5 [@media(max-width:480px)]:gap-4 [@media(max-height:980px)]:gap-y-3 justify-center">
+            <div className="grid grid-cols-3 [@media(max-width:480px)]:grid-cols-1 gap-x-[clamp(10px,1.35vw,20px)] gap-y-[clamp(8px,1vw,15px)] [@media(max-height:980px)]:gap-y-3 justify-center">
               {normalEpisodes.map((ep, i) => {
                 const best = progress[ep.id] ?? 0;
                 const letters = lettersByEp[ep.id] ?? [];
@@ -543,7 +534,7 @@ export default function HomePage() {
                   <div key={ep.id} className="relative w-full min-w-0 [@media(max-width:639px)]:mx-auto [@media(max-width:639px)]:max-w-[420px]">
                     <Link href={`/study/${ep.id}`} legacyBehavior>
                       <a
-                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} relative grid w-full aspect-[2/1] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] pt-[clamp(6px,0.8vw,10px)] pb-[clamp(10px,1.2vw,14px)] transition-all duration-200 ease-out shadow-[0_10px_20px_rgba(15,23,42,0.12)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-indigo-300 hover:bg-slate-50' : 'cursor-not-allowed'}`}
+                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} ${status === 'locked' ? 'home-lesson-card--locked' : ''} relative grid w-full aspect-[2/1] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] pt-[clamp(6px,0.8vw,10px)] pb-[clamp(10px,1.2vw,14px)] transition-all duration-200 ease-out shadow-[0_8px_18px_rgba(15,23,42,0.09)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-slate-300 hover:bg-[#fafbfd]' : 'cursor-not-allowed'}`}
                         onMouseEnter={() => {
                           if (status !== 'locked') return;
                           scheduleLockedLessonTooltip(ep.id);
@@ -575,19 +566,19 @@ export default function HomePage() {
                         <div className="z-10 row-start-1 justify-self-start self-start pl-3 -mt-[1px] text-left">
                           <span className="home-lesson-title text-[13px] [@media(max-width:900px)]:text-[11px] [@media(max-width:560px)]:text-[10px] font-normal text-slate-700">Урок {i + 1}</span>
                         </div>
-                        <div className="absolute top-2 right-2 leading-none" aria-hidden="true">
+                        <div className="home-lesson-status-icon" aria-hidden="true">
                           {status === 'mastered' && (
-                            <span className="inline-flex h-5 w-5 items-center justify-center text-[13px] font-semibold text-emerald-500">✓</span>
+                            <span className="home-lesson-status home-lesson-status--mastered">✓</span>
                           )}
                           {status === 'current' && (
-                            <span className="home-recommended-paw text-[22px] leading-none">🐾</span>
+                            <span className="home-lesson-status home-lesson-status--current">🐾</span>
                           )}
                           {status === 'almost' && (
-                            <span className="inline-block h-[6px] w-[6px] rounded-full bg-slate-400/40 align-middle" />
+                            <span className="home-lesson-status home-lesson-status--almost">•</span>
                           )}
                           {status === 'locked' && (
                             <span
-                              className={`text-sm text-slate-500/90 transition-all duration-150 ${
+                              className={`home-lesson-status home-lesson-status--locked transition-all duration-150 ${
                                 lockedLessonTooltipEpId === ep.id ? 'opacity-100 brightness-110' : 'opacity-90'
                               }`}
                             >
@@ -596,14 +587,14 @@ export default function HomePage() {
                           )}
                         </div>
 
-                        <div className="row-start-2 mx-auto flex h-full min-h-0 w-full -translate-y-[8px] [@media(max-width:1200px)]:-translate-y-[4px] [@media(max-width:900px)]:translate-y-0 flex-wrap content-center justify-center gap-0.5 sm:gap-1 overflow-hidden px-2 py-1 text-center">
+                        <div className="row-start-2 mx-auto flex h-full min-h-0 w-full -translate-y-[8px] [@media(max-width:1200px)]:-translate-y-[4px] [@media(max-width:900px)]:translate-y-0 flex-wrap content-center justify-center gap-0.5 sm:gap-1 overflow-visible px-2 py-1.5 text-center">
                           {letters.map(ch => {
                             return (
                               <div
                                 key={ch}
                                 className={`home-lesson-letter home-lesson-letter--${status ?? 'unknown'} flex flex-col items-center`}
                               >
-                                <span className="block text-[32px] min-[1400px]:text-[36px] [@media(max-width:1200px)]:text-[22px] [@media(max-width:900px)]:text-[18px] [@media(max-width:560px)]:text-[15px] leading-[1.22] tracking-[0.015em] pb-[2px]">{ch}</span>
+                                <span className="block text-[32px] min-[1400px]:text-[36px] [@media(max-width:1200px)]:text-[22px] [@media(max-width:900px)]:text-[18px] [@media(max-width:560px)]:text-[14px] leading-[1.3] tracking-[0.015em] pb-[3px]">{ch}</span>
                               </div>
                             );
                           })}
@@ -654,11 +645,11 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все уроки */}
-      <section className="relative z-[170] mt-6 min-[1512px]:mt-7 min-[1700px]:mt-8 [@media(max-height:980px)]:mt-4 flex flex-wrap [@media(max-width:480px)]:flex-col [@media(max-width:480px)]:items-center justify-center gap-3 [@media(max-width:720px)]:gap-2 max-w-6xl mx-auto">
+      <section className="relative z-[170] mt-10 min-[1512px]:mt-11 min-[1700px]:mt-12 [@media(max-height:980px)]:mt-8 flex flex-wrap [@media(max-width:480px)]:flex-col [@media(max-width:480px)]:items-center justify-center gap-2.5 [@media(max-width:720px)]:gap-2 max-w-6xl mx-auto">
         {allLessonsSpecial && (
           <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
             <a
-              className={`home-special-btn h-11 min-w-[170px] px-4 text-sm [@media(max-width:900px)]:h-10 [@media(max-width:900px)]:min-w-[148px] [@media(max-width:900px)]:px-3.5 [@media(max-width:900px)]:text-[13px] [@media(max-width:720px)]:h-9 [@media(max-width:720px)]:min-w-[132px] [@media(max-width:720px)]:px-3 [@media(max-width:720px)]:text-[12px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(94vw,320px)] rounded-2xl border flex items-center justify-center gap-2 transition-all duration-200 ${
+              className={`home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,300px)] rounded-2xl border flex items-center justify-center gap-1.5 transition-all duration-200 ${
                 allLessonsReady
                   ? 'bg-[#E6ECFF] border-[#c7d5ff] text-[#3B5BDB] shadow-[0_8px_18px_rgba(15,23,42,0.1)]'
                   : 'bg-white border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
@@ -678,7 +669,7 @@ export default function HomePage() {
         {favoritesSpecial && (
           <Link href={`/study/${favoritesSpecial.id}`} legacyBehavior>
             <a
-              className="home-special-btn h-11 min-w-[170px] px-4 text-sm [@media(max-width:900px)]:h-10 [@media(max-width:900px)]:min-w-[148px] [@media(max-width:900px)]:px-3.5 [@media(max-width:900px)]:text-[13px] [@media(max-width:720px)]:h-9 [@media(max-width:720px)]:min-w-[132px] [@media(max-width:720px)]:px-3 [@media(max-width:720px)]:text-[12px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(94vw,320px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
+              className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,300px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
             >
               <span aria-hidden>⭐</span>
               <span>{favoritesSpecial.title.replace(/^⭐\s*/, '')}</span>
@@ -689,7 +680,7 @@ export default function HomePage() {
         {phrasesSpecial && (
           <Link href={`/study/${phrasesSpecial.id}`} legacyBehavior>
             <a
-              className="home-special-btn h-11 min-w-[170px] px-4 text-sm [@media(max-width:900px)]:h-10 [@media(max-width:900px)]:min-w-[148px] [@media(max-width:900px)]:px-3.5 [@media(max-width:900px)]:text-[13px] [@media(max-width:720px)]:h-9 [@media(max-width:720px)]:min-w-[132px] [@media(max-width:720px)]:px-3 [@media(max-width:720px)]:text-[12px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(94vw,320px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
+              className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,300px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
             >
               <span aria-hidden>💬</span>
               <span className="phrases-label">{phrasesSpecial.title.replace(/^💬\s*/, '')}</span>

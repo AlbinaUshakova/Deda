@@ -448,7 +448,7 @@ export default function BlocksGame({
   const [isRevealing, setIsRevealing] = useState(false);
   const revealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const correctTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const answerInputRef = useRef<HTMLTextAreaElement | null>(null);
+  const answerInputRef = useRef<HTMLInputElement | null>(null);
   const recentWordIndicesRef = useRef<number[]>([]);
   const recentWordKeysRef = useRef<string[]>([]);
 
@@ -479,22 +479,6 @@ export default function BlocksGame({
       clearTimeout(correctTimeoutRef.current);
       correctTimeoutRef.current = null;
     }
-  };
-
-  const resizeAnswerInput = () => {
-    const el = answerInputRef.current;
-    if (!el) return;
-
-    el.style.height = 'auto';
-    const cs = window.getComputedStyle(el);
-    const lineHeight = parseFloat(cs.lineHeight || '22');
-    const paddingTop = parseFloat(cs.paddingTop || '0');
-    const paddingBottom = parseFloat(cs.paddingBottom || '0');
-    const maxHeight = lineHeight * 2 + paddingTop + paddingBottom;
-    const nextHeight = Math.min(el.scrollHeight, maxHeight);
-
-    el.style.height = `${nextHeight}px`;
-    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
   };
 
   // очистка таймера при размонтировании
@@ -538,15 +522,6 @@ export default function BlocksGame({
     }
   }, []);
 
-  const answerFontPx = useMemo(() => {
-    const len = Array.from(answer ?? '').length;
-    if (len <= 12) return 24;
-    if (len <= 20) return 21;
-    if (len <= 30) return 18;
-    if (len <= 45) return 15;
-    return 13;
-  }, [answer]);
-
   useEffect(() => {
     const syncDirectionFromSettings = () => {
       const next = getSettings().translationDirection;
@@ -581,10 +556,6 @@ export default function BlocksGame({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [direction]);
-
-  useEffect(() => {
-    resizeAnswerInput();
-  }, [answer, answerFontPx]);
 
   // переключение избранного для конкретного грузинского слова
   const toggleFavorite = (ge: string) => {
@@ -898,7 +869,7 @@ export default function BlocksGame({
           className={
             (isNarrowLayout
               ? 'w-full max-w-[420px] shrink-0 ml-0 px-2'
-              : 'w-[clamp(220px,33vw,390px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]') +
+              : 'w-[clamp(200px,30vw,340px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]') +
             (showQuestionStage ? '' : ' hidden')
           }
         >
@@ -918,14 +889,21 @@ export default function BlocksGame({
               >
                 <div className="flex flex-col items-start justify-start h-full px-2 pt-5">
                   {hasWords && question && (
-                    <div className="w-full lg:translate-x-3 rounded-3xl bg-transparent p-2.5 sm:p-3 md:p-4">
+                    <div
+                      className="w-full lg:translate-x-3 rounded-3xl bg-transparent p-2.5 sm:p-3 md:p-4"
+                      style={{
+                        ['--input-size' as any]: 'clamp(16px,1.8vw,22px)',
+                        ['--prompt-size' as any]: 'clamp(22px,2.5vw,31px)',
+                      }}
+                    >
                       {/* строка с грузинским словом и кнопкой избранного */}
                       <div className="labelRow mb-2 sm:mb-3 md:mb-4 flex items-center gap-2">
                         <div
-                          className="blocks-prompt-text max-w-full break-words overflow-visible text-[var(--text-primary)] font-semibold tracking-[0.3px] text-[clamp(30px,3.2vw,36px)] leading-[1.18]"
+                          className="blocks-prompt-text max-w-full break-words overflow-visible text-[var(--text-primary)] font-semibold tracking-[0.2px] leading-[1.16]"
                           style={{
                             overflowWrap: 'break-word',
                             wordBreak: 'normal',
+                            fontSize: 'var(--prompt-size)',
                           }}
                         >
                           {promptText}
@@ -934,7 +912,8 @@ export default function BlocksGame({
 
                       <div className="-mt-1 mb-1 w-full rounded-2xl bg-transparent transition-all duration-200">
                         <form onSubmit={handleSubmit} className="w-full md:-mt-0.5">
-                          <textarea
+                          <input
+                            type="text"
                             ref={answerInputRef}
                             value={answer}
                             onChange={e => {
@@ -952,7 +931,6 @@ export default function BlocksGame({
                               const correctAnswer = direction === 'ge-ru' ? question.ru : question.ge;
                               const liveCorrect = isSameAnswer(nextValue, correctAnswer);
                               setAnswerState(liveCorrect ? 'correct' : 'idle');
-                              requestAnimationFrame(resizeAnswerInput);
                             }}
                             onFocus={() => setIsAnswerFocused(true)}
                             onBlur={() => setIsAnswerFocused(false)}
@@ -966,16 +944,14 @@ export default function BlocksGame({
                             readOnly={showCorrect}
                             autoComplete="off"
                             spellCheck={false}
-                            rows={1}
                             className={
-                              'blocks-answer-input w-full min-h-[clamp(56px,7.5vh,84px)] max-h-[clamp(96px,14vh,132px)] px-[clamp(14px,2.4vw,26px)] py-[clamp(9px,1.3vw,14px)] rounded-2xl border-2 border-transparent outline-none tracking-[-0.01em] leading-[1.2] resize-none overflow-hidden transition-all duration-200 placeholder:font-semibold placeholder:text-[#8892b0] placeholder:text-[clamp(16px,2.1vw,28px)] focus:ring-0 focus:shadow-none ' +
+                              'blocks-answer-input w-full rounded-2xl border-2 border-transparent outline-none tracking-[-0.01em] resize-none overflow-hidden transition-all duration-200 focus:ring-0 focus:shadow-none ' +
                               (answerState === 'wrong' && !showCorrect
                                 ? 'animate-input-shake bg-red-50/85 text-slate-800'
                                 : answerState === 'correct'
                                   ? 'bg-white/70 text-slate-800 shadow-none'
                                   : 'bg-white/70 text-slate-800 shadow-none')
                             }
-                            style={{ fontSize: `${Math.max(16, answerFontPx)}px` }}
                           />
                         </form>
                       </div>
@@ -984,10 +960,10 @@ export default function BlocksGame({
                         <button
                           type="button"
                           onClick={handleSkipQuestion}
-                          className="blocks-refresh-btn inline-flex h-[clamp(36px,5vh,48px)] items-center gap-2 rounded-lg border border-transparent bg-transparent px-[clamp(6px,1.2vw,10px)] text-[clamp(14px,1.68vw,19px)] font-medium transition-all duration-150 focus:outline-none [-webkit-tap-highlight-color:transparent]"
+                          className="blocks-refresh-btn inline-flex h-[clamp(28px,4vh,36px)] items-center gap-1 rounded-lg border border-transparent bg-transparent px-[clamp(4px,0.8vw,7px)] text-[clamp(11px,1.05vw,13px)] font-normal transition-all duration-150 focus:outline-none [-webkit-tap-highlight-color:transparent]"
                           disabled={showCorrect}
                         >
-                          <span className="inline-block -translate-y-[3px] text-[clamp(24px,3.1vw,34px)] leading-none font-normal">⟳</span>
+                          <span className="inline-block -translate-y-[2px] text-[clamp(16px,1.7vw,20px)] leading-none font-normal">⟳</span>
                           <span className="leading-none">Обновить</span>
                         </button>
                         {!isFavoritesEpisode && (

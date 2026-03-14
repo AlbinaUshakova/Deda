@@ -82,6 +82,8 @@ export default function GlobalAlphabetOverlay() {
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
   const [letterStatusByChar, setLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
+  const [playingLetter, setPlayingLetter] = useState<string | null>(null);
+  const playingTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const onToggle = () => {
@@ -91,6 +93,15 @@ export default function GlobalAlphabetOverlay() {
     window.addEventListener('deda:toggle-alphabet', onToggle as EventListener);
     return () => window.removeEventListener('deda:toggle-alphabet', onToggle as EventListener);
   }, [pathname]);
+
+  useEffect(() => {
+    return () => {
+      if (playingTimerRef.current !== null) {
+        window.clearTimeout(playingTimerRef.current);
+        playingTimerRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const onProfileMenuOpened = () => {
@@ -243,11 +254,26 @@ export default function GlobalAlphabetOverlay() {
 
   const speakLetter = (letter: string) => {
     if (typeof window === 'undefined') return;
+    setPlayingLetter(letter);
+    if (playingTimerRef.current !== null) {
+      window.clearTimeout(playingTimerRef.current);
+      playingTimerRef.current = null;
+    }
     const localAudioSrc = geLetterAudioMap[letter];
     if (localAudioSrc) {
       const audio = new Audio(localAudioSrc);
       audio.volume = 1;
-      audio.play().catch(() => {});
+      const finish = () => {
+        if (playingTimerRef.current !== null) {
+          window.clearTimeout(playingTimerRef.current);
+          playingTimerRef.current = null;
+        }
+        setPlayingLetter(prev => (prev === letter ? null : prev));
+      };
+      audio.onended = finish;
+      audio.onerror = finish;
+      audio.play().catch(finish);
+      playingTimerRef.current = window.setTimeout(finish, 1400);
       return;
     }
 
@@ -264,7 +290,12 @@ export default function GlobalAlphabetOverlay() {
       utterance.lang = 'ka-GE';
     }
     utterance.rate = 0.9;
+    utterance.onend = () => setPlayingLetter(prev => (prev === letter ? null : prev));
+    utterance.onerror = () => setPlayingLetter(prev => (prev === letter ? null : prev));
     synth.speak(utterance);
+    playingTimerRef.current = window.setTimeout(() => {
+      setPlayingLetter(prev => (prev === letter ? null : prev));
+    }, 1400);
   };
 
   if (pathname === '/') return null;
@@ -272,38 +303,47 @@ export default function GlobalAlphabetOverlay() {
   return (
     <div
       ref={overlayRef}
-      className={`block fixed left-2 sm:left-3 md:left-4 top-[78px] z-[140] w-[244px] transition-all duration-200 ease-out ${
+      className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] z-[140] w-[clamp(184px,31vw,244px)] transition-all duration-200 ease-out ${
         open
           ? 'opacity-100 translate-y-0 scale-100'
           : 'opacity-0 -translate-y-1 scale-[0.98] pointer-events-none select-none'
       }`}
       aria-hidden={!open}
     >
-      <div className="home-alphabet-panel max-h-[calc(100dvh-102px)] overflow-y-auto rounded-3xl border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-3 shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
+      <div className="home-alphabet-panel max-h-[calc(100dvh-102px)] overflow-y-auto rounded-[clamp(20px,3vw,30px)] border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-[clamp(7px,1.2vw,10px)] shadow-[0_6px_14px_rgba(15,23,42,0.09)]">
         <div className="flex items-center justify-between gap-2">
           <h3 className="home-alphabet-title text-sm font-semibold tracking-[-0.01em] text-slate-700">ანბანი</h3>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="home-alphabet-close h-6 w-6 rounded-md border border-slate-300 bg-white text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            className="home-alphabet-close h-6 w-6 rounded-md text-xs transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
             aria-label="Скрыть алфавит"
             title="Скрыть алфавит"
           >
             ✕
           </button>
         </div>
-        <div className="mt-2.5 grid grid-cols-6 gap-x-2 gap-y-2">
+        <div className="mt-1 flex items-center gap-1.5 text-[clamp(9px,1.55vw,11px)] text-[var(--text-secondary)]">
+          <span className="relative inline-flex h-2 w-2" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#7C8CFF] opacity-70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#7C8CFF]" />
+          </span>
+          <span>Нажми на букву и послушай</span>
+        </div>
+        <div className="mt-2 grid grid-cols-6 gap-x-[clamp(3px,0.8vw,7px)] gap-y-[clamp(3px,0.8vw,6px)]">
           {GEORGIAN_ALPHABET.map(ch => (
             <button
               key={ch}
               type="button"
               onClick={() => speakLetter(ch)}
-              className="home-alphabet-key rounded-lg border border-slate-200 bg-white py-0.5 text-center shadow-sm hover:bg-slate-50 transition-colors"
+              className={`home-alphabet-key rounded-lg border border-slate-200/75 bg-white/90 py-[1px] text-center shadow-sm hover:bg-slate-50 transition-all ${
+                playingLetter === ch ? 'home-alphabet-key--active' : ''
+              }`}
               title={`Озвучить букву ${ch}`}
               aria-label={`Озвучить букву ${ch}`}
             >
-              <div className="home-alphabet-letter text-[19px] leading-none text-black">{ch}</div>
-              <div className="home-alphabet-translit mt-0.5 text-[10px] leading-none text-slate-500">{letterTranslit[ch] ?? ''}</div>
+              <div className="home-alphabet-letter text-[clamp(14px,2.7vw,19px)] leading-none text-black">{ch}</div>
+              <div className="home-alphabet-translit mt-0 text-[clamp(8px,1.5vw,10px)] leading-none text-slate-500">{letterTranslit[ch] ?? ''}</div>
             </button>
           ))}
         </div>
