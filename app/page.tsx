@@ -144,6 +144,7 @@ const geLetterAudioMap: Record<string, string> = {
 
 export default function HomePage() {
   const [eps, setEps] = useState<Ep[]>([]);
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
   const [showAlphabet, setShowAlphabet] = useState(false);
   const [alphabetOverlapsLessons, setAlphabetOverlapsLessons] = useState(false);
   const alphabetRef = useRef<HTMLElement | null>(null);
@@ -257,6 +258,14 @@ export default function HomePage() {
       lockedTooltipTimerRef.current = null;
     }, LOCKED_LESSON_TOOLTIP_DELAY_MS);
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
+    updateViewportWidth();
+    window.addEventListener('resize', updateViewportWidth);
+    return () => window.removeEventListener('resize', updateViewportWidth);
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -406,6 +415,10 @@ export default function HomePage() {
       const bNum = Number(b.id.replace('ep', ''));
       return aNum - bNum;
     })[0]?.id;
+  const lessonLetterSizePx =
+    viewportWidth === null
+      ? 24
+      : Math.round(Math.max(18, Math.min(30, viewportWidth * 0.028)));
   const statusById: Record<string, LessonStatus> = {};
   for (const ep of normalEpisodes) {
     const best = progress[ep.id] ?? 0;
@@ -615,7 +628,12 @@ export default function HomePage() {
                                 key={ch}
                                 className={`home-lesson-letter home-lesson-letter--${status ?? 'unknown'} flex flex-col items-center`}
                               >
-                                <span className="block text-[32px] min-[1400px]:text-[36px] max-[1200px]:text-[22px] max-[900px]:text-[18px] max-[700px]:text-[4.5px] max-[560px]:text-[12px] max-[430px]:text-[36px] leading-[1.05] tracking-[0.015em] pb-[3px]">{ch}</span>
+                                <span
+                                  className="block leading-[1.05] tracking-[0.015em] pb-[3px]"
+                                  style={{ fontSize: `${lessonLetterSizePx}px` }}
+                                >
+                                  {ch}
+                                </span>
                               </div>
                             );
                           })}
