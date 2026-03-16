@@ -349,7 +349,7 @@ function makeBag(board: CellColor[][]): Piece[] {
   for (const s of poolAll) {
     if (pickedShapes.length >= 3) break;
     if (usedIds.has(s.id)) continue; // только разные фигуры
-    if (pickedLineShapes >= 2 && isLineShape(s)) continue; // не даём собрать раздачу из трёх линий
+    if (pickedLineShapes >= 1 && isLineShape(s)) continue; // в одной раздаче допускаем максимум одну линейную фигуру
     pickedShapes.push(s);
     usedIds.add(s.id);
     if (isLineShape(s)) pickedLineShapes += 1;
@@ -360,7 +360,7 @@ function makeBag(board: CellColor[][]): Piece[] {
     for (const s of SHAPES) {
       if (pickedShapes.length >= 3) break;
       if (usedIds.has(s.id)) continue;
-      if (pickedLineShapes >= 2 && isLineShape(s)) continue;
+      if (pickedLineShapes >= 1 && isLineShape(s)) continue;
       pickedShapes.push(s);
       usedIds.add(s.id);
       if (isLineShape(s)) pickedLineShapes += 1;
@@ -813,6 +813,18 @@ export default function BlocksGrid({
       : answerState === 'wrong'
         ? 'animate-cat-sad'
         : '';
+  const sidePaletteStackShift = React.useMemo(() => {
+    if (palettePlacement !== 'side' || bag.length === 0) return 0;
+
+    const previewCellSize = cellSize * PREVIEW_SCALE;
+    const widths = bag.map(piece => Math.max(...piece.shape.cells.map(c => c.c)) + 1);
+    const totalCells = widths.reduce((sum, width) => sum + width, 0);
+    const anchorCell = Math.ceil(totalCells / 2);
+    const anchorCenter = anchorCell - 0.5;
+    const safeGap = previewCellSize * 0.7;
+    return -(anchorCenter * previewCellSize * 0.42) - safeGap;
+  }, [bag, cellSize, palettePlacement]);
+
   return (
     <div className="flex justify-center w-full py-2">
       <div className="flex w-full max-w-6xl justify-center">
@@ -996,12 +1008,12 @@ export default function BlocksGrid({
             className={
               palettePlacement === 'bottom'
                 ? 'flex w-full flex-row items-center justify-center gap-[clamp(14px,2.2vw,24px)] overflow-hidden py-2'
-                : 'flex h-full flex-col items-center justify-center gap-[clamp(16px,2.8vh,30px)] overflow-hidden py-1'
+                : 'flex h-full -translate-y-[18px] flex-col items-center justify-center gap-[clamp(16px,2.8vh,30px)] overflow-visible py-1'
             }
             style={
               palettePlacement === 'bottom'
                 ? undefined
-                : undefined
+                : { transform: `translateX(${sidePaletteStackShift}px) translateY(-18px)` }
             }
           >
             {bag.map(piece => {

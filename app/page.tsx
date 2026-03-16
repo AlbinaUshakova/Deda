@@ -157,6 +157,8 @@ export default function HomePage() {
   const [cachedLetterStatusByChar, setCachedLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
   const alphabetUserToggledRef = useRef(false);
   const lockedTooltipTimerRef = useRef<number | null>(null);
+  const recommendedLessonRef = useRef<HTMLAnchorElement | null>(null);
+  const mobileRecommendedScrolledRef = useRef(false);
 
   useEffect(() => {
     const init = async () => {
@@ -437,13 +439,31 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lettersByEp, lessonTargetScore, progress]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (mobileRecommendedScrolledRef.current) return;
+    if (!recommendedEpId) return;
+    if (window.innerWidth > 700) return;
+    if (!recommendedLessonRef.current) return;
+
+    mobileRecommendedScrolledRef.current = true;
+    window.requestAnimationFrame(() => {
+      recommendedLessonRef.current?.scrollIntoView({
+        block: 'start',
+        inline: 'nearest',
+        behavior: 'auto',
+      });
+      window.scrollBy({ top: -84, left: 0, behavior: 'auto' });
+    });
+  }, [recommendedEpId, eps.length, progress]);
+
   return (
     <main
       className="min-h-screen bg-[var(--app-bg)] px-[clamp(20px,4.8vw,36px)] [@media(max-width:900px)]:px-[clamp(28px,8vw,44px)] [@media(max-width:700px)]:px-[clamp(24px,9vw,40px)] pt-3 pb-1 min-[1920px]:pt-6 min-[1920px]:pb-2 [@media(max-height:980px)]:pt-2 [@media(max-height:980px)]:pb-1 relative overflow-x-hidden flex flex-col"
     >
       <div className="relative mx-auto w-full flex-1 flex flex-col justify-start pb-[clamp(32px,4.5vh,40px)]">
       {/* алфавит + сетка эпизодов */}
-      <section className="mt-16 [@media(max-width:900px)]:mt-12 [@media(max-width:700px)]:mt-10 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
+      <section className="mt-16 [@media(max-width:900px)]:mt-4.5 [@media(max-width:700px)]:mt-3 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
         <div className="relative mx-auto w-full">
           <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[clamp(184px,31vw,244px)] pointer-events-none`}>
             <div
@@ -497,7 +517,7 @@ export default function HomePage() {
             </div>
           </aside>
           <div ref={lessonsWrapRef} className="relative z-[150] mx-auto w-full max-w-[980px] [@media(max-height:980px)]:max-w-[900px]">
-            <div className="-mt-3 md:-mt-5 mb-4 [@media(max-width:900px)]:mb-3 [@media(max-width:700px)]:mb-2 [@media(max-height:980px)]:-mt-3 [@media(max-height:980px)]:mb-3 flex items-center justify-start gap-1 pl-[clamp(72px,10.5vw,148px)] [@media(max-width:900px)]:pl-[clamp(52px,9vw,92px)] [@media(max-width:700px)]:pl-[clamp(38px,7vw,64px)]">
+            <div className="-mt-3 md:-mt-5 mb-4 [@media(max-width:900px)]:mb-3 [@media(max-width:700px)]:hidden [@media(max-height:980px)]:-mt-3 [@media(max-height:980px)]:mb-3 flex items-center justify-start gap-1 pl-[clamp(72px,10.5vw,148px)] [@media(max-width:900px)]:pl-[clamp(52px,9vw,92px)] [@media(max-width:700px)]:pl-[clamp(38px,7vw,64px)]">
               <div className="inline-flex h-[clamp(28px,3.1vw,40px)] w-[clamp(28px,3.1vw,40px)] items-center justify-center p-0">
                 <img
                   src="/images/deda-cat.png"
@@ -534,7 +554,8 @@ export default function HomePage() {
                   <div key={ep.id} className="relative w-full min-w-0 [@media(max-width:639px)]:mx-auto [@media(max-width:639px)]:max-w-[420px]">
                     <Link href={`/study/${ep.id}`} legacyBehavior>
                       <a
-                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} ${status === 'locked' ? 'home-lesson-card--locked' : ''} relative grid w-full aspect-[2/1] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] pt-[clamp(6px,0.8vw,10px)] pb-[clamp(10px,1.2vw,14px)] transition-all duration-200 ease-out shadow-[0_8px_18px_rgba(15,23,42,0.09)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-slate-300 hover:bg-[#fafbfd]' : 'cursor-not-allowed'}`}
+                        ref={ep.id === recommendedEpId ? recommendedLessonRef : null}
+                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} ${status === 'locked' ? 'home-lesson-card--locked' : ''} relative grid w-full aspect-[2/1] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] [@media(max-width:560px)]:px-[8px] pt-[clamp(6px,0.8vw,10px)] [@media(max-width:560px)]:pt-[5px] pb-[clamp(10px,1.2vw,14px)] [@media(max-width:560px)]:pb-[8px] transition-all duration-200 ease-out shadow-[0_8px_18px_rgba(15,23,42,0.09)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-slate-300 hover:bg-[#fafbfd]' : 'cursor-not-allowed'}`}
                         onMouseEnter={() => {
                           if (status !== 'locked') return;
                           scheduleLockedLessonTooltip(ep.id);
@@ -587,14 +608,14 @@ export default function HomePage() {
                           )}
                         </div>
 
-                        <div className="row-start-2 mx-auto flex h-full min-h-0 w-full -translate-y-[8px] [@media(max-width:1200px)]:-translate-y-[4px] [@media(max-width:900px)]:translate-y-0 flex-wrap content-center justify-center gap-0.5 sm:gap-1 overflow-visible px-2 py-1.5 text-center">
+                        <div className="row-start-2 mx-auto flex h-full min-h-0 w-full -translate-y-[8px] [@media(max-width:1200px)]:-translate-y-[4px] [@media(max-width:900px)]:translate-y-0 flex-wrap content-center justify-center gap-0.5 sm:gap-1 overflow-visible px-2 [@media(max-width:560px)]:px-1 py-1.5 [@media(max-width:560px)]:py-1 text-center">
                           {letters.map(ch => {
                             return (
                               <div
                                 key={ch}
                                 className={`home-lesson-letter home-lesson-letter--${status ?? 'unknown'} flex flex-col items-center`}
                               >
-                                <span className="block text-[32px] min-[1400px]:text-[36px] [@media(max-width:1200px)]:text-[22px] [@media(max-width:900px)]:text-[18px] [@media(max-width:560px)]:text-[14px] leading-[1.3] tracking-[0.015em] pb-[3px]">{ch}</span>
+                                <span className="block text-[32px] min-[1400px]:text-[36px] max-[1200px]:text-[22px] max-[900px]:text-[18px] max-[700px]:text-[4.5px] max-[560px]:text-[12px] max-[430px]:text-[36px] leading-[1.05] tracking-[0.015em] pb-[3px]">{ch}</span>
                               </div>
                             );
                           })}
@@ -613,7 +634,7 @@ export default function HomePage() {
                                 style={{ width: `${progressPercent}%` }}
                               />
                             </div>
-                            <span className="home-progress-score text-[clamp(10px,1vw,12px)] [@media(max-width:480px)]:hidden text-slate-500 whitespace-nowrap">{best}/{lessonTargetScore}</span>
+                            <span className="home-progress-score text-[clamp(10px,1vw,12px)] text-slate-500 whitespace-nowrap">{best}/{lessonTargetScore}</span>
                           </div>
                         </div>
                         {status === 'locked' && lockedLessonTooltipEpId === ep.id && (

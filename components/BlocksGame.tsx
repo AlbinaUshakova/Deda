@@ -537,7 +537,7 @@ export default function BlocksGame({
 
   useEffect(() => {
     const updateLayout = () => {
-      setIsNarrowLayout(window.innerWidth < 760);
+      setIsNarrowLayout(window.innerWidth < 900);
     };
     updateLayout();
     window.addEventListener('resize', updateLayout);
@@ -833,6 +833,13 @@ export default function BlocksGame({
   const showQuestionStage = !isNarrowLayout || (shouldRenderQuestionPanel && isQuestionVisible);
   const showBoardStage = !isNarrowLayout || !isQuestionVisible;
   const paletteSlotId = isNarrowLayout ? 'blocks-palette-slot-mobile' : 'blocks-palette-slot';
+  const sidePaletteSlotStyle = isNarrowLayout
+    ? undefined
+    : {
+        top: '50%',
+        height: 'min(64dvh, 620px)',
+        transform: 'translateY(-50%)',
+      } as const;
 
   // текущий флаг избранности для показываемого слова
   const currentGe = question?.ge ?? null;
@@ -869,7 +876,7 @@ export default function BlocksGame({
           className={
             (isNarrowLayout
               ? 'w-full max-w-[420px] shrink-0 ml-0 px-2'
-              : 'w-[clamp(200px,30vw,340px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px]') +
+              : 'w-[clamp(200px,30vw,340px)] shrink-0 ml-0 md:ml-[-10px] lg:ml-[-18px] -mt-2 md:-mt-4 lg:-mt-6') +
             (showQuestionStage ? '' : ' hidden')
           }
         >
@@ -1009,9 +1016,10 @@ export default function BlocksGame({
             <div
               id="blocks-palette-slot"
               className={
-                'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ' +
+                'absolute left-0 right-0 flex items-center justify-end pr-4 md:pr-5 lg:pr-6 transition-opacity duration-300 ' +
                 (showPalette ? 'opacity-100' : 'opacity-0 pointer-events-none')
               }
+              style={sidePaletteSlotStyle}
             />
           </div>
         </div>
