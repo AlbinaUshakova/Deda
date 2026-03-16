@@ -937,9 +937,10 @@ export default function BlocksGrid({
             aria-label="Подсказка по выбору языка"
             className="absolute left-0 z-[60] select-none"
             style={{
-              top: -cellSize * 1.48,
-              left: -cellSize * 0.02,
-              width: cellSize * 2.2,
+              top: palettePlacement === 'bottom' ? -cellSize * 1.18 : -cellSize * 1.48,
+              left: palettePlacement === 'bottom' ? cellSize * 0.08 : -cellSize * 0.02,
+              width: palettePlacement === 'bottom' ? cellSize * 1.95 : cellSize * 2.2,
+              transform: undefined,
             }}
           >
             {catReaction && (

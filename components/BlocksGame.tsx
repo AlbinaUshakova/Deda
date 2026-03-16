@@ -853,6 +853,13 @@ export default function BlocksGame({
     mode === 'question' &&
     !showCorrect &&
     (isAnswerFocused || normalizeRu(answer).length > 0);
+  const submitButtonLabel = showCorrect ? 'Дальше' : 'Проверить';
+  const isSubmitDisabled =
+    mode !== 'question' ||
+    !question ||
+    hardGameOver ||
+    isRevealing ||
+    (!showCorrect && !normalizeRu(answer));
   const currentCorrectAnswer = question
     ? (direction === 'ge-ru' ? question.ru : question.ge)
     : '';
@@ -919,47 +926,58 @@ export default function BlocksGame({
 
                       <div className="-mt-1 mb-1 w-full rounded-2xl bg-transparent transition-all duration-200">
                         <form onSubmit={handleSubmit} className="w-full md:-mt-0.5">
-                          <input
-                            type="text"
-                            ref={answerInputRef}
-                            value={answer}
-                            onChange={e => {
-                              const nextValue = e.target.value;
-                              setAnswer(nextValue);
-                              if (error) setError(false);
-                              if (!question || showCorrect) {
-                                if (answerState !== 'idle') setAnswerState('idle');
-                                return;
+                          <div className="blocks-answer-stack">
+                            <input
+                              type="text"
+                              ref={answerInputRef}
+                              value={answer}
+                              onChange={e => {
+                                const nextValue = e.target.value;
+                                setAnswer(nextValue);
+                                if (error) setError(false);
+                                if (!question || showCorrect) {
+                                  if (answerState !== 'idle') setAnswerState('idle');
+                                  return;
+                                }
+                                if (!normalizeRu(nextValue)) {
+                                  if (answerState !== 'idle') setAnswerState('idle');
+                                  return;
+                                }
+                                const correctAnswer = direction === 'ge-ru' ? question.ru : question.ge;
+                                const liveCorrect = isSameAnswer(nextValue, correctAnswer);
+                                setAnswerState(liveCorrect ? 'correct' : 'idle');
+                              }}
+                              onFocus={() => setIsAnswerFocused(true)}
+                              onBlur={() => setIsAnswerFocused(false)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  e.currentTarget.form?.requestSubmit();
+                                }
+                              }}
+                              placeholder={inputPlaceholder}
+                              readOnly={showCorrect}
+                              autoComplete="off"
+                              spellCheck={false}
+                              className={
+                                'blocks-answer-input w-full rounded-2xl border-2 border-transparent outline-none tracking-[-0.01em] resize-none overflow-hidden transition-all duration-200 focus:ring-0 focus:shadow-none ' +
+                                (answerState === 'wrong' && !showCorrect
+                                  ? 'animate-input-shake bg-red-50/85 text-slate-800'
+                                  : answerState === 'correct'
+                                    ? 'bg-white/70 text-slate-800 shadow-none'
+                                    : 'bg-white/70 text-slate-800 shadow-none')
                               }
-                              if (!normalizeRu(nextValue)) {
-                                if (answerState !== 'idle') setAnswerState('idle');
-                                return;
-                              }
-                              const correctAnswer = direction === 'ge-ru' ? question.ru : question.ge;
-                              const liveCorrect = isSameAnswer(nextValue, correctAnswer);
-                              setAnswerState(liveCorrect ? 'correct' : 'idle');
-                            }}
-                            onFocus={() => setIsAnswerFocused(true)}
-                            onBlur={() => setIsAnswerFocused(false)}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                e.currentTarget.form?.requestSubmit();
-                              }
-                            }}
-                            placeholder={inputPlaceholder}
-                            readOnly={showCorrect}
-                            autoComplete="off"
-                            spellCheck={false}
-                            className={
-                              'blocks-answer-input w-full rounded-2xl border-2 border-transparent outline-none tracking-[-0.01em] resize-none overflow-hidden transition-all duration-200 focus:ring-0 focus:shadow-none ' +
-                              (answerState === 'wrong' && !showCorrect
-                                ? 'animate-input-shake bg-red-50/85 text-slate-800'
-                                : answerState === 'correct'
-                                  ? 'bg-white/70 text-slate-800 shadow-none'
-                                  : 'bg-white/70 text-slate-800 shadow-none')
-                            }
-                          />
+                            />
+                            <div className="blocks-submit-wrap mt-2">
+                              <button
+                                type="submit"
+                                className="blocks-submit-btn inline-flex items-center justify-center rounded-2xl px-4 text-[clamp(14px,1.5vw,16px)] font-semibold tracking-[-0.01em] transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled={isSubmitDisabled}
+                              >
+                                {submitButtonLabel}
+                              </button>
+                            </div>
+                          </div>
                         </form>
                       </div>
 

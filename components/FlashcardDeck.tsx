@@ -754,7 +754,7 @@ export default function FlashcardDeck({
 
         {/* Controls: below card, centered by the card wrapper */}
         <div className="flashcard-controls-wrap relative h-[clamp(31px,7.2vw,56px)] min-w-0">
-          <div className="flashcard-cat-inline pointer-events-none absolute z-[20] hidden select-none md:block">
+          <div className="flashcard-cat-inline pointer-events-none absolute z-[20] select-none">
             <Image
               src="/images/deda-cat_2.png"
               alt="Deda cat"
@@ -796,7 +796,10 @@ export default function FlashcardDeck({
                   <span className="block h-full w-[4px] rounded-full bg-current" />
                 </span>
               ) : (
-                <span className="leading-none translate-x-[1px]">▶</span>
+                <span
+                  className="flashcard-play-triangle inline-block translate-x-[1px]"
+                  aria-hidden="true"
+                />
               )}
             </button>
 

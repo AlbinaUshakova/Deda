@@ -1,5 +1,7 @@
 'use client';
 
+import staticEpisodes from '@/public/content/episodes.json';
+
 export type EpisodesListItem = { id: string; title: string; best?: number };
 export type EpisodesData = {
   episodes: EpisodesListItem[];
@@ -28,6 +30,14 @@ let episodesDataPromise: Promise<EpisodesData> | null = null;
 const episodeCache = new Map<string, EpisodeData>();
 const episodePromiseCache = new Map<string, Promise<EpisodeData>>();
 
+const STATIC_EPISODES_FALLBACK: EpisodesListItem[] = (staticEpisodes as Array<{
+  id: string;
+  title: string;
+}>).map(ep => ({
+  id: ep.id,
+  title: ep.title,
+}));
+
 function readEpisodesFromLocalStorageCache(): EpisodesData {
   if (typeof window === 'undefined') return { episodes: [], lettersByEpisode: {} };
   try {
@@ -53,7 +63,9 @@ function readEpisodesFallbackFromRawContent(): EpisodesData {
   if (typeof window === 'undefined') return { episodes: [], lettersByEpisode: {} };
   try {
     const raw = window.localStorage.getItem('deda_content_json');
-    if (!raw) return { episodes: [], lettersByEpisode: {} };
+    if (!raw) {
+      return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: {} };
+    }
     const parsed = JSON.parse(raw) as {
       episodes?: Array<{ id: string; title?: string; cards?: Array<{ type?: string; ge_text?: string }> }>;
     };
@@ -70,7 +82,7 @@ function readEpisodesFallbackFromRawContent(): EpisodesData {
     }
     return { episodes, lettersByEpisode };
   } catch {
-    return { episodes: [], lettersByEpisode: {} };
+    return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: {} };
   }
 }
 

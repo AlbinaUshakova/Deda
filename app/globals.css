@@ -1368,6 +1368,14 @@ html[data-theme='dark'] .flashcard-speed-option {
     transform: scale(0.96);
 }
 
+.flashcard-play-triangle {
+    width: 0;
+    height: 0;
+    border-top: 0.34em solid transparent;
+    border-bottom: 0.34em solid transparent;
+    border-left: 0.52em solid currentColor;
+}
+
 .flashcard-controls-compact {
     gap: 0 !important;
 }
@@ -1581,6 +1589,11 @@ html[data-theme='dark'] .blocks-refresh-btn:active {
     box-shadow: none !important;
 }
 
+.blocks-answer-stack {
+    width: 100%;
+    max-width: 640px;
+}
+
 .blocks-answer-input {
     width: 100%;
     max-width: 640px;
@@ -1604,12 +1617,41 @@ html[data-theme='dark'] .blocks-refresh-btn:active {
     text-overflow: ellipsis;
 }
 
+.blocks-submit-wrap {
+    width: 100%;
+    max-width: 640px;
+}
+
+.blocks-submit-btn {
+    min-height: clamp(36px, 4.6vh, 42px);
+    width: min(53%, 292px);
+    background: color-mix(in srgb, var(--button-bg) 92%, var(--ui-accent) 8%);
+    border: 1px solid color-mix(in srgb, var(--border-soft) 84%, var(--ui-accent) 16%);
+    color: var(--button-text);
+    box-shadow: var(--shadow-soft);
+}
+
+.blocks-submit-btn:hover {
+    background: color-mix(in srgb, var(--button-bg) 84%, var(--ui-accent) 16%);
+}
+
+.blocks-submit-btn:active {
+    transform: translateY(1px);
+}
+
+.blocks-submit-btn:disabled {
+    box-shadow: none;
+}
+
 @media (max-width: 900px) {
-    .blocks-answer-input {
-        width: min(86%, 640px);
+    .blocks-answer-stack {
+        width: min(88%, 640px);
         max-width: 640px;
-        margin-left: auto;
-        margin-right: auto;
+    }
+
+    .blocks-answer-input {
+        width: 100%;
+        max-width: 640px;
         height: clamp(46px, 6vh, 56px);
         min-height: clamp(46px, 6vh, 56px);
         padding-inline: clamp(14px, 2.4vw, 18px);
@@ -1619,6 +1661,15 @@ html[data-theme='dark'] .blocks-refresh-btn:active {
 
     .blocks-answer-input::placeholder {
         font-size: clamp(13px, 1.6vw, 16px) !important;
+    }
+
+    .blocks-submit-wrap {
+        width: 100%;
+        max-width: none;
+    }
+
+    .blocks-submit-btn {
+        width: min(48%, 220px);
     }
 }
 
