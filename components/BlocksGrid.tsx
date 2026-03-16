@@ -188,6 +188,15 @@ function randomPaletteColor() {
   return TYPE_COLORS[randomInt(TYPE_COLORS.length)];
 }
 
+function pickDistinctBagColors(count: number): string[] {
+  const shuffledColors = [...TYPE_COLORS];
+  for (let i = shuffledColors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledColors[i], shuffledColors[j]] = [shuffledColors[j], shuffledColors[i]];
+  }
+  return shuffledColors.slice(0, count);
+}
+
 function createEmptyBoard(): CellColor[][] {
   return Array.from({ length: BOARD_SIZE }, () =>
     Array<CellColor>(BOARD_SIZE).fill(null),
@@ -262,6 +271,12 @@ function shapeHasAnyMove(board: CellColor[][], shape: Shape): boolean {
   return false;
 }
 
+function isLineShape(shape: Shape): boolean {
+  const sameRow = shape.cells.every(cell => cell.r === shape.cells[0].r);
+  const sameCol = shape.cells.every(cell => cell.c === shape.cells[0].c);
+  return sameRow || sameCol;
+}
+
 // ровно 3 разных фигуры
 // минимум одна точно ставится
 // остальные могут быть «заглушками» и усложнять игру
@@ -313,6 +328,7 @@ function makeBag(board: CellColor[][]): Piece[] {
 
   const pickedShapes: Shape[] = [guaranteedShape];
   const usedIds = new Set<string>([guaranteedShape.id]);
+  let pickedLineShapes = isLineShape(guaranteedShape) ? 1 : 0;
 
   // --- 2. добираем до 3 разных фигур из ВСЕХ SHAPES (могут не влезать) ---
 
@@ -333,8 +349,10 @@ function makeBag(board: CellColor[][]): Piece[] {
   for (const s of poolAll) {
     if (pickedShapes.length >= 3) break;
     if (usedIds.has(s.id)) continue; // только разные фигуры
+    if (pickedLineShapes >= 2 && isLineShape(s)) continue; // не даём собрать раздачу из трёх линий
     pickedShapes.push(s);
     usedIds.add(s.id);
+    if (isLineShape(s)) pickedLineShapes += 1;
   }
 
   // safety: если вдруг ещё не набрали 3 (например, мало фигур в SHAPES)
@@ -342,23 +360,21 @@ function makeBag(board: CellColor[][]): Piece[] {
     for (const s of SHAPES) {
       if (pickedShapes.length >= 3) break;
       if (usedIds.has(s.id)) continue;
+      if (pickedLineShapes >= 2 && isLineShape(s)) continue;
       pickedShapes.push(s);
       usedIds.add(s.id);
+      if (isLineShape(s)) pickedLineShapes += 1;
     }
   }
 
   const now = Date.now();
-  const shuffledColors = [...TYPE_COLORS];
-  for (let i = shuffledColors.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledColors[i], shuffledColors[j]] = [shuffledColors[j], shuffledColors[i]];
-  }
+  const bagColors = pickDistinctBagColors(pickedShapes.length);
 
   return pickedShapes.map((shape, idx) => ({
     id: `p_${shape.id}_${now}_${idx}`,
     shape,
     // В одной раздаче все 3 фигуры должны иметь разные цвета.
-    color: shuffledColors[idx % shuffledColors.length],
+    color: bagColors[idx],
   }));
 }
 

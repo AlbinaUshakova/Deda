@@ -439,11 +439,11 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen bg-[var(--app-bg)] px-[clamp(20px,4.8vw,36px)] [@media(max-width:900px)]:px-[clamp(28px,8vw,44px)] [@media(max-width:700px)]:px-[clamp(24px,9vw,40px)] pt-3 pb-1 min-[1920px]:pt-6 min-[1920px]:pb-2 [@media(max-height:980px)]:pt-2 [@media(max-height:980px)]:pb-1 relative overflow-hidden flex flex-col"
+      className="min-h-screen bg-[var(--app-bg)] px-[clamp(20px,4.8vw,36px)] [@media(max-width:900px)]:px-[clamp(28px,8vw,44px)] [@media(max-width:700px)]:px-[clamp(24px,9vw,40px)] pt-3 pb-1 min-[1920px]:pt-6 min-[1920px]:pb-2 [@media(max-height:980px)]:pt-2 [@media(max-height:980px)]:pb-1 relative overflow-x-hidden flex flex-col"
     >
       <div className="relative mx-auto w-full flex-1 flex flex-col justify-start pb-[clamp(32px,4.5vh,40px)]">
       {/* алфавит + сетка эпизодов */}
-      <section className="mt-16 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
+      <section className="mt-16 [@media(max-width:900px)]:mt-12 [@media(max-width:700px)]:mt-10 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
         <div className="relative mx-auto w-full">
           <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[clamp(184px,31vw,244px)] pointer-events-none`}>
             <div
@@ -496,8 +496,8 @@ export default function HomePage() {
               )}
             </div>
           </aside>
-          <div ref={lessonsWrapRef} className="relative z-[150] mx-auto w-[min(88vw,980px)] [@media(max-width:900px)]:w-[min(84vw,980px)] [@media(max-width:700px)]:w-[min(82vw,980px)] [@media(max-height:980px)]:w-[min(88vw,900px)] [@media(max-width:900px)_and_(max-height:980px)]:w-[min(84vw,900px)] [@media(max-width:700px)_and_(max-height:980px)]:w-[min(82vw,900px)]">
-            <div className="-mt-3 md:-mt-5 mb-4 [@media(max-height:980px)]:-mt-3 [@media(max-height:980px)]:mb-3 flex items-center justify-start gap-1 pl-[clamp(72px,10.5vw,148px)]">
+          <div ref={lessonsWrapRef} className="relative z-[150] mx-auto w-full max-w-[980px] [@media(max-height:980px)]:max-w-[900px]">
+            <div className="-mt-3 md:-mt-5 mb-4 [@media(max-width:900px)]:mb-3 [@media(max-width:700px)]:mb-2 [@media(max-height:980px)]:-mt-3 [@media(max-height:980px)]:mb-3 flex items-center justify-start gap-1 pl-[clamp(72px,10.5vw,148px)] [@media(max-width:900px)]:pl-[clamp(52px,9vw,92px)] [@media(max-width:700px)]:pl-[clamp(38px,7vw,64px)]">
               <div className="inline-flex h-[clamp(28px,3.1vw,40px)] w-[clamp(28px,3.1vw,40px)] items-center justify-center p-0">
                 <img
                   src="/images/deda-cat.png"
@@ -520,7 +520,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3 [@media(max-width:480px)]:grid-cols-1 gap-x-[clamp(10px,1.35vw,20px)] gap-y-[clamp(8px,1vw,15px)] [@media(max-height:980px)]:gap-y-3 justify-center">
+            <div className="grid grid-cols-3 [@media(max-width:480px)]:grid-cols-1 gap-x-[clamp(10px,1.35vw,20px)] gap-y-[clamp(8px,1vw,15px)] [@media(max-width:700px)]:gap-y-2 [@media(max-height:980px)]:gap-y-3 justify-center">
               {normalEpisodes.map((ep, i) => {
                 const best = progress[ep.id] ?? 0;
                 const letters = lettersByEp[ep.id] ?? [];

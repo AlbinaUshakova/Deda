@@ -1335,6 +1335,39 @@ html[data-theme='dark'] .flashcard-speed-option {
     color: var(--control-text-hover) !important;
 }
 
+.flashcard-speed-btn {
+    opacity: 0.62 !important;
+    letter-spacing: 0.01em;
+}
+
+.flashcard-speed-btn:hover,
+.flashcard-speed-btn:focus-visible,
+.flashcard-speed-btn[aria-expanded='true'] {
+    opacity: 0.82 !important;
+}
+
+.flashcard-shuffle-btn[aria-pressed='true'] {
+    background: rgba(148, 163, 184, 0.14) !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.14), 0 4px 10px rgba(15, 23, 42, 0.06) !important;
+    color: var(--control-text-hover) !important;
+}
+
+.flashcard-play-btn[aria-pressed='true'] {
+    background: rgba(148, 163, 184, 0.14) !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.14), 0 4px 10px rgba(15, 23, 42, 0.06) !important;
+    color: var(--control-text-hover) !important;
+}
+
+.flashcard-play-btn:active,
+.flashcard-shuffle-btn:active {
+    background: rgba(148, 163, 184, 0.1) !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.1) !important;
+    transform: scale(0.96);
+}
+
 .flashcard-controls-compact {
     gap: 0 !important;
 }
@@ -1347,8 +1380,9 @@ html[data-theme='dark'] .flashcard-speed-option {
 
 .flashcard-controls-compact .flashcard-speed-btn {
     width: auto !important;
-    min-width: clamp(27px, 6.4vw, 42px);
-    padding-left: 2px !important;
+    min-width: clamp(24px, 5.7vw, 36px);
+    margin-left: -2px !important;
+    padding-left: 1px !important;
     padding-right: 2px !important;
 }
 

@@ -414,9 +414,9 @@ export default function FlashcardDeck({
   const canPrev = hasCard && total > 1;
   const canNext = hasCard && total > 1;
   const playControl =
-    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(16px,4.1vw,31px)] leading-none';
+    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(15px,3.9vw,29px)] font-light leading-none';
   const shuffleControl =
-    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(18px,4.4vw,34px)] leading-none';
+    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(17px,4.2vw,31px)] font-light leading-none';
   const glassMiniControl =
     'inline-flex items-center justify-center rounded-xl border-0 bg-transparent text-[var(--text-primary)] shadow-none transition-all duration-200';
   const navLikeMiniControl =
@@ -564,8 +564,6 @@ export default function FlashcardDeck({
         <div
           className={`flashcard-main-card group relative z-10 mx-auto cursor-pointer rounded-3xl border border-slate-200 bg-white ${
             flipped ? 'flashcard-main-card--flipped' : ''
-          } ${revealCount > 0 ? 'flashcard-main-card--hinted' : ''} ${
-            auto ? 'flashcard-main-card--auto' : ''
           }`}
           onClick={() => hasCard && setFlipped(f => !f)}
           role="button"
@@ -719,37 +717,17 @@ export default function FlashcardDeck({
                       card.translit && card.translit.trim()
                         ? card.translit
                         : geToTranslit(card.ge_text)
-                    )}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div key={`back-${idx}`} className="flex -translate-y-[23px] flex-col items-center justify:center gap-3">
-                {canAttemptCardImage && cardImageSrc && (
-                  <img
-                    key={imageStateKey}
-                    src={cardImageSrc}
-                    alt={card.ru_meaning || card.ge_text}
-                    className={`h-[140px] w-[140px] rounded-2xl object-contain border border-slate-200 bg-slate-50 p-2 ${showCardImage ? '' : 'invisible'}`}
-                    loading="lazy"
-                    onLoad={() => {
-                      if (!imageStateKey) return;
-                      setImageLoadState(prev => ({ ...prev, [imageStateKey]: 'loaded' }));
-                    }}
-                    onError={() => {
-                      if (imageStateKey) {
-                        setImageLoadState(prev => ({ ...prev, [imageStateKey]: 'error' }));
-                      }
-                      if (!imageKey) return;
-                      setBrokenImages(prev => ({ ...prev, [imageKey]: true }));
-                    }}
-                  />
-                )}
-                <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(30px,5vw,48px)] leading-tight text-[var(--text-primary)]">
-                  {isRuDialog ? (
-                    <div className="flex flex-col items-center gap-1.5">
-                      {ruDialogLines.map((line, lineIdx) => (
-                        <div
+            )}
+          </div>
+        )}
+      </div>
+    ) : (
+      <div key={`back-${idx}`} className="flex -translate-y-[23px] flex-col items-center justify:center gap-3">
+        <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(30px,5vw,48px)] leading-tight text-[var(--text-primary)]">
+          {isRuDialog ? (
+            <div className="flex flex-col items-center gap-1.5">
+              {ruDialogLines.map((line, lineIdx) => (
+                <div
                           key={`${line}-${lineIdx}`}
                           className={`flashcard-dialog-line ${
                             lineIdx === 0 ? 'flashcard-dialog-line--question' : 'flashcard-dialog-line--answer'
@@ -813,7 +791,10 @@ export default function FlashcardDeck({
               aria-pressed={auto}
             >
               {auto ? (
-                <span className="leading-none">Ⅱ</span>
+                <span className="inline-flex h-[0.54em] items-center gap-[4px]" aria-hidden="true">
+                  <span className="block h-full w-[4px] rounded-full bg-current" />
+                  <span className="block h-full w-[4px] rounded-full bg-current" />
+                </span>
               ) : (
                 <span className="leading-none translate-x-[1px]">▶</span>
               )}
@@ -823,7 +804,7 @@ export default function FlashcardDeck({
               <button
                 type="button"
                 onClick={() => setSpeedMenuOpen(v => !v)}
-                className="flashcard-speed-btn h-[clamp(24px,5.9vw,44px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(2px,0.6vw,3px)] text-[clamp(9px,2.1vw,14px)] leading-none font-medium text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
+                className="flashcard-speed-btn h-[clamp(24px,5.9vw,44px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(1px,0.4vw,2px)] text-[clamp(9px,2vw,13px)] leading-none font-normal text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
                 aria-label="Скорость автопрокрутки"
                 title={`Скорость: ${currentSpeedLabel}`}
                 aria-haspopup="menu"
