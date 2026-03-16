@@ -15,7 +15,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Deda — учимся читать по-грузински через игру",
-  description: "Игра для изучения грузинского алфавита и чтения по-грузински.",
+  description: "Deda - учимся читать по-грузински, играя.",
+  icons: {
+    icon: "/images/deda-app-icon.png",
+    shortcut: "/images/deda-app-icon.png",
+    apple: "/images/deda-app-icon.png",
+  },
 };
 
 export default function RootLayout({
