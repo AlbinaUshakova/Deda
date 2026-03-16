@@ -14,8 +14,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Deda — учимся читать по-грузински через игру",
-  description: "Deda - учимся читать по-грузински, играя.",
+  title: "Deda - учимся читать по-грузински, играя.",
+  description: "Учимся читать по-грузински, играя. Карточки, озвучка букв и игра в Блоки помогут выучить грузинские буквы и начать читать.",
   icons: {
     icon: "/images/deda-app-icon.png",
     shortcut: "/images/deda-app-icon.png",
