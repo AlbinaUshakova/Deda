@@ -414,9 +414,9 @@ export default function FlashcardDeck({
   const canPrev = hasCard && total > 1;
   const canNext = hasCard && total > 1;
   const playControl =
-    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(15px,3.9vw,29px)] font-light leading-none';
+    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(18px,4.8vw,29px)] font-light leading-none';
   const shuffleControl =
-    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(17px,4.2vw,31px)] font-light leading-none';
+    'h-[clamp(24px,5.9vw,44px)] w-[clamp(24px,5.9vw,44px)] rounded-full border-0 bg-transparent text-current opacity-100 transition-all duration-200 ease-out hover:scale-[1.05] active:scale-[0.97] flex items-center justify-center text-[clamp(20px,5.1vw,31px)] font-light leading-none';
   const glassMiniControl =
     'inline-flex items-center justify-center rounded-xl border-0 bg-transparent text-[var(--text-primary)] shadow-none transition-all duration-200';
   const navLikeMiniControl =
@@ -581,7 +581,7 @@ export default function FlashcardDeck({
                 e.stopPropagation();
                 onPrev();
               }}
-              className="flashcard-nav-arrow flashcard-nav-arrow--inside absolute left-[12px] top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98] min-[1201px]:hidden"
+              className="flashcard-nav-arrow flashcard-nav-arrow--inside absolute left-[-44px] top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98] max-[640px]:left-[-36px] min-[1201px]:hidden"
               title="Назад"
               aria-label="Назад"
             >
@@ -597,7 +597,7 @@ export default function FlashcardDeck({
                 e.stopPropagation();
                 onNext();
               }}
-              className="flashcard-next-btn flashcard-nav-arrow flashcard-nav-arrow--inside absolute right-[12px] top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98] min-[1201px]:hidden"
+              className="flashcard-next-btn flashcard-nav-arrow flashcard-nav-arrow--inside absolute right-[-44px] top-1/2 z-20 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent text-[var(--text-secondary)] shadow-none transition-all duration-150 ease-out hover:scale-[1.04] active:scale-[0.98] max-[640px]:right-[-36px] min-[1201px]:hidden"
               title="Вперёд"
               aria-label="Вперёд"
             >
@@ -766,7 +766,7 @@ export default function FlashcardDeck({
             />
           </div>
 
-          <div className="flashcard-controls-compact absolute left-1/2 top-1/2 inline-flex h-[clamp(31px,7.2vw,56px)] -translate-x-1/2 -translate-y-1/2 items-center gap-0">
+          <div className="flashcard-controls-compact absolute left-1/2 top-1/2 inline-flex h-[clamp(31px,7.2vw,56px)] -translate-x-1/2 -translate-y-1/2 items-center gap-[clamp(22px,6vw,40px)]">
             <button
               onClick={() => {
                 setShuffled(s => {
@@ -807,7 +807,7 @@ export default function FlashcardDeck({
               <button
                 type="button"
                 onClick={() => setSpeedMenuOpen(v => !v)}
-                className="flashcard-speed-btn h-[clamp(24px,5.9vw,44px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(1px,0.4vw,2px)] text-[clamp(9px,2vw,13px)] leading-none font-normal text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
+                className="flashcard-speed-btn h-[clamp(24px,5.9vw,44px)] min-w-0 rounded-full border-0 bg-transparent px-[clamp(1px,0.4vw,2px)] text-[clamp(11px,2.5vw,13px)] leading-none font-normal text-current outline-none transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] focus:outline-none"
                 aria-label="Скорость автопрокрутки"
                 title={`Скорость: ${currentSpeedLabel}`}
                 aria-haspopup="menu"

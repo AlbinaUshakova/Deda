@@ -36,8 +36,17 @@ export default function BlocksPage({ params }: { params: { episodeId: string } }
     })();
   }, [params.episodeId, router]);
 
+  useEffect(() => {
+    document.documentElement.classList.add('app-no-page-scroll');
+    document.body.classList.add('app-no-page-scroll');
+    return () => {
+      document.documentElement.classList.remove('app-no-page-scroll');
+      document.body.classList.remove('app-no-page-scroll');
+    };
+  }, []);
+
   return (
-    <main>
+    <main className="app-screen-fixed overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <h1 className="h1">Блоки (как в Quizlet) — {title || params.episodeId}</h1>
         <Link className="btn" href="/">Главная</Link>

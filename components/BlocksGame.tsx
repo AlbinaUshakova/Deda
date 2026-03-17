@@ -190,11 +190,14 @@ function parseNumberWordToDigits(str: string): string | null {
 
 // Приводит числа внутри фразы к единому цифровому виду: "два стула" -> "2 стула"
 function normalizeNumbersInText(str: string): string {
-  const tokens = normalizeRu(str)
+  const normalized = normalizeRu(str);
+  const tokens = normalized
     .replace(/[^а-яё0-9\s-]/g, ' ')
     .replace(/-+/g, ' ')
     .split(/\s+/)
     .filter(Boolean);
+
+  if (!tokens.length) return normalized;
 
   const out: string[] = [];
   let i = 0;
@@ -853,13 +856,6 @@ export default function BlocksGame({
     mode === 'question' &&
     !showCorrect &&
     (isAnswerFocused || normalizeRu(answer).length > 0);
-  const submitButtonLabel = showCorrect ? 'Дальше' : 'Проверить';
-  const isSubmitDisabled =
-    mode !== 'question' ||
-    !question ||
-    hardGameOver ||
-    isRevealing ||
-    (!showCorrect && !normalizeRu(answer));
   const currentCorrectAnswer = question
     ? (direction === 'ge-ru' ? question.ru : question.ge)
     : '';
@@ -968,15 +964,6 @@ export default function BlocksGame({
                                     : 'bg-white/70 text-slate-800 shadow-none')
                               }
                             />
-                            <div className="blocks-submit-wrap mt-2">
-                              <button
-                                type="submit"
-                                className="blocks-submit-btn inline-flex items-center justify-center rounded-2xl px-4 text-[clamp(14px,1.5vw,16px)] font-semibold tracking-[-0.01em] transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled={isSubmitDisabled}
-                              >
-                                {submitButtonLabel}
-                              </button>
-                            </div>
                           </div>
                         </form>
                       </div>

@@ -478,7 +478,7 @@ export default function HomePage() {
       {/* алфавит + сетка эпизодов */}
       <section className="mt-16 [@media(max-width:900px)]:mt-4.5 [@media(max-width:700px)]:mt-3 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
         <div className="relative mx-auto w-full">
-          <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[clamp(184px,31vw,244px)] pointer-events-none`}>
+          <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[clamp(202px,31vw,244px)] pointer-events-none`}>
             <div
               className={`home-alphabet-panel max-h-[calc(100dvh-102px)] overflow-y-auto rounded-[clamp(20px,3vw,30px)] border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-[clamp(7px,1.2vw,10px)] shadow-[0_6px_14px_rgba(15,23,42,0.09)] transition-all duration-200 ${showAlphabet ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none select-none'}`}
               aria-hidden={!showAlphabet}

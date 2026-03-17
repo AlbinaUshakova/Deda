@@ -129,9 +129,18 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   const studyHref = `/study/${episodeId}` as Route;
   const pageTitle = title || getEpisodeFallbackTitle(episodeId);
 
+  useEffect(() => {
+    document.documentElement.classList.add('app-no-page-scroll');
+    document.body.classList.add('app-no-page-scroll');
+    return () => {
+      document.documentElement.classList.remove('app-no-page-scroll');
+      document.body.classList.remove('app-no-page-scroll');
+    };
+  }, []);
+
   return (
-    <main className={`${nunito.className} relative min-h-screen bg-transparent text-[var(--text-primary)]`}>
-      <div className="mx-auto w-full px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
+    <main className={`${nunito.className} app-screen-fixed relative min-h-screen bg-transparent text-[var(--text-primary)]`}>
+      <div className="mx-auto h-full w-full overflow-hidden px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
         <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
           <div className="relative flex min-h-[52px] items-center justify-end">
             <div className="topButtons ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">

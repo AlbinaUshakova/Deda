@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
 import FlashcardDeck from '@/components/FlashcardDeck';
@@ -57,9 +57,18 @@ export default function StudyClient({
       ? `/play/${episodeId}?topic=${encodeURIComponent(topicForPlay)}`
       : `/play/${episodeId}`;
 
+  useEffect(() => {
+    document.documentElement.classList.add('app-no-page-scroll');
+    document.body.classList.add('app-no-page-scroll');
+    return () => {
+      document.documentElement.classList.remove('app-no-page-scroll');
+      document.body.classList.remove('app-no-page-scroll');
+    };
+  }, []);
+
   return (
-    <main className="study-card-screen min-h-screen bg-transparent text-[var(--text-primary)]">
-      <div className="mx-auto w-full px-[clamp(14px,3.6vw,48px)] py-[clamp(16px,2.6vh,32px)] lg:pl-[124px]">
+    <main className="study-card-screen app-screen-fixed min-h-screen bg-transparent text-[var(--text-primary)]">
+      <div className="mx-auto h-full w-full overflow-hidden px-[clamp(14px,3.6vw,48px)] py-[clamp(16px,2.6vh,32px)] lg:pl-[124px]">
         <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
           <div className="relative flex min-h-[52px] items-center justify-end">
             <div className="topButtons ml-auto flex flex-wrap justify-end gap-2 lg:pr-[112px]">

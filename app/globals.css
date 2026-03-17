@@ -149,6 +149,12 @@ html {
     overflow-y: scroll;
 }
 
+html.app-no-page-scroll,
+body.app-no-page-scroll {
+    height: 100dvh;
+    overflow: hidden !important;
+}
+
 body {
     @apply min-h-screen;
     background: var(--app-bg);
@@ -990,6 +996,11 @@ html[data-theme='dark'] .blocks-grid-gameover-text {
     min-height: 760px;
 }
 
+.app-screen-fixed {
+    height: 100dvh;
+    overflow: hidden;
+}
+
 /* Flashcards light theme polish */
 .flashcard-main-card {
     width: min(100%, 600px, 88vw);
@@ -1219,17 +1230,50 @@ html[data-theme='dark'] .blocks-grid-gameover-text {
 
 .flashcard-nav-arrow {
     opacity: 0.9;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html[data-theme='light'] .flashcard-nav-arrow {
     color: #6b7280 !important;
 }
 
-.flashcard-nav-arrow:hover,
 .flashcard-nav-arrow:focus-visible {
     background: rgba(148, 163, 184, 0.16) !important;
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08) !important;
     color: var(--text-primary) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .flashcard-nav-arrow:hover {
+        background: rgba(148, 163, 184, 0.16) !important;
+        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08) !important;
+        color: var(--text-primary) !important;
+    }
+}
+
+.flashcard-nav-arrow:active {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+html[data-theme='dark'] .flashcard-nav-arrow:focus-visible {
+    background: rgba(148, 163, 184, 0.2) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28) !important;
+    color: #f1f5ff !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    html[data-theme='dark'] .flashcard-nav-arrow:hover {
+        background: rgba(148, 163, 184, 0.2) !important;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28) !important;
+        color: #f1f5ff !important;
+    }
+}
+
+.flashcard-nav-arrow:active,
+html[data-theme='dark'] .flashcard-nav-arrow:active {
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 .flashcard-mini-btn {
@@ -1534,12 +1578,6 @@ html[data-theme='dark'] .flashcard-next-btn:hover {
     color: #f1f5ff !important;
 }
 
-html[data-theme='dark'] .flashcard-nav-arrow:hover,
-html[data-theme='dark'] .flashcard-nav-arrow:focus-visible {
-    background: rgba(148, 163, 184, 0.2) !important;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28) !important;
-    color: #f1f5ff !important;
-}
 
 html[data-theme='dark'] .flashcard-controls {
     background: #1e293b !important;
