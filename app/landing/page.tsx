@@ -1,7 +1,12 @@
 import Image from 'next/image';
 import LandingAlphabet from '@/components/LandingAlphabet';
 
-const interfaceSlots = [
+const interfaceSlots: Array<{
+  title: string;
+  description: string;
+  src: string;
+  cropFrame?: boolean;
+}> = [
   {
     title: 'Скрин 7',
     description: 'Новый экран',

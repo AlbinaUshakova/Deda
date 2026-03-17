@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useEffect, useState, useMemo } from 'react';
-import { Nunito } from 'next/font/google';
 import { loadProgressMap, getLocalProgress } from '@/lib/supabase';
 import BlocksGame from '@/components/BlocksGame';
 
@@ -11,12 +10,6 @@ type Word = { ge: string; ru: string; audio?: string };
 type Card = { type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audio_url?: string; topic?: string };
 type Episode = { id: string; title: string; cards: Card[] };
 type EpisodeApiResponse = { ok: boolean; episode?: Episode };
-
-const nunito = Nunito({
-  subsets: ['latin', 'cyrillic'],
-  weight: ['500', '600', '700'],
-  display: 'swap',
-});
 
 function getEpisodeFallbackTitle(episodeId: string): string {
   const match = episodeId.match(/^ep(\d+)$/i);
@@ -139,7 +132,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
   }, []);
 
   return (
-    <main className={`${nunito.className} app-screen-fixed relative min-h-screen bg-transparent text-[var(--text-primary)]`}>
+    <main className="app-screen-fixed relative min-h-screen bg-transparent text-[var(--text-primary)]">
       <div className="mx-auto h-full w-full overflow-hidden px-3 sm:px-4 md:px-6 py-8 lg:pl-[124px]">
         <div className="relative z-30 mb-2 mx-auto w-full max-w-[980px]">
           <div className="relative flex min-h-[52px] items-center justify-end">
