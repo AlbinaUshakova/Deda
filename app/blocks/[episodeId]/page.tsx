@@ -49,7 +49,7 @@ export default function BlocksPage({ params }: { params: { episodeId: string } }
     <main className="app-screen-fixed overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <h1 className="h1">Блоки (как в Quizlet) — {title || params.episodeId}</h1>
-        <Link className="btn" href="/">Главная</Link>
+        <Link className="btn" href="/lessons">Главная</Link>
       </div>
       {words ? (
         <BlocksGame words={words} episodeId={params.episodeId} />

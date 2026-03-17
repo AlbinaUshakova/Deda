@@ -147,7 +147,7 @@ export default function PlayPage({ params }: { params: { episodeId: string } }) 
             <Link
               className="play-tab--secondary inline-flex items-center justify-center rounded-xl border border-slate-300 bg-transparent px-[clamp(10px,1.35vw,14px)] py-[clamp(6px,1vw,8px)] text-[clamp(11px,1.15vw,13px)] font-medium text-[var(--text-secondary)] shadow-sm transition-all duration-200 hover:border-slate-400 hover:bg-white/70 hover:text-[var(--text-primary)]"
               style={{ fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif' }}
-              href="/"
+              href="/lessons"
             >
               Главная
             </Link>

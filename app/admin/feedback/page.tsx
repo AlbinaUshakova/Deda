@@ -123,7 +123,7 @@ export default function AdminFeedbackPage() {
             <div className="max-w-6xl mx-auto space-y-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Обратная связь</h1>
-                    <Link href="/" className="text-sm text-emerald-400 hover:underline">
+                    <Link href="/lessons" className="text-sm text-emerald-400 hover:underline">
                         ← На главную
                     </Link>
                 </div>

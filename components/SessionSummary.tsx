@@ -13,7 +13,7 @@ export default function SessionSummary({ score, cleared, onClose }: { score: num
         </div>
         <div className="flex gap-2">
           <button className="btn" onClick={onClose}>Продолжить</button>
-          <Link className="btn" href="/">Главная</Link>
+          <Link className="btn" href="/lessons">Главная</Link>
         </div>
       </div>
     </div>

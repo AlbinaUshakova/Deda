@@ -909,8 +909,8 @@ export default function BlocksGrid({
 
             {gameOver && (
               <div className="absolute inset-0 rounded-3xl flex items-center justify-center pointer-events-none">
-                <div className="absolute inset-0 rounded-3xl bg-slate-900/24" />
-                <div className="pointer-events-auto relative mx-4 w-[min(100%,286px)] rounded-[24px] border border-white/80 bg-white px-5 py-4 text-center shadow-[0_16px_34px_rgba(15,23,42,0.16)]">
+                <div className="blocks-grid-gameover-overlay absolute inset-0 rounded-3xl bg-slate-900/24" />
+                <div className="blocks-grid-gameover-card pointer-events-auto relative mx-4 w-[min(100%,286px)] rounded-[24px] border border-white/80 bg-white px-5 py-4 text-center shadow-[0_16px_34px_rgba(15,23,42,0.16)]">
                   <div className="blocks-grid-gameover-title text-slate-800 text-[19px] font-semibold tracking-[-0.02em]">
                     Ходов больше нет
                   </div>
@@ -920,7 +920,7 @@ export default function BlocksGrid({
                   <div className="mt-3 flex justify-center">
                     <button
                       onClick={handleRestart}
-                      className="inline-flex min-h-[42px] min-w-[160px] items-center justify-center rounded-2xl bg-indigo-600 px-5 text-[15px] font-semibold text-white shadow-[0_6px_14px_rgba(79,70,229,0.18)] transition-all duration-150 hover:bg-indigo-700"
+                      className="blocks-grid-gameover-button inline-flex min-h-[42px] min-w-[160px] items-center justify-center rounded-2xl bg-indigo-600 px-5 text-[15px] font-semibold text-white shadow-[0_6px_14px_rgba(79,70,229,0.18)] transition-all duration-150 hover:bg-indigo-700"
                     >
                       Сыграть снова
                     </button>

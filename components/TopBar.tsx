@@ -44,7 +44,7 @@ export default function TopBar() {
   return (
     <>
       <header className="flex items-center justify-between mb-6 px-3">
-        <Link href="/" className="text-lg font-semibold">
+        <Link href="/lessons" className="text-lg font-semibold">
           Deda
         </Link>
 

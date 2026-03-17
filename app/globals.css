@@ -980,12 +980,33 @@ html[data-theme='dark'] .header-lesson-title {
 
 html[data-theme='dark'] .blocks-grid-gameover-title {
     color: #f3f7ff !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
+    text-shadow: none !important;
 }
 
 html[data-theme='dark'] .blocks-grid-gameover-text {
     color: #d3def7 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38) !important;
+    text-shadow: none !important;
+}
+
+html[data-theme='dark'] .blocks-grid-gameover-overlay {
+    background: rgba(2, 6, 23, 0.42) !important;
+}
+
+html[data-theme='dark'] .blocks-grid-gameover-card {
+    background: rgba(37, 41, 50, 0.96) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    box-shadow:
+        0 20px 44px rgba(0, 0, 0, 0.42),
+        0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+}
+
+html[data-theme='dark'] .blocks-grid-gameover-button {
+    background: #6d63ff !important;
+    box-shadow: 0 8px 18px rgba(109, 99, 255, 0.28) !important;
+}
+
+html[data-theme='dark'] .blocks-grid-gameover-button:hover {
+    background: #7a71ff !important;
 }
 
 .home-lesson-card--complete {
