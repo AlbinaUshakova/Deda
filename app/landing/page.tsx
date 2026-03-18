@@ -41,6 +41,11 @@ const darkInterfaceSlots: Array<{
     src: '/landing/deda-new-screen-6.png',
   },
   {
+    title: 'Тёмная карточка',
+    description: 'Тёмный экран карточек',
+    src: '/landing/c3e5fdc6-8362-42b0-98f5-6e544af89538.png',
+  },
+  {
     title: 'Скрин 2',
     description: 'Тёмный экран игры',
     src: '/landing/deda-new-screen-2.png',
@@ -424,8 +429,16 @@ export default function LandingPage() {
         grid-auto-columns: max-content;
         gap: 8px;
         padding-bottom: 4px;
-        overflow-x: clip;
-        overflow-y: visible;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-inline: 6px;
+        scrollbar-width: none;
+        scroll-padding-inline: 6px;
+        scroll-snap-type: x proximity;
+      }
+
+      .landing-screens-grid::-webkit-scrollbar {
+        display: none;
       }
 
       .landing-screen-item {
@@ -444,6 +457,10 @@ export default function LandingPage() {
         max-width: min(78vw, 296px);
         height: auto;
         max-height: min(29vh, 214px);
+      }
+
+      .landing-screen-item {
+        scroll-snap-align: center;
       }
 
       .landing-screen-item--crop-frame {
@@ -542,7 +559,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-showcase-section mx-auto mt-8 w-full max-w-[1240px] px-4 pb-12 pt-0 sm:mt-0 sm:px-6 sm:pb-16 sm:pt-0 lg:mt-2 lg:px-8 lg:pb-20 lg:pt-1">
+      <section className="landing-showcase-section mx-auto mt-12 w-full max-w-[1240px] px-4 pb-12 pt-0 sm:mt-4 sm:px-6 sm:pb-16 sm:pt-0 lg:mt-6 lg:px-8 lg:pb-20 lg:pt-1">
         <div className="max-w-[760px]">
           <div className="landing-showcase-title text-[20px] font-bold tracking-[-0.015em] text-[var(--text-primary)]">
             Что внутри Deda

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { getSettings } from '@/lib/settings';
 import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
+import { playLetterAudio } from '@/lib/playLetterAudio';
 import {
   loadProgressMapCached,
   getLocalProgress,
@@ -353,39 +354,20 @@ export default function HomePage() {
     if (typeof window === 'undefined') return;
     setAudioError('');
 
-    const localAudioSrc = geLetterAudioMap[letter];
-    if (localAudioSrc) {
-      const audio = new Audio(localAudioSrc);
-      audio.volume = 1;
-      audio.play().catch(() => {
-        setAudioError('Не удалось воспроизвести звук буквы');
-      });
-      return;
-    }
-
-    if (!('speechSynthesis' in window)) {
-      setAudioError('Грузинская озвучка недоступна в этом браузере');
-      return;
-    }
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(geLetterName[letter] ?? letter);
-    const voices = ttsVoices.length ? ttsVoices : synth.getVoices();
-    const geVoice = voices.find(v => v.lang?.toLowerCase().startsWith('ka'));
-    utterance.lang = 'ka-GE';
-    if (geVoice) {
-      utterance.voice = geVoice;
-      utterance.lang = geVoice.lang;
-    }
-    utterance.rate = 0.9;
-    utterance.onstart = () => setAudioError('');
-    utterance.onerror = () => setAudioError('Озвучка недоступна на этом устройстве');
-    try {
-      synth.resume();
-      synth.speak(utterance);
-    } catch {
-      setAudioError('Не удалось запустить озвучку');
-    }
+    void playLetterAudio({
+      audioSrc: geLetterAudioMap[letter],
+      fallbackText: geLetterName[letter] ?? letter,
+      preferredVoices: ttsVoices,
+      onStart: () => setAudioError(''),
+      onError: () => {
+        const hasSpeech = typeof window !== 'undefined' && 'speechSynthesis' in window;
+        setAudioError(
+          hasSpeech
+            ? 'Озвучка недоступна на этом устройстве'
+            : 'Грузинская озвучка недоступна в этом браузере',
+        );
+      },
+    });
   };
 
   const normalEpisodes = eps.filter(ep => /^ep\d+$/.test(ep.id));
@@ -472,11 +454,11 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen min-h-[100dvh] bg-[var(--app-bg)] px-[clamp(20px,4.8vw,36px)] [@media(max-width:900px)]:px-[clamp(28px,8vw,44px)] [@media(max-width:700px)]:px-[clamp(24px,9vw,40px)] pt-3 pb-1 min-[1920px]:pt-6 min-[1920px]:pb-2 [@media(max-height:980px)]:pt-2 [@media(max-height:980px)]:pb-1 relative overflow-x-hidden flex flex-col"
+      className="min-h-screen min-h-[100dvh] [@media(max-width:700px)]:min-h-[auto] bg-[var(--app-bg)] px-[clamp(20px,4.8vw,36px)] [@media(max-width:900px)]:px-[clamp(28px,8vw,44px)] [@media(max-width:700px)]:px-[clamp(24px,9vw,40px)] pt-3 pb-1 [@media(max-width:700px)]:pb-0 min-[1920px]:pt-6 min-[1920px]:pb-2 [@media(max-height:980px)]:pt-2 [@media(max-height:980px)]:pb-1 relative overflow-x-hidden flex flex-col"
     >
-      <div className="relative mx-auto w-full flex-1 flex flex-col justify-start pb-[clamp(32px,4.5vh,40px)]">
+      <div className="relative mx-auto w-full flex-1 [@media(max-width:700px)]:flex-none flex flex-col justify-start pb-[clamp(32px,4.5vh,40px)] [@media(max-width:700px)]:pb-3">
       {/* алфавит + сетка эпизодов */}
-      <section className="mt-16 [@media(max-width:900px)]:mt-4.5 [@media(max-width:700px)]:mt-3 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
+      <section className="mt-16 [@media(max-width:900px)]:mt-3 [@media(max-width:700px)]:mt-0 min-[1512px]:mt-16 min-[1700px]:mt-20 min-[1700px]:pl-10 min-[2200px]:pl-12 [@media(max-height:980px)]:mt-10">
         <div className="relative mx-auto w-full">
           <aside ref={alphabetRef} className={`block fixed left-2 sm:left-3 md:left-4 top-[68px] ${alphabetOverlapsLessons ? 'z-[220]' : 'z-[140]'} h-fit w-[clamp(202px,31vw,244px)] pointer-events-none`}>
             <div
@@ -553,7 +535,14 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3 [@media(max-width:480px)]:grid-cols-1 gap-x-[clamp(10px,1.35vw,20px)] gap-y-[clamp(8px,1vw,15px)] [@media(max-width:700px)]:gap-y-2 [@media(max-height:980px)]:gap-y-3 justify-center">
+            <div className="grid grid-cols-3 [@media(max-width:700px)]:grid-cols-2 [@media(max-width:480px)]:grid-cols-1 gap-x-[clamp(10px,1.35vw,20px)] [@media(max-width:700px)]:gap-x-3 gap-y-[clamp(8px,1vw,15px)] [@media(max-width:700px)]:gap-y-4 [@media(max-height:980px)]:gap-y-3 justify-center">
+              <div className="hidden [@media(max-width:700px)]:flex [@media(max-width:700px)]:mx-auto [@media(max-width:700px)]:max-w-[296px] w-full aspect-[2/1] [@media(max-width:560px)]:aspect-[2.1/0.92] items-end justify-center">
+                <img
+                  src="/images/deda-cat.png"
+                  alt="Deda cat"
+                  className="h-[82px] w-[82px] shrink-0 object-contain translate-y-[18px]"
+                />
+              </div>
               {normalEpisodes.map((ep, i) => {
                 const best = progress[ep.id] ?? 0;
                 const letters = lettersByEp[ep.id] ?? [];
@@ -564,11 +553,16 @@ export default function HomePage() {
                 const progressTone = `home-progress-fill--${status ?? 'unknown'}`;
 
                 return (
-                  <div key={ep.id} className="relative w-full min-w-0 [@media(max-width:639px)]:mx-auto [@media(max-width:639px)]:max-w-[420px]">
+                  <div
+                    key={ep.id}
+                    className={`relative w-full min-w-0 [@media(max-width:700px)]:mx-auto [@media(max-width:700px)]:max-w-[296px] ${
+                      i === 0 ? '[@media(max-width:700px)]:mt-6' : ''
+                    }`}
+                  >
                     <Link href={`/study/${ep.id}`} legacyBehavior>
                       <a
                         ref={ep.id === recommendedEpId ? recommendedLessonRef : null}
-                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} ${status === 'locked' ? 'home-lesson-card--locked' : ''} relative grid w-full aspect-[2/1] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] [@media(max-width:560px)]:px-[8px] pt-[clamp(6px,0.8vw,10px)] [@media(max-width:560px)]:pt-[5px] pb-[clamp(10px,1.2vw,14px)] [@media(max-width:560px)]:pb-[8px] transition-all duration-200 ease-out shadow-[0_8px_18px_rgba(15,23,42,0.09)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-slate-300 hover:bg-[#fafbfd]' : 'cursor-not-allowed'}`}
+                        className={`lesson-card home-lesson-card ${best >= lessonTargetScore ? 'home-lesson-card--complete' : ''} ${status === 'locked' ? 'home-lesson-card--locked' : ''} relative grid w-full aspect-[2/1] [@media(max-width:560px)]:aspect-[2.1/0.92] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl bg-white border border-slate-200 px-[clamp(10px,1.4vw,18px)] [@media(max-width:560px)]:px-[7px] pt-[clamp(6px,0.8vw,10px)] [@media(max-width:560px)]:pt-[4px] pb-[clamp(10px,1.2vw,14px)] [@media(max-width:560px)]:pb-[7px] transition-all duration-200 ease-out shadow-[0_8px_18px_rgba(15,23,42,0.09)] ${status !== 'locked' ? 'lesson-card--interactive hover:z-30 hover:border-slate-300 hover:bg-[#fafbfd]' : 'cursor-not-allowed'}`}
                         onMouseEnter={() => {
                           if (status !== 'locked') return;
                           scheduleLockedLessonTooltip(ep.id);
@@ -684,42 +678,44 @@ export default function HomePage() {
       </section>
 
       {/* Избранное и Все уроки */}
-      <section className="relative z-[170] mt-10 min-[1512px]:mt-11 min-[1700px]:mt-12 [@media(max-height:980px)]:mt-8 flex flex-wrap [@media(max-width:480px)]:flex-col [@media(max-width:480px)]:items-center justify-center gap-2.5 [@media(max-width:720px)]:gap-2 max-w-6xl mx-auto">
-        {allLessonsSpecial && (
-          <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
-            <a
-              className={`home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,300px)] rounded-2xl border flex items-center justify-center gap-1.5 transition-all duration-200 ${
-                allLessonsReady
-                  ? 'bg-[#E6ECFF] border-[#c7d5ff] text-[#3B5BDB] shadow-[0_8px_18px_rgba(15,23,42,0.1)]'
-                  : 'bg-white border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-              }`}
-              onClick={e => {
-                if (!allLessonsReady) e.preventDefault();
-              }}
-              aria-disabled={!allLessonsReady}
-              title={!allLessonsReady ? 'Сначала набери минимум 1 очко в каждом уроке' : undefined}
-            >
-              <span>{allLessonsSpecial.title.replace(/^⭐\s*/, '')}</span>
-              {!allLessonsReady && <span aria-hidden>🔒</span>}
-            </a>
-          </Link>
-        )}
+      <section className="relative z-[170] mt-4 min-[1512px]:mt-11 min-[1700px]:mt-12 [@media(max-height:980px)]:mt-8 flex flex-col items-center gap-2.5 [@media(max-width:720px)]:gap-2 max-w-6xl mx-auto">
+        <div className="flex items-center justify-center gap-2.5 [@media(max-width:720px)]:gap-2 [@media(max-width:480px)]:w-full [@media(max-width:480px)]:max-w-[232px]">
+          {allLessonsSpecial && (
+            <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
+              <a
+                className={`home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:flex-1 [@media(max-width:480px)]:px-1.5 rounded-2xl border flex items-center justify-center gap-1.5 transition-all duration-200 [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)] ${
+                  allLessonsReady
+                    ? 'bg-[#E6ECFF] border-[#d4defd] text-[#3B5BDB] shadow-[0_8px_18px_rgba(15,23,42,0.1)]'
+                    : 'bg-white border-slate-200/80 text-slate-400 cursor-not-allowed opacity-60'
+                }`}
+                onClick={e => {
+                  if (!allLessonsReady) e.preventDefault();
+                }}
+                aria-disabled={!allLessonsReady}
+                title={!allLessonsReady ? 'Сначала набери минимум 1 очко в каждом уроке' : undefined}
+              >
+                <span>{allLessonsSpecial.title.replace(/^⭐\s*/, '')}</span>
+                {!allLessonsReady && <span aria-hidden>🔒</span>}
+              </a>
+            </Link>
+          )}
 
-        {favoritesSpecial && (
-          <Link href={`/study/${favoritesSpecial.id}`} legacyBehavior>
-            <a
-              className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,300px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
-            >
-              <span aria-hidden>⭐</span>
-              <span>{favoritesSpecial.title.replace(/^⭐\s*/, '')}</span>
-            </a>
-          </Link>
-        )}
+          {favoritesSpecial && (
+            <Link href={`/study/${favoritesSpecial.id}`} legacyBehavior>
+              <a
+                className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:flex-1 [@media(max-width:480px)]:px-1.5 rounded-2xl border border-slate-200/80 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)] [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)]"
+              >
+                <span aria-hidden>⭐</span>
+                <span>{favoritesSpecial.title.replace(/^⭐\s*/, '')}</span>
+              </a>
+            </Link>
+          )}
+        </div>
 
         {phrasesSpecial && (
           <Link href={`/study/${phrasesSpecial.id}`} legacyBehavior>
             <a
-              className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,300px)] rounded-2xl border border-slate-200 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)]"
+              className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,296px)] rounded-2xl border border-slate-200/80 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)] [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)]"
             >
               <span aria-hidden>💬</span>
               <span className="phrases-label">{phrasesSpecial.title.replace(/^💬\s*/, '')}</span>

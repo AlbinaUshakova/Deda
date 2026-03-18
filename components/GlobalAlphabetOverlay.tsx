@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { getSettings } from '@/lib/settings';
 import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
 import { loadProgressMapCached, getLocalProgress, type ProgressMap } from '@/lib/supabase';
+import { playLetterAudio, stopLetterAudioPlayback } from '@/lib/playLetterAudio';
 
 type Ep = { id: string; title: string };
 
@@ -100,6 +101,7 @@ export default function GlobalAlphabetOverlay() {
         window.clearTimeout(playingTimerRef.current);
         playingTimerRef.current = null;
       }
+      stopLetterAudioPlayback();
     };
   }, []);
 
@@ -259,43 +261,22 @@ export default function GlobalAlphabetOverlay() {
       window.clearTimeout(playingTimerRef.current);
       playingTimerRef.current = null;
     }
-    const localAudioSrc = geLetterAudioMap[letter];
-    if (localAudioSrc) {
-      const audio = new Audio(localAudioSrc);
-      audio.volume = 1;
-      const finish = () => {
-        if (playingTimerRef.current !== null) {
-          window.clearTimeout(playingTimerRef.current);
-          playingTimerRef.current = null;
-        }
-        setPlayingLetter(prev => (prev === letter ? null : prev));
-      };
-      audio.onended = finish;
-      audio.onerror = finish;
-      audio.play().catch(finish);
-      playingTimerRef.current = window.setTimeout(finish, 1400);
-      return;
-    }
-
-    if (!('speechSynthesis' in window)) return;
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(letter);
-    const voices = synth.getVoices();
-    const geVoice = voices.find(v => v.lang?.toLowerCase().startsWith('ka'));
-    if (geVoice) {
-      utterance.voice = geVoice;
-      utterance.lang = geVoice.lang;
-    } else {
-      utterance.lang = 'ka-GE';
-    }
-    utterance.rate = 0.9;
-    utterance.onend = () => setPlayingLetter(prev => (prev === letter ? null : prev));
-    utterance.onerror = () => setPlayingLetter(prev => (prev === letter ? null : prev));
-    synth.speak(utterance);
-    playingTimerRef.current = window.setTimeout(() => {
+    const finish = () => {
+      if (playingTimerRef.current !== null) {
+        window.clearTimeout(playingTimerRef.current);
+        playingTimerRef.current = null;
+      }
       setPlayingLetter(prev => (prev === letter ? null : prev));
-    }, 1400);
+    };
+
+    void playLetterAudio({
+      audioSrc: geLetterAudioMap[letter],
+      fallbackText: letter,
+      onEnd: finish,
+      onError: finish,
+    });
+
+    playingTimerRef.current = window.setTimeout(finish, 1600);
   };
 
   if (pathname === '/') return null;

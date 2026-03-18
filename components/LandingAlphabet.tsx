@@ -1,5 +1,7 @@
 'use client';
 
+import { playLetterAudio } from '@/lib/playLetterAudio';
+
 const GEORGIAN_ALPHABET = [
   'ა', 'ბ', 'გ', 'დ', 'ე', 'ვ', 'ზ', 'თ', 'ი', 'კ', 'ლ',
   'მ', 'ნ', 'ო', 'პ', 'ჟ', 'რ', 'ს', 'ტ', 'უ', 'ფ', 'ქ',
@@ -51,28 +53,10 @@ const geLetterAudioMap: Record<string, string> = {
 
 export default function LandingAlphabet() {
   const speakLetter = (letter: string) => {
-    const localAudioSrc = geLetterAudioMap[letter];
-    if (localAudioSrc) {
-      const audio = new Audio(localAudioSrc);
-      audio.volume = 1;
-      audio.play().catch(() => {});
-      return;
-    }
-
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    const synth = window.speechSynthesis;
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(letter);
-    const voices = synth.getVoices();
-    const geVoice = voices.find(v => v.lang?.toLowerCase().startsWith('ka'));
-    if (geVoice) {
-      utterance.voice = geVoice;
-      utterance.lang = geVoice.lang;
-    } else {
-      utterance.lang = 'ka-GE';
-    }
-    utterance.rate = 0.9;
-    synth.speak(utterance);
+    void playLetterAudio({
+      audioSrc: geLetterAudioMap[letter],
+      fallbackText: letter,
+    });
   };
 
   return (

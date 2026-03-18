@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function BrandToggle() {
@@ -18,7 +19,9 @@ export default function BrandToggle() {
 
   return (
     <div className="header-brand-wrap inline-flex items-center gap-4">
-      <span className="header-brand-label" aria-hidden="true">Deda</span>
+      <Link href="/" className="header-brand-label">
+        Deda
+      </Link>
       <button
         type="button"
         className={`header-control-btn header-control-btn--alphabet header-control-btn--alphabet-secondary inline-flex items-center justify-center px-2.5 ${
