@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import StartRedirectClient from './StartRedirectClient';
 
 const landingTitle = 'Deda — учимся читать по-грузински через игру';
 const landingDescription =
@@ -33,5 +33,5 @@ export const metadata: Metadata = {
 };
 
 export default function StartPage() {
-  redirect('/landing');
+  return <StartRedirectClient />;
 }
