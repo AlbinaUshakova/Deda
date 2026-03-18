@@ -76,22 +76,94 @@ export default function LandingAlphabet() {
   };
 
   return (
-    <div className="home-alphabet-panel rounded-[clamp(13px,1.8vw,20px)] border border-slate-200/75 bg-gradient-to-b from-[#f6f8fe]/88 via-[#f1f4fc]/86 to-[#edf1f9]/84 p-[clamp(4px,0.65vw,8px)] shadow-[0_6px_14px_rgba(15,23,42,0.1)]">
-      <div className="grid grid-cols-4 gap-x-[clamp(2px,0.45vw,6px)] gap-y-[clamp(3px,0.65vw,8px)] sm:grid-cols-5 md:grid-cols-6">
-        {GEORGIAN_ALPHABET.map(ch => (
+    <div className="landing-alphabet-shell rounded-[clamp(10px,1.3vw,15px)] border border-white/70 bg-white/55 p-[clamp(2px,0.45vw,5px)] shadow-[0_10px_24px_rgba(15,23,42,0.06)] backdrop-blur-[6px]">
+      <div className="landing-alphabet-grid grid grid-cols-7 gap-[clamp(1px,0.34vw,4px)]">
+        {GEORGIAN_ALPHABET.map((ch, index) => (
           <button
             key={ch}
             type="button"
             onClick={() => speakLetter(ch)}
-            className="home-alphabet-key rounded-[9px] border border-slate-200/75 bg-white/90 px-[clamp(2px,0.28vw,4px)] py-[clamp(3px,0.56vw,6px)] text-center shadow-sm transition-all hover:bg-slate-50"
+            className={`landing-alphabet-key home-alphabet-key aspect-square rounded-[7px] border border-slate-200/75 bg-white/90 px-[clamp(1px,0.12vw,2px)] py-[clamp(1px,0.2vw,2px)] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${index === 0 ? ' home-alphabet-key--active' : ''}`}
             title={`Озвучить букву ${ch}`}
             aria-label={`Озвучить букву ${ch}`}
           >
-            <div className="home-alphabet-letter text-[clamp(14px,1.9vw,22px)] leading-none text-black">{ch}</div>
-            <div className="home-alphabet-translit mt-[2px] text-[clamp(8px,0.95vw,12px)] leading-none text-slate-500">{letterTranslit[ch]}</div>
+            <div className="landing-alphabet-letter home-alphabet-letter text-[clamp(10px,1.32vw,17px)] leading-none text-black">{ch}</div>
+            <div className="landing-alphabet-translit home-alphabet-translit mt-[1px] text-[clamp(4px,0.52vw,7px)] leading-none text-slate-500">{letterTranslit[ch]}</div>
           </button>
         ))}
       </div>
+      <style jsx>{`
+        :global(html[data-theme='dark']) .landing-alphabet-shell {
+          border-color: rgba(148, 163, 184, 0.16);
+          background: linear-gradient(180deg, rgba(47, 45, 49, 0.58), rgba(31, 32, 36, 0.7));
+          box-shadow: 0 12px 24px rgba(2, 6, 23, 0.14);
+          backdrop-filter: blur(10px);
+        }
+
+        :global(html[data-theme='dark']) .landing-alphabet-key {
+          border-color: rgba(148, 163, 184, 0.16) !important;
+          background: rgba(58, 56, 62, 0.68) !important;
+          box-shadow: 0 1px 4px rgba(2, 6, 23, 0.14) !important;
+        }
+
+        :global(html[data-theme='dark']) .landing-alphabet-key.home-alphabet-key--active {
+          border-color: rgba(108, 139, 255, 0.33) !important;
+          background: rgba(108, 139, 255, 0.055) !important;
+          box-shadow:
+            0 0 0 1px rgba(108, 139, 255, 0.14),
+            0 3px 8px rgba(108, 139, 255, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+        }
+
+        :global(html[data-theme='dark']) .landing-alphabet-key:hover {
+          border-color: rgba(249, 115, 22, 0.22) !important;
+          background: rgba(64, 62, 70, 0.88) !important;
+        }
+
+        :global(html[data-theme='dark']) .landing-alphabet-letter {
+          color: #f8fafc !important;
+        }
+
+        :global(html[data-theme='dark']) .landing-alphabet-translit {
+          color: rgba(203, 213, 225, 0.72) !important;
+        }
+
+        @media (max-width: 767px) {
+          .landing-alphabet-shell {
+            width: 86%;
+            margin-inline: auto;
+            padding: 1px;
+            border-color: transparent;
+            background: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+          }
+
+          :global(html[data-theme='dark']) .landing-alphabet-shell {
+            background: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+          }
+
+          .landing-alphabet-grid {
+            gap: 0;
+          }
+
+          .landing-alphabet-key {
+            border-radius: 5px;
+            padding: 0;
+          }
+
+          .landing-alphabet-letter {
+            font-size: 72%;
+          }
+
+          .landing-alphabet-translit {
+            font-size: 70%;
+          }
+        }
+      `}</style>
     </div>
   );
 }

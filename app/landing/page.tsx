@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import LandingAlphabet from '@/components/LandingAlphabet';
 
-const interfaceSlots: Array<{
+const lightInterfaceSlots: Array<{
   title: string;
   description: string;
   src: string;
@@ -18,9 +18,37 @@ const interfaceSlots: Array<{
     src: '/landing/deda-new-screen-3.png',
   },
   {
+    title: 'Скрин 2',
+    description: 'Новый экран',
+    src: '/landing/deda-new-screen-1.png',
+  },
+  {
     title: 'Скрин 5',
     description: 'Новый экран',
     src: '/landing/deda-new-screen-5.png',
+  },
+];
+
+const darkInterfaceSlots: Array<{
+  title: string;
+  description: string;
+  src: string;
+  cropFrame?: boolean;
+}> = [
+  {
+    title: 'Скрин 6',
+    description: 'Тёмный экран уроков',
+    src: '/landing/deda-new-screen-6.png',
+  },
+  {
+    title: 'Скрин 2',
+    description: 'Тёмный экран игры',
+    src: '/landing/deda-new-screen-2.png',
+  },
+  {
+    title: 'Скрин 4',
+    description: 'Тёмный экран игры',
+    src: '/landing/deda-new-screen-4.png',
   },
 ];
 
@@ -61,31 +89,34 @@ export default function LandingPage() {
       position: relative;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       gap: 14px;
       padding-left: 18px;
       max-width: 680px;
-      font-size: 16px;
-      line-height: 1.34;
-      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.42;
+      color: var(--text-secondary);
       letter-spacing: -0.01em;
+      text-align: center;
     }
 
     .landing-alphabet-hint::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 4px;
-      bottom: 4px;
-      width: 4px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
       border-radius: 999px;
-      background: linear-gradient(180deg, var(--accent) 0%, #facc15 100%);
-      box-shadow: 0 0 18px rgba(249, 115, 22, 0.18);
+      transform: translateY(-50%);
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.28);
+      animation: landingHintPulse 1.4s ease-in-out infinite;
     }
 
     .landing-alphabet-hint strong {
-      color: var(--accent);
-      font-weight: 700;
+      color: inherit;
+      font-weight: 500;
     }
 
     .landing-list-arrow {
@@ -107,6 +138,17 @@ export default function LandingPage() {
       50% {
         transform: translateX(7px);
         opacity: 1;
+      }
+    }
+
+    @keyframes landingHintPulse {
+      0%, 100% {
+        opacity: 0.75;
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.12);
+      }
+      50% {
+        opacity: 1;
+        box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.02);
       }
     }
 
@@ -137,6 +179,10 @@ export default function LandingPage() {
       -webkit-overflow-scrolling: touch;
     }
 
+    .landing-screens-grid--dark {
+      display: none;
+    }
+
     .landing-screen-item {
       width: fit-content;
       scroll-snap-align: start;
@@ -157,7 +203,7 @@ export default function LandingPage() {
       width: min(84vw, 404px);
       max-width: min(84vw, 404px);
       height: auto;
-      max-height: min(36vh, 296px);
+      max-height: min(32vh, 258px);
       display: block;
       object-fit: cover;
       object-position: top center;
@@ -189,19 +235,71 @@ export default function LandingPage() {
 
     .landing-cta-btn {
       width: fit-content;
-      min-width: 222px;
+      min-width: 154px;
     }
 
     .landing-cta-row {
       display: inline-flex;
       align-items: flex-end;
       flex-wrap: nowrap;
-      gap: 10px;
+      gap: 2px;
     }
 
     .landing-cta-cat {
       flex: 0 0 auto;
-      transform: translateY(22px);
+      transform: translateY(24px);
+    }
+
+    html[data-theme='dark'] .landing-shell {
+      background: var(--app-bg);
+    }
+
+    html[data-theme='dark'] .landing-title {
+      color: rgba(249, 247, 242, 0.97);
+    }
+
+    html[data-theme='dark'] .landing-subtitle,
+    html[data-theme='dark'] .landing-alphabet-hint {
+      color: rgba(224, 216, 206, 0.82);
+    }
+
+    html[data-theme='dark'] .landing-alphabet-hint::before {
+      background: rgba(251, 146, 60, 0.82);
+      box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.18);
+    }
+
+    html[data-theme='dark'] .landing-screen-item {
+      border-color: rgba(148, 163, 184, 0.22);
+      background: rgba(30, 32, 38, 0.34);
+      box-shadow: 0 10px 24px rgba(2, 6, 23, 0.14);
+    }
+
+    html[data-theme='dark'] .landing-screens-grid--light {
+      display: none;
+    }
+
+    html[data-theme='dark'] .landing-screens-grid--dark {
+      display: grid;
+    }
+
+    html[data-theme='dark'] .landing-cta-btn {
+      box-shadow: 0 8px 16px rgba(249, 115, 22, 0.1);
+    }
+
+    html[data-theme='dark'] .landing-screens-grid {
+      filter: saturate(0.96) contrast(1.03);
+    }
+
+    html[data-theme='dark'] .landing-screens-grid + .landing-screens-grid {
+      filter: saturate(0.98) contrast(1.04);
+    }
+
+    html[data-theme='dark'] .landing-showcase-section {
+      margin-top: 12px;
+    }
+
+    html[data-theme='dark'] .landing-showcase-title {
+      color: rgba(238, 232, 224, 0.88);
     }
 
     @media (min-width: 768px) {
@@ -252,6 +350,7 @@ export default function LandingPage() {
       .landing-alphabet-hint {
         max-width: 100%;
         font-size: 15px;
+        color: color-mix(in srgb, var(--text-primary) 72%, white 28%);
       }
 
       .landing-alpha-card {
@@ -283,8 +382,8 @@ export default function LandingPage() {
         justify-content: center;
         padding: 10px 14px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.82);
-        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+        background: transparent;
+        box-shadow: none;
         font-size: 14px;
         line-height: 1.4;
       }
@@ -312,18 +411,31 @@ export default function LandingPage() {
         justify-content: center;
         align-items: flex-end;
         flex-wrap: nowrap;
-        gap: 8px;
+        gap: 3px;
       }
 
       .landing-cta-cat {
-        margin-right: -2px;
-        transform: translateY(22px);
+        margin-right: -6px;
+        transform: translateY(24px);
       }
 
       .landing-screens-grid {
         grid-auto-columns: max-content;
         gap: 8px;
         padding-bottom: 4px;
+        overflow-x: clip;
+        overflow-y: visible;
+      }
+
+      .landing-screen-item {
+        border-color: transparent;
+        box-shadow: none;
+      }
+
+      html[data-theme='dark'] .landing-screen-item {
+        border-color: transparent;
+        background: transparent;
+        box-shadow: none;
       }
 
       .landing-screen-media {
@@ -355,6 +467,10 @@ export default function LandingPage() {
       .landing-method-section {
         display: none;
       }
+
+      .landing-screens-grid {
+        margin-top: 20px;
+      }
     }
 
     @media (max-width: 479px) {
@@ -379,7 +495,7 @@ export default function LandingPage() {
       <section className="mx-auto flex w-full max-w-[1240px] flex-col justify-center px-4 pt-12 sm:px-6 sm:pt-20 lg:px-8 lg:pt-24">
         <div className="landing-hero-grid grid grid-cols-1 md:grid-cols-[minmax(0,1.08fr)_minmax(250px,0.92fr)]">
           <div className="landing-copy max-w-none md:col-start-1 md:row-start-1">
-            <h1 className="landing-title max-w-[620px] text-[clamp(24px,4vw,50px)] font-semibold leading-[1.06] tracking-[-0.02em]">
+            <h1 className="landing-title max-w-[620px] text-[clamp(23px,3.8vw,47px)] font-semibold leading-[1.02] tracking-[-0.02em]">
               Учимся читать
               <br />
               по-грузински, играя
@@ -389,29 +505,32 @@ export default function LandingPage() {
               <br />
               и закрепляй чтение в игре.
             </p>
-            <div className="landing-cta-row mt-6">
+            <div className="landing-cta-row mt-3">
               <Image
                 src="/images/deda-cat.png"
                 alt="Deda cat"
                 width={136}
                 height={136}
                 priority
-                className="landing-cta-cat h-auto w-[126px] shrink-0 object-contain drop-shadow-[0_8px_18px_rgba(15,23,42,0.08)] sm:w-[144px] lg:w-[170px]"
+                className="landing-cta-cat h-auto w-[114px] shrink-0 object-contain drop-shadow-[0_8px_18px_rgba(15,23,42,0.08)] sm:w-[128px] lg:w-[150px]"
               />
               <a
                 href="/lessons"
-                className="landing-cta-btn inline-flex h-[58px] items-center justify-center rounded-2xl border border-[var(--accent)] bg-[var(--accent)] px-9 text-[18px] font-semibold text-white transition-opacity hover:opacity-90"
+                className="landing-cta-btn inline-flex h-[54px] items-center justify-center rounded-2xl border border-[var(--accent)] bg-[var(--accent)] px-[14px] text-[18px] font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Начать читать
               </a>
             </div>
           </div>
 
-          <div className="relative mt-14 w-full max-w-[420px] md:col-start-2 md:row-span-2 md:row-start-1 md:mt-10 md:justify-self-center lg:max-w-[490px]">
-            <div className="flex flex-col items-center gap-3">
+          <div className="relative mt-12 w-full max-w-[458px] md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:-ml-[52px] md:justify-self-start lg:-ml-[64px] lg:max-w-[540px]">
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-[14px] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
+                Грузинский алфавит
+              </div>
               <div className="landing-alphabet-hint self-center">
                 <div>
-                  <strong>Нажми на букву</strong> и послушай, как она звучит
+                  Нажми на букву и послушай звук
                 </div>
               </div>
               <div className="landing-alpha-card min-w-0 self-center">
@@ -422,19 +541,34 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-4 w-full max-w-[1240px] px-4 pb-12 pt-3 sm:mt-6 sm:px-6 sm:pb-16 sm:pt-5 lg:mt-8 lg:px-8 lg:pb-20 lg:pt-6">
+      <section className="landing-showcase-section mx-auto mt-8 w-full max-w-[1240px] px-4 pb-12 pt-0 sm:mt-0 sm:px-6 sm:pb-16 sm:pt-0 lg:mt-2 lg:px-8 lg:pb-20 lg:pt-1">
         <div className="max-w-[760px]">
-          <div className="text-[15px] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
+          <div className="landing-showcase-title text-[20px] font-bold tracking-[-0.015em] text-[var(--text-primary)]">
             Что внутри Deda
           </div>
-          <div className="landing-swipe-hint">Листай влево, чтобы посмотреть экраны</div>
         </div>
 
-        <div className="landing-screens-grid mt-4 sm:mt-5">
-          {interfaceSlots.map((slot, index) => (
+        <div className="landing-screens-grid landing-screens-grid--light mt-10 sm:mt-6">
+          {lightInterfaceSlots.map(slot => (
             <div
               key={slot.src}
-              id={index === 0 ? 'screens-lessons' : index === 2 ? 'screens-game' : undefined}
+              className={`landing-screen-item${slot.cropFrame ? ' landing-screen-item--crop-frame' : ''}`}
+            >
+              <Image
+                src={slot.src}
+                alt={slot.title}
+                width={800}
+                height={1600}
+                className="landing-screen-media"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="landing-screens-grid landing-screens-grid--dark mt-10 sm:mt-6">
+          {darkInterfaceSlots.map(slot => (
+            <div
+              key={slot.src}
               className={`landing-screen-item${slot.cropFrame ? ' landing-screen-item--crop-frame' : ''}`}
             >
               <Image
