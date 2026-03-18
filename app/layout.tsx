@@ -8,6 +8,7 @@ import HeaderLessonTitle from "@/components/HeaderLessonTitle";
 import ThemeSync from "@/components/ThemeSync";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://deda-game.vercel.app"),
   title: "Deda — учимся читать по-грузински через игру",
   description: "Учимся читать по-грузински, играя. Слушай буквы, читай карточки и закрепляй чтение в игре.",
   openGraph: {
@@ -16,11 +17,20 @@ export const metadata: Metadata = {
     url: "https://deda-game.vercel.app/",
     siteName: "Deda",
     type: "website",
+    images: [
+      {
+        url: "/landing/deda-new-screen-7.png",
+        width: 1015,
+        height: 699,
+        alt: "Deda — учимся читать по-грузински",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Deda — учимся читать по-грузински через игру",
     description: "Учимся читать по-грузински, играя. Слушай буквы, читай карточки и закрепляй чтение в игре.",
+    images: ["/landing/deda-new-screen-7.png"],
   },
   icons: {
     icon: "/images/deda-app-icon.png",
