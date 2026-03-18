@@ -9,7 +9,9 @@ type PlayLetterAudioOptions = {
   onError?: () => void;
 };
 
-let sharedAudio: HTMLAudioElement | null = null;
+type InlinePlayableAudio = HTMLAudioElement & { playsInline?: boolean };
+
+let sharedAudio: InlinePlayableAudio | null = null;
 let playbackToken = 0;
 
 function getSharedAudio() {
