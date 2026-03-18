@@ -54,7 +54,22 @@ const darkInterfaceSlots: Array<{
 
 export const metadata = {
   title: 'Deda — учимся читать по-грузински через игру',
-  description: 'Короткий лендинг Deda без прокрутки.',
+  description:
+    'Учимся читать по-грузински, играя. Слушай буквы, читай карточки и закрепляй чтение в игре.',
+  openGraph: {
+    title: 'Deda — учимся читать по-грузински через игру',
+    description:
+      'Учимся читать по-грузински, играя. Слушай буквы, читай карточки и закрепляй чтение в игре.',
+    url: 'https://deda-game.vercel.app/landing',
+    siteName: 'Deda',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Deda — учимся читать по-грузински через игру',
+    description:
+      'Учимся читать по-грузински, играя. Слушай буквы, читай карточки и закрепляй чтение в игре.',
+  },
 };
 
 export default function LandingPage() {
