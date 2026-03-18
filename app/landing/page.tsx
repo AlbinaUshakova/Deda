@@ -53,8 +53,9 @@ const darkInterfaceSlots: Array<{
 ];
 
 export const metadata = {
-  title: 'Deda — учимся читать по-грузински через игру',
-  description: 'Короткий лендинг Deda без прокрутки.',
+  title: 'Deda - учимся читать по-грузински, играя.',
+  description:
+    'Слушай буквы, читай карточки и закрепляй чтение в игре.',
 };
 
 export default function LandingPage() {
