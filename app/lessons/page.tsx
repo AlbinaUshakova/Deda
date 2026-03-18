@@ -372,7 +372,6 @@ export default function HomePage() {
 
   const normalEpisodes = eps.filter(ep => /^ep\d+$/.test(ep.id));
   const specials = eps.filter(ep => !/^ep\d+$/.test(ep.id));
-  const phrasesSpecial = specials.find(ep => ep.id === 'phrases');
   const allLessonsSpecial = specials.find(ep => ep.id === 'all');
   const favoritesSpecial = specials.find(ep => ep.id === 'favorites');
   const allLessonsReady = normalEpisodes.length > 0 && normalEpisodes.every(ep => (progress[ep.id] ?? 0) > 0);
@@ -535,12 +534,12 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3 [@media(max-width:700px)]:grid-cols-2 [@media(max-width:480px)]:grid-cols-1 gap-x-[clamp(10px,1.35vw,20px)] [@media(max-width:700px)]:gap-x-3 gap-y-[clamp(8px,1vw,15px)] [@media(max-width:700px)]:gap-y-4 [@media(max-height:980px)]:gap-y-3 justify-center">
-              <div className="hidden [@media(max-width:700px)]:flex [@media(max-width:700px)]:mx-auto [@media(max-width:700px)]:max-w-[296px] w-full aspect-[2/1] [@media(max-width:560px)]:aspect-[2.1/0.92] items-end justify-center">
+            <div className="grid grid-cols-3 [@media(max-width:700px)]:grid-cols-2 gap-x-[clamp(10px,1.35vw,20px)] [@media(max-width:700px)]:gap-x-3 gap-y-[clamp(8px,1vw,15px)] [@media(max-width:700px)]:gap-y-4 [@media(max-height:980px)]:gap-y-3 justify-center">
+              <div className="hidden w-full aspect-[2/1] [@media(max-width:560px)]:aspect-[2.1/0.92] items-end justify-center">
                 <img
                   src="/images/deda-cat.png"
                   alt="Deda cat"
-                  className="h-[82px] w-[82px] shrink-0 object-contain translate-y-[18px]"
+                  className="h-[72%] w-auto max-w-[92px] shrink-0 object-contain translate-y-[12px]"
                 />
               </div>
               {normalEpisodes.map((ep, i) => {
@@ -555,9 +554,7 @@ export default function HomePage() {
                 return (
                   <div
                     key={ep.id}
-                    className={`relative w-full min-w-0 [@media(max-width:700px)]:mx-auto [@media(max-width:700px)]:max-w-[296px] ${
-                      i === 0 ? '[@media(max-width:700px)]:mt-6' : ''
-                    }`}
+                    className="relative w-full min-w-0 [@media(max-width:700px)]:mx-auto [@media(max-width:700px)]:max-w-[296px]"
                   >
                     <Link href={`/study/${ep.id}`} legacyBehavior>
                       <a
@@ -672,57 +669,78 @@ export default function HomePage() {
                   </div>
                 );
               })}
+              {allLessonsSpecial && (
+                <div className="hidden [@media(max-width:700px)]:block relative w-full min-w-0 [@media(max-width:700px)]:mx-auto [@media(max-width:700px)]:max-w-[296px]">
+                  <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
+                    <a
+                      className={`lesson-card home-lesson-card relative grid w-full aspect-[2/1] [@media(max-width:560px)]:aspect-[2.1/0.92] grid-rows-[auto_1fr_auto] overflow-hidden rounded-2xl border px-[clamp(10px,1.4vw,18px)] [@media(max-width:560px)]:px-[7px] pt-[clamp(6px,0.8vw,10px)] [@media(max-width:560px)]:pt-[4px] pb-[clamp(10px,1.2vw,14px)] [@media(max-width:560px)]:pb-[7px] transition-all duration-200 ease-out shadow-[0_8px_18px_rgba(15,23,42,0.09)] ${
+                        allLessonsReady
+                          ? 'bg-[#E6ECFF] border-[#d4defd] text-[var(--text-secondary)] lesson-card--interactive hover:z-30 hover:border-[#c5d4ff] hover:bg-[#edf2ff] hover:text-[var(--text-primary)]'
+                          : 'bg-white border-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                      }`}
+                      onClick={e => {
+                        if (!allLessonsReady) e.preventDefault();
+                      }}
+                      aria-disabled={!allLessonsReady}
+                      title={!allLessonsReady ? 'Сначала набери минимум 1 очко в каждом уроке' : undefined}
+                    >
+                      {!allLessonsReady && (
+                        <div className="home-lesson-status-icon" aria-hidden="true">
+                          <span className="home-lesson-status home-lesson-status--locked opacity-90">🔒</span>
+                        </div>
+                      )}
+
+                      <div className="row-start-2 mx-auto flex h-full min-h-0 w-full items-center justify-center px-2 [@media(max-width:560px)]:px-1 py-1 text-center">
+                        <span className="text-[clamp(16px,1.7vw,22px)] [@media(max-width:560px)]:text-[14px] font-medium leading-[1.15] tracking-[-0.01em]">
+                          {allLessonsSpecial.title.replace(/^⭐\s*/, '')}
+                        </span>
+                      </div>
+
+                    </a>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Избранное и Все уроки */}
-      <section className="relative z-[170] mt-4 min-[1512px]:mt-11 min-[1700px]:mt-12 [@media(max-height:980px)]:mt-8 flex flex-col items-center gap-2.5 [@media(max-width:720px)]:gap-2 max-w-6xl mx-auto">
-        <div className="flex items-center justify-center gap-2.5 [@media(max-width:720px)]:gap-2 [@media(max-width:480px)]:w-full [@media(max-width:480px)]:max-w-[232px]">
-          {allLessonsSpecial && (
-            <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
-              <a
-                className={`home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:flex-1 [@media(max-width:480px)]:px-1.5 rounded-2xl border flex items-center justify-center gap-1.5 transition-all duration-200 [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)] ${
-                  allLessonsReady
-                    ? 'bg-[#E6ECFF] border-[#d4defd] text-[#3B5BDB] shadow-[0_8px_18px_rgba(15,23,42,0.1)]'
-                    : 'bg-white border-slate-200/80 text-slate-400 cursor-not-allowed opacity-60'
-                }`}
-                onClick={e => {
-                  if (!allLessonsReady) e.preventDefault();
-                }}
-                aria-disabled={!allLessonsReady}
-                title={!allLessonsReady ? 'Сначала набери минимум 1 очко в каждом уроке' : undefined}
-              >
-                <span>{allLessonsSpecial.title.replace(/^⭐\s*/, '')}</span>
-                {!allLessonsReady && <span aria-hidden>🔒</span>}
-              </a>
-            </Link>
-          )}
+      {(allLessonsSpecial || favoritesSpecial) && (
+        <section className="relative z-[170] mt-4 min-[1512px]:mt-11 min-[1700px]:mt-12 [@media(max-height:980px)]:mt-8 flex justify-center max-w-6xl mx-auto">
+          <div className="flex items-center justify-center gap-2.5 [@media(max-width:720px)]:gap-2 [@media(max-width:480px)]:gap-1.5">
+            {allLessonsSpecial && (
+              <Link href={`/study/${allLessonsSpecial.id}`} legacyBehavior>
+                <a
+                  className={`home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:700px)]:hidden rounded-2xl border flex items-center justify-center gap-1.5 transition-all duration-200 [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)] ${
+                    allLessonsReady
+                      ? 'bg-[#E6ECFF] border-[#d4defd] text-[#3B5BDB] shadow-[0_8px_18px_rgba(15,23,42,0.1)]'
+                      : 'bg-white border-slate-200/80 text-slate-400 cursor-not-allowed opacity-60'
+                  }`}
+                  onClick={e => {
+                    if (!allLessonsReady) e.preventDefault();
+                  }}
+                  aria-disabled={!allLessonsReady}
+                  title={!allLessonsReady ? 'Сначала набери минимум 1 очко в каждом уроке' : undefined}
+                >
+                  <span>{allLessonsSpecial.title.replace(/^⭐\s*/, '')}</span>
+                  {!allLessonsReady && <span aria-hidden>🔒</span>}
+                </a>
+              </Link>
+            )}
 
-          {favoritesSpecial && (
-            <Link href={`/study/${favoritesSpecial.id}`} legacyBehavior>
-              <a
-                className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:flex-1 [@media(max-width:480px)]:px-1.5 rounded-2xl border border-slate-200/80 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)] [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)]"
-              >
-                <span aria-hidden>⭐</span>
-                <span>{favoritesSpecial.title.replace(/^⭐\s*/, '')}</span>
-              </a>
-            </Link>
-          )}
-        </div>
-
-        {phrasesSpecial && (
-          <Link href={`/study/${phrasesSpecial.id}`} legacyBehavior>
-            <a
-              className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-0 [@media(max-width:480px)]:w-[min(92vw,296px)] rounded-2xl border border-slate-200/80 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)] [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)]"
-            >
-              <span aria-hidden>💬</span>
-              <span className="phrases-label">{phrasesSpecial.title.replace(/^💬\s*/, '')}</span>
-            </a>
-          </Link>
-        )}
-      </section>
+            {favoritesSpecial && (
+              <Link href={`/study/${favoritesSpecial.id}`} legacyBehavior>
+                <a
+                  className="home-special-btn h-9 min-w-[152px] px-3 text-[12px] [@media(max-width:900px)]:h-8 [@media(max-width:900px)]:min-w-[136px] [@media(max-width:900px)]:px-2.5 [@media(max-width:900px)]:text-[11px] [@media(max-width:720px)]:h-7.5 [@media(max-width:720px)]:min-w-[120px] [@media(max-width:720px)]:px-2 [@media(max-width:720px)]:text-[10px] [@media(max-width:480px)]:min-w-[112px] [@media(max-width:480px)]:px-2 rounded-2xl border border-slate-200/80 bg-transparent text-[var(--text-secondary)] flex items-center justify-center gap-1.5 transition-all duration-200 hover:bg-[var(--button-hover)] hover:text-[var(--text-primary)] shadow-[0_8px_18px_rgba(15,23,42,0.1)] [@media(max-width:700px)]:shadow-[0_5px_12px_rgba(15,23,42,0.07)]"
+                >
+                  <span aria-hidden>⭐</span>
+                  <span>{favoritesSpecial.title.replace(/^⭐\s*/, '')}</span>
+                </a>
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
 
       </div>
     </main>
