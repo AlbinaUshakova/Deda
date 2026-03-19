@@ -152,6 +152,7 @@ export default function HomePage() {
   const lessonsWrapRef = useRef<HTMLDivElement | null>(null);
   const [ttsVoices, setTtsVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [audioError, setAudioError] = useState('');
+  const [audioDebug, setAudioDebug] = useState('');
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
@@ -353,12 +354,17 @@ export default function HomePage() {
   const speakLetter = (letter: string) => {
     if (typeof window === 'undefined') return;
     setAudioError('');
+    setAudioDebug('');
 
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
       fallbackText: geLetterName[letter] ?? letter,
       preferredVoices: ttsVoices,
-      onStart: () => setAudioError(''),
+      onStart: () => {
+        setAudioError('');
+        setAudioDebug('');
+      },
+      onDebug: setAudioDebug,
       onError: () => {
         const hasSpeech = typeof window !== 'undefined' && 'speechSynthesis' in window;
         setAudioError(
@@ -506,6 +512,11 @@ export default function HomePage() {
               {audioError && (
                 <div className="mt-2 text-[11px] text-red-500">
                   {audioError}
+                </div>
+              )}
+              {audioDebug && (
+                <div className="mt-1 text-[10px] text-slate-500">
+                  {audioDebug}
                 </div>
               )}
             </div>

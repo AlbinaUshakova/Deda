@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { playLetterAudio } from '@/lib/playLetterAudio';
 
 const GEORGIAN_ALPHABET = [
@@ -52,10 +53,13 @@ const geLetterAudioMap: Record<string, string> = {
 };
 
 export default function LandingAlphabet() {
+  const [debugMessage, setDebugMessage] = useState('');
+
   const speakLetter = (letter: string) => {
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
       fallbackText: letter,
+      onDebug: setDebugMessage,
     });
   };
 
@@ -76,6 +80,11 @@ export default function LandingAlphabet() {
           </button>
         ))}
       </div>
+      {debugMessage && (
+        <div className="mt-1 px-1 text-center text-[10px] leading-tight text-slate-500">
+          {debugMessage}
+        </div>
+      )}
       <style jsx>{`
         :global(html[data-theme='dark']) .landing-alphabet-shell {
           border-color: rgba(148, 163, 184, 0.16);

@@ -7,6 +7,7 @@ type PlayLetterAudioOptions = {
   onStart?: (mode: 'audio' | 'speech') => void;
   onEnd?: () => void;
   onError?: () => void;
+  onDebug?: (message: string) => void;
 };
 
 type InlinePlayableAudio = HTMLAudioElement & { playsInline?: boolean };
@@ -55,6 +56,7 @@ export async function playLetterAudio({
   onStart,
   onEnd,
   onError,
+  onDebug,
 }: PlayLetterAudioOptions) {
   if (typeof window === 'undefined') return;
 
@@ -68,6 +70,7 @@ export async function playLetterAudio({
 
   const playSpeechFallback = () => {
     if (!('speechSynthesis' in window)) {
+      onDebug?.('speech unavailable');
       onError?.();
       finish();
       return;
@@ -89,22 +92,26 @@ export async function playLetterAudio({
     utterance.onend = finish;
     utterance.onerror = () => {
       if (token !== playbackToken) return;
+      onDebug?.('speech error');
       onError?.();
       finish();
     };
 
     try {
       onStart?.('speech');
+      onDebug?.('fallback: speech');
       synth.resume();
       synth.speak(utterance);
     } catch {
       if (token !== playbackToken) return;
+      onDebug?.('speech start failed');
       onError?.();
       finish();
     }
   };
 
   if (!audioSrc) {
+    onDebug?.('no audio src');
     playSpeechFallback();
     return;
   }
@@ -119,13 +126,21 @@ export async function playLetterAudio({
     audio.onended = finish;
     audio.onerror = () => {
       if (token !== playbackToken) return;
+      onDebug?.('audio file error');
       playSpeechFallback();
     };
 
     onStart?.('audio');
+    onDebug?.('audio start');
     await audio.play();
+    onDebug?.('audio playing');
   } catch {
     if (token !== playbackToken) return;
+    const message =
+      typeof window !== 'undefined' && sharedAudio?.error
+        ? `audio error ${sharedAudio.error.code}`
+        : 'audio play failed';
+    onDebug?.(message);
     playSpeechFallback();
   }
 }
