@@ -113,6 +113,7 @@ export async function playLetterAudio({
     const audio = getSharedAudio();
     audio.pause();
     audio.src = audioSrc;
+    audio.load();
     audio.currentTime = 0;
     audio.volume = 1;
     audio.onended = finish;

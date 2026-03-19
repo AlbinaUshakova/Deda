@@ -530,6 +530,22 @@ export default function LandingPage() {
         width: 286px;
       }
     }
+
+    @media (max-width: 767px) {
+      html[data-standalone='true'] .landing-screens-grid {
+        grid-auto-columns: 296px;
+        scroll-snap-type: none;
+        scroll-padding-inline: 0;
+      }
+
+      html[data-standalone='true'] .landing-screen-item {
+        width: 296px;
+      }
+
+      html[data-standalone='true'] .landing-screen-item--crop-frame {
+        width: 286px;
+      }
+    }
   `;
 
   return (

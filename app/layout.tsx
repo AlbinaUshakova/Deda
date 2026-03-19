@@ -5,6 +5,7 @@ import AuthStatus from "@/components/AuthStatus";
 import BrandToggle from "@/components/BrandToggle";
 import GlobalAlphabetOverlay from "@/components/GlobalAlphabetOverlay";
 import HeaderLessonTitle from "@/components/HeaderLessonTitle";
+import StandaloneModeSync from "@/components/StandaloneModeSync";
 import ThemeSync from "@/components/ThemeSync";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className="min-h-screen min-h-[100dvh] text-[var(--app-text)]">
         <ThemeSync />
+        <StandaloneModeSync />
         <header className="sticky top-0 z-[260] h-[clamp(48px,7.2vh,66px)] w-full border-b border-[var(--header-border)] bg-[var(--header-bg)] text-[var(--header-text)] backdrop-blur-md">
           <div className="mx-auto grid h-full w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-[clamp(8px,1.8vw,16px)] px-[clamp(12px,2.4vw,24px)] sm:px-[clamp(14px,2.8vw,28px)] lg:w-[78vw] xl:w-[73vw] 2xl:w-[66vw] min-[1900px]:w-[60vw] min-[2100px]:w-[58vw] max-w-[1820px]">
             <div className="justify-self-start">
