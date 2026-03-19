@@ -6,26 +6,27 @@ const lightInterfaceSlots: Array<{
   description: string;
   src: string;
   cropFrame?: boolean;
+  mobileContain?: boolean;
 }> = [
   {
     title: 'Скрин 7',
     description: 'Новый экран',
-    src: '/landing/deda-new-screen-7.png',
+    src: '/landing/deda-light-screen-panel.png',
   },
   {
-    title: 'Скрин 3',
-    description: 'Новый экран',
-    src: '/landing/deda-new-screen-3.png',
+    title: 'Светлая карточка',
+    description: 'Светлый экран карточек',
+    src: '/landing/deda-light-card-batumi.png',
   },
   {
-    title: 'Скрин 2',
-    description: 'Новый экран',
-    src: '/landing/deda-new-screen-1.png',
+    title: 'Светлая игра',
+    description: 'Светлый экран игры с вводом слова',
+    src: '/landing/deda-mar19-screen-7.png',
   },
   {
-    title: 'Скрин 5',
-    description: 'Новый экран',
-    src: '/landing/deda-new-screen-5.png',
+    title: 'Светлые фигуры',
+    description: 'Светлый экран игры с фигурами',
+    src: '/landing/deda-mar19-screen-6.png',
   },
 ];
 
@@ -34,26 +35,27 @@ const darkInterfaceSlots: Array<{
   description: string;
   src: string;
   cropFrame?: boolean;
+  mobileContain?: boolean;
 }> = [
   {
-    title: 'Скрин 6',
+    title: 'Тёмные уроки 1',
     description: 'Тёмный экран уроков',
-    src: '/landing/deda-new-screen-6.png',
+    src: '/landing/deda-dark-screen-panel-2.png',
   },
   {
     title: 'Тёмная карточка',
     description: 'Тёмный экран карточек',
-    src: '/landing/c3e5fdc6-8362-42b0-98f5-6e544af89538.png',
+    src: '/landing/deda-mar19-screen-2.png',
   },
   {
     title: 'Скрин 2',
     description: 'Тёмный экран игры',
-    src: '/landing/deda-new-screen-2.png',
+    src: '/landing/deda-mar19-screen-4.png',
   },
   {
     title: 'Скрин 4',
     description: 'Тёмный экран игры',
-    src: '/landing/deda-new-screen-4.png',
+    src: '/landing/deda-mar19-screen-3.png',
   },
 ];
 
@@ -442,13 +444,14 @@ export default function LandingPage() {
       }
 
       .landing-screen-item {
-        border-color: transparent;
+        border-color: rgba(148, 163, 184, 0.22);
+        background: rgba(255, 255, 255, 0.6);
         box-shadow: none;
       }
 
       html[data-theme='dark'] .landing-screen-item {
-        border-color: transparent;
-        background: transparent;
+        border-color: rgba(148, 163, 184, 0.2);
+        background: rgba(31, 34, 40, 0.3);
         box-shadow: none;
       }
 
@@ -471,6 +474,11 @@ export default function LandingPage() {
       .landing-screen-item--crop-frame .landing-screen-media {
         width: 100%;
         height: min(42vh, 360px);
+      }
+
+      .landing-screen-media--contain-mobile {
+        object-fit: contain;
+        object-position: center top;
       }
 
       .landing-swipe-hint {
@@ -577,7 +585,7 @@ export default function LandingPage() {
                 alt={slot.title}
                 width={800}
                 height={1600}
-                className="landing-screen-media"
+                className={`landing-screen-media${slot.mobileContain ? ' landing-screen-media--contain-mobile' : ''}`}
               />
             </div>
           ))}
@@ -594,7 +602,7 @@ export default function LandingPage() {
                 alt={slot.title}
                 width={800}
                 height={1600}
-                className="landing-screen-media"
+                className={`landing-screen-media${slot.mobileContain ? ' landing-screen-media--contain-mobile' : ''}`}
               />
             </div>
           ))}

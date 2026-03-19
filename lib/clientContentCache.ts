@@ -1,11 +1,25 @@
 'use client';
 
 import staticEpisodes from '@/public/content/episodes.json';
+import ep1Json from '@/public/content/ka_ru_ep1.json';
+import ep2Json from '@/public/content/ka_ru_ep2.json';
+import ep3Json from '@/public/content/ka_ru_ep3.json';
+import ep4Json from '@/public/content/ka_ru_ep4.json';
+import ep5Json from '@/public/content/ka_ru_ep5.json';
+import ep6Json from '@/public/content/ka_ru_ep6.json';
+import ep7Json from '@/public/content/ka_ru_ep7.json';
+import ep8Json from '@/public/content/ka_ru_ep8.json';
+import ep9Json from '@/public/content/ka_ru_ep9.json';
 
 export type EpisodesListItem = { id: string; title: string; best?: number };
 export type EpisodesData = {
   episodes: EpisodesListItem[];
   lettersByEpisode: Record<string, string[]>;
+};
+
+type StaticEpisodeWithCards = {
+  id: string;
+  cards?: Array<{ ge_text?: string }>;
 };
 
 export type EpisodeCard = {
@@ -38,6 +52,46 @@ const STATIC_EPISODES_FALLBACK: EpisodesListItem[] = (staticEpisodes as Array<{
   title: ep.title,
 }));
 
+const STATIC_RAW_EPISODES: StaticEpisodeWithCards[] = [
+  ep1Json as StaticEpisodeWithCards,
+  ep2Json as StaticEpisodeWithCards,
+  ep3Json as StaticEpisodeWithCards,
+  ep4Json as StaticEpisodeWithCards,
+  ep5Json as StaticEpisodeWithCards,
+  ep6Json as StaticEpisodeWithCards,
+  ep7Json as StaticEpisodeWithCards,
+  ep8Json as StaticEpisodeWithCards,
+  ep9Json as StaticEpisodeWithCards,
+];
+
+function buildStaticLettersByEpisode(): Record<string, string[]> {
+  const isGeorgianLetter = (ch: string) => /[\u10D0-\u10FF]/.test(ch);
+  const seen = new Set<string>();
+  const result: Record<string, string[]> = {};
+
+  for (const ep of STATIC_RAW_EPISODES) {
+    const local = new Set<string>();
+
+    for (const card of ep.cards ?? []) {
+      const geText = typeof card.ge_text === 'string' ? card.ge_text : '';
+      for (const ch of geText) {
+        if (!isGeorgianLetter(ch)) continue;
+        if (!seen.has(ch)) {
+          local.add(ch);
+        }
+      }
+    }
+
+    const letters = Array.from(local).sort((a, b) => a.localeCompare(b, 'ka'));
+    result[ep.id] = letters;
+    letters.forEach(ch => seen.add(ch));
+  }
+
+  return result;
+}
+
+const STATIC_LETTERS_BY_EPISODE = buildStaticLettersByEpisode();
+
 function readEpisodesFromLocalStorageCache(): EpisodesData {
   if (typeof window === 'undefined') return { episodes: [], lettersByEpisode: {} };
   try {
@@ -64,7 +118,7 @@ function readEpisodesFallbackFromRawContent(): EpisodesData {
   try {
     const raw = window.localStorage.getItem('deda_content_json');
     if (!raw) {
-      return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: {} };
+      return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: STATIC_LETTERS_BY_EPISODE };
     }
     const parsed = JSON.parse(raw) as {
       episodes?: Array<{ id: string; title?: string; cards?: Array<{ type?: string; ge_text?: string }> }>;
@@ -82,7 +136,7 @@ function readEpisodesFallbackFromRawContent(): EpisodesData {
     }
     return { episodes, lettersByEpisode };
   } catch {
-    return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: {} };
+    return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: STATIC_LETTERS_BY_EPISODE };
   }
 }
 
