@@ -10,38 +10,19 @@ type PlayLetterAudioOptions = {
   onDebug?: (message: string) => void;
 };
 
-type InlinePlayableAudio = HTMLAudioElement & { playsInline?: boolean };
-
-let sharedAudio: InlinePlayableAudio | null = null;
+let activeAudio: HTMLAudioElement | null = null;
 let playbackToken = 0;
-
-function getSharedAudio() {
-  if (!sharedAudio) {
-    if (typeof document !== 'undefined') {
-      sharedAudio = document.createElement('audio') as InlinePlayableAudio;
-      sharedAudio.style.display = 'none';
-      sharedAudio.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(sharedAudio);
-    } else {
-      sharedAudio = new Audio();
-    }
-    sharedAudio.preload = 'auto';
-    sharedAudio.playsInline = true;
-    sharedAudio.setAttribute('playsinline', '');
-    sharedAudio.setAttribute('webkit-playsinline', '');
-  }
-  return sharedAudio;
-}
 
 export function stopLetterAudioPlayback() {
   playbackToken += 1;
   if (typeof window === 'undefined') return;
 
-  if (sharedAudio) {
-    sharedAudio.pause();
-    sharedAudio.currentTime = 0;
-    sharedAudio.onended = null;
-    sharedAudio.onerror = null;
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+    activeAudio.onended = null;
+    activeAudio.onerror = null;
+    activeAudio = null;
   }
 
   if ('speechSynthesis' in window) {
@@ -117,16 +98,20 @@ export async function playLetterAudio({
   }
 
   try {
-    const audio = getSharedAudio();
-    audio.pause();
-    audio.src = audioSrc;
-    audio.load();
+    const audio = new Audio(audioSrc);
+    activeAudio = audio;
+    audio.preload = 'auto';
     audio.currentTime = 0;
     audio.volume = 1;
-    audio.onended = finish;
+    audio.onended = () => {
+      if (token !== playbackToken) return;
+      activeAudio = null;
+      finish();
+    };
     audio.onerror = () => {
       if (token !== playbackToken) return;
       onDebug?.('audio file error');
+      activeAudio = null;
       playSpeechFallback();
     };
 
@@ -136,11 +121,7 @@ export async function playLetterAudio({
     onDebug?.('audio playing');
   } catch {
     if (token !== playbackToken) return;
-    const message =
-      typeof window !== 'undefined' && sharedAudio?.error
-        ? `audio error ${sharedAudio.error.code}`
-        : 'audio play failed';
-    onDebug?.(message);
+    onDebug?.('audio play failed');
     playSpeechFallback();
   }
 }

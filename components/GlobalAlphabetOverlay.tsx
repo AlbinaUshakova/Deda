@@ -85,6 +85,7 @@ export default function GlobalAlphabetOverlay() {
   const [letterStatusByChar, setLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
   const [playingLetter, setPlayingLetter] = useState<string | null>(null);
   const [audioDebug, setAudioDebug] = useState('');
+  const [debugAudioSrc, setDebugAudioSrc] = useState('');
   const playingTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -257,6 +258,7 @@ export default function GlobalAlphabetOverlay() {
 
   const speakLetter = (letter: string) => {
     if (typeof window === 'undefined') return;
+    setDebugAudioSrc(geLetterAudioMap[letter] ?? '');
     setPlayingLetter(letter);
     if (playingTimerRef.current !== null) {
       window.clearTimeout(playingTimerRef.current);
@@ -333,6 +335,11 @@ export default function GlobalAlphabetOverlay() {
         {audioDebug && (
           <div className="mt-2 text-[10px] leading-tight text-slate-500">
             {audioDebug}
+          </div>
+        )}
+        {debugAudioSrc && (
+          <div className="mt-2">
+            <audio controls playsInline preload="metadata" src={debugAudioSrc} className="h-8 w-full" />
           </div>
         )}
       </div>

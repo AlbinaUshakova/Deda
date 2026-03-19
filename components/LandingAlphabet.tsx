@@ -54,8 +54,10 @@ const geLetterAudioMap: Record<string, string> = {
 
 export default function LandingAlphabet() {
   const [debugMessage, setDebugMessage] = useState('');
+  const [debugAudioSrc, setDebugAudioSrc] = useState('');
 
   const speakLetter = (letter: string) => {
+    setDebugAudioSrc(geLetterAudioMap[letter] ?? '');
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
       fallbackText: letter,
@@ -83,6 +85,11 @@ export default function LandingAlphabet() {
       {debugMessage && (
         <div className="mt-1 px-1 text-center text-[10px] leading-tight text-slate-500">
           {debugMessage}
+        </div>
+      )}
+      {debugAudioSrc && (
+        <div className="mt-2 px-1">
+          <audio controls playsInline preload="metadata" src={debugAudioSrc} className="w-full h-8" />
         </div>
       )}
       <style jsx>{`

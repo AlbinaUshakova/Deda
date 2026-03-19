@@ -153,6 +153,7 @@ export default function HomePage() {
   const [ttsVoices, setTtsVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [audioError, setAudioError] = useState('');
   const [audioDebug, setAudioDebug] = useState('');
+  const [debugAudioSrc, setDebugAudioSrc] = useState('');
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
@@ -355,6 +356,7 @@ export default function HomePage() {
     if (typeof window === 'undefined') return;
     setAudioError('');
     setAudioDebug('');
+    setDebugAudioSrc(geLetterAudioMap[letter] ?? '');
 
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
@@ -517,6 +519,11 @@ export default function HomePage() {
               {audioDebug && (
                 <div className="mt-1 text-[10px] text-slate-500">
                   {audioDebug}
+                </div>
+              )}
+              {debugAudioSrc && (
+                <div className="mt-2">
+                  <audio controls playsInline preload="metadata" src={debugAudioSrc} className="h-8 w-full" />
                 </div>
               )}
             </div>
