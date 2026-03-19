@@ -445,6 +445,7 @@ export default function LandingPage() {
 
       .landing-screen-item {
         width: min(78vw, 296px);
+        aspect-ratio: 296 / 214;
         border-color: rgba(148, 163, 184, 0.22);
         background: rgba(255, 255, 255, 0.6);
         box-shadow: none;
@@ -459,8 +460,10 @@ export default function LandingPage() {
       .landing-screen-media {
         width: 100%;
         max-width: none;
-        height: auto;
+        height: 100%;
         max-height: none;
+        object-fit: cover;
+        object-position: top center;
       }
 
       .landing-screen-item {
@@ -469,12 +472,13 @@ export default function LandingPage() {
 
       .landing-screen-item--crop-frame {
         width: min(78vw, 286px);
+        aspect-ratio: 286 / 360;
         max-height: none;
       }
 
       .landing-screen-item--crop-frame .landing-screen-media {
         width: 100%;
-        height: auto;
+        height: 100%;
       }
 
       .landing-screen-media--contain-mobile {
