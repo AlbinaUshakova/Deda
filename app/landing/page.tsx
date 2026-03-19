@@ -444,6 +444,7 @@ export default function LandingPage() {
       }
 
       .landing-screen-item {
+        width: min(78vw, 296px);
         border-color: rgba(148, 163, 184, 0.22);
         background: rgba(255, 255, 255, 0.6);
         box-shadow: none;
@@ -456,8 +457,8 @@ export default function LandingPage() {
       }
 
       .landing-screen-media {
-        width: min(78vw, 296px);
-        max-width: min(78vw, 296px);
+        width: 100%;
+        max-width: none;
         height: auto;
         max-height: min(29vh, 214px);
       }
