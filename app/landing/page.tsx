@@ -613,11 +613,13 @@ export default function LandingPage() {
               key={slot.src}
               className={`landing-screen-item${slot.cropFrame ? ' landing-screen-item--crop-frame' : ''}`}
             >
-              <Image
+              <img
                 src={slot.src}
                 alt={slot.title}
                 width={800}
                 height={1600}
+                loading="lazy"
+                decoding="async"
                 className={`landing-screen-media${slot.mobileContain ? ' landing-screen-media--contain-mobile' : ''}`}
               />
             </div>
@@ -630,11 +632,13 @@ export default function LandingPage() {
               key={slot.src}
               className={`landing-screen-item${slot.cropFrame ? ' landing-screen-item--crop-frame' : ''}`}
             >
-              <Image
+              <img
                 src={slot.src}
                 alt={slot.title}
                 width={800}
                 height={1600}
+                loading="lazy"
+                decoding="async"
                 className={`landing-screen-media${slot.mobileContain ? ' landing-screen-media--contain-mobile' : ''}`}
               />
             </div>
