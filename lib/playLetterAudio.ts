@@ -7,22 +7,32 @@ type PlayLetterAudioOptions = {
   onStart?: (mode: 'audio' | 'speech') => void;
   onEnd?: () => void;
   onError?: () => void;
-  onDebug?: (message: string) => void;
 };
 
-let activeAudio: HTMLAudioElement | null = null;
+type InlinePlayableAudio = HTMLAudioElement & { playsInline?: boolean };
+
+let sharedAudio: InlinePlayableAudio | null = null;
 let playbackToken = 0;
+
+function getSharedAudio() {
+  if (!sharedAudio) {
+    sharedAudio = new Audio();
+    sharedAudio.preload = 'auto';
+    sharedAudio.playsInline = true;
+    sharedAudio.setAttribute('playsinline', '');
+  }
+  return sharedAudio;
+}
 
 export function stopLetterAudioPlayback() {
   playbackToken += 1;
   if (typeof window === 'undefined') return;
 
-  if (activeAudio) {
-    activeAudio.pause();
-    activeAudio.currentTime = 0;
-    activeAudio.onended = null;
-    activeAudio.onerror = null;
-    activeAudio = null;
+  if (sharedAudio) {
+    sharedAudio.pause();
+    sharedAudio.currentTime = 0;
+    sharedAudio.onended = null;
+    sharedAudio.onerror = null;
   }
 
   if ('speechSynthesis' in window) {
@@ -37,7 +47,6 @@ export async function playLetterAudio({
   onStart,
   onEnd,
   onError,
-  onDebug,
 }: PlayLetterAudioOptions) {
   if (typeof window === 'undefined') return;
 
@@ -51,7 +60,6 @@ export async function playLetterAudio({
 
   const playSpeechFallback = () => {
     if (!('speechSynthesis' in window)) {
-      onDebug?.('speech unavailable');
       onError?.();
       finish();
       return;
@@ -73,55 +81,43 @@ export async function playLetterAudio({
     utterance.onend = finish;
     utterance.onerror = () => {
       if (token !== playbackToken) return;
-      onDebug?.('speech error');
       onError?.();
       finish();
     };
 
     try {
       onStart?.('speech');
-      onDebug?.('fallback: speech');
       synth.resume();
       synth.speak(utterance);
     } catch {
       if (token !== playbackToken) return;
-      onDebug?.('speech start failed');
       onError?.();
       finish();
     }
   };
 
   if (!audioSrc) {
-    onDebug?.('no audio src');
     playSpeechFallback();
     return;
   }
 
   try {
-    const audio = new Audio(audioSrc);
-    activeAudio = audio;
+    const audio = getSharedAudio();
+    audio.pause();
+    audio.src = audioSrc;
     audio.preload = 'auto';
     audio.currentTime = 0;
     audio.volume = 1;
-    audio.onended = () => {
-      if (token !== playbackToken) return;
-      activeAudio = null;
-      finish();
-    };
+    audio.onended = finish;
     audio.onerror = () => {
       if (token !== playbackToken) return;
-      onDebug?.('audio file error');
-      activeAudio = null;
       playSpeechFallback();
     };
 
     onStart?.('audio');
-    onDebug?.('audio start');
     await audio.play();
-    onDebug?.('audio playing');
   } catch {
     if (token !== playbackToken) return;
-    onDebug?.('audio play failed');
     playSpeechFallback();
   }
 }

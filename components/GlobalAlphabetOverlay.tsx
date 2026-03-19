@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { getSettings } from '@/lib/settings';
 import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
@@ -84,8 +84,6 @@ export default function GlobalAlphabetOverlay() {
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
   const [letterStatusByChar, setLetterStatusByChar] = useState<Record<string, AlphabetLetterStatus>>({});
   const [playingLetter, setPlayingLetter] = useState<string | null>(null);
-  const [audioDebug, setAudioDebug] = useState('');
-  const [debugAudioSrc, setDebugAudioSrc] = useState('');
   const playingTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -258,7 +256,6 @@ export default function GlobalAlphabetOverlay() {
 
   const speakLetter = (letter: string) => {
     if (typeof window === 'undefined') return;
-    setDebugAudioSrc(geLetterAudioMap[letter] ?? '');
     setPlayingLetter(letter);
     if (playingTimerRef.current !== null) {
       window.clearTimeout(playingTimerRef.current);
@@ -275,18 +272,11 @@ export default function GlobalAlphabetOverlay() {
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
       fallbackText: letter,
-      onDebug: setAudioDebug,
       onEnd: finish,
       onError: finish,
     });
 
     playingTimerRef.current = window.setTimeout(finish, 1600);
-  };
-
-  const handleLetterPointerDown = (event: PointerEvent<HTMLButtonElement>, letter: string) => {
-    if (event.pointerType === 'mouse') return;
-    event.preventDefault();
-    speakLetter(letter);
   };
 
   if (pathname === '/') return null;
@@ -326,7 +316,6 @@ export default function GlobalAlphabetOverlay() {
             <button
               key={ch}
               type="button"
-              onPointerDown={event => handleLetterPointerDown(event, ch)}
               onClick={() => speakLetter(ch)}
               className={`home-alphabet-key rounded-lg border border-slate-200/75 bg-white/90 py-[1px] text-center shadow-sm hover:bg-slate-50 transition-all ${
                 playingLetter === ch ? 'home-alphabet-key--active' : ''
@@ -339,16 +328,6 @@ export default function GlobalAlphabetOverlay() {
             </button>
           ))}
         </div>
-        {audioDebug && (
-          <div className="mt-2 text-[10px] leading-tight text-slate-500">
-            {audioDebug}
-          </div>
-        )}
-        {debugAudioSrc && (
-          <div className="mt-2">
-            <audio controls playsInline preload="metadata" src={debugAudioSrc} className="h-8 w-full" />
-          </div>
-        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getSettings } from '@/lib/settings';
 import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
 import { playLetterAudio } from '@/lib/playLetterAudio';
@@ -152,8 +152,6 @@ export default function HomePage() {
   const lessonsWrapRef = useRef<HTMLDivElement | null>(null);
   const [ttsVoices, setTtsVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [audioError, setAudioError] = useState('');
-  const [audioDebug, setAudioDebug] = useState('');
-  const [debugAudioSrc, setDebugAudioSrc] = useState('');
   const [progress, setProgress] = useState<ProgressMap>({});
   const [lettersByEp, setLettersByEp] = useState<Record<string, string[]>>({});
   const [lessonTargetScore, setLessonTargetScore] = useState(25);
@@ -355,18 +353,12 @@ export default function HomePage() {
   const speakLetter = (letter: string) => {
     if (typeof window === 'undefined') return;
     setAudioError('');
-    setAudioDebug('');
-    setDebugAudioSrc(geLetterAudioMap[letter] ?? '');
 
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
       fallbackText: geLetterName[letter] ?? letter,
       preferredVoices: ttsVoices,
-      onStart: () => {
-        setAudioError('');
-        setAudioDebug('');
-      },
-      onDebug: setAudioDebug,
+      onStart: () => setAudioError(''),
       onError: () => {
         const hasSpeech = typeof window !== 'undefined' && 'speechSynthesis' in window;
         setAudioError(
@@ -376,12 +368,6 @@ export default function HomePage() {
         );
       },
     });
-  };
-
-  const handleLetterPointerDown = (event: PointerEvent<HTMLButtonElement>, letter: string) => {
-    if (event.pointerType === 'mouse') return;
-    event.preventDefault();
-    speakLetter(letter);
   };
 
   const normalEpisodes = eps.filter(ep => /^ep\d+$/.test(ep.id));
@@ -505,7 +491,6 @@ export default function HomePage() {
                   <button
                     key={ch}
                     type="button"
-                    onPointerDown={event => handleLetterPointerDown(event, ch)}
                     onClick={() => speakLetter(ch)}
                     className="home-alphabet-key cursor-pointer rounded-lg border border-slate-200 bg-white py-[1px] text-center shadow-sm hover:bg-slate-50 transition-colors"
                     title={`Озвучить букву ${ch}`}
@@ -521,16 +506,6 @@ export default function HomePage() {
               {audioError && (
                 <div className="mt-2 text-[11px] text-red-500">
                   {audioError}
-                </div>
-              )}
-              {audioDebug && (
-                <div className="mt-1 text-[10px] text-slate-500">
-                  {audioDebug}
-                </div>
-              )}
-              {debugAudioSrc && (
-                <div className="mt-2">
-                  <audio controls playsInline preload="metadata" src={debugAudioSrc} className="h-8 w-full" />
                 </div>
               )}
             </div>

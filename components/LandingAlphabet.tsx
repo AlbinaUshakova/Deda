@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, type PointerEvent } from 'react';
 import { playLetterAudio } from '@/lib/playLetterAudio';
 
 const GEORGIAN_ALPHABET = [
@@ -53,22 +52,11 @@ const geLetterAudioMap: Record<string, string> = {
 };
 
 export default function LandingAlphabet() {
-  const [debugMessage, setDebugMessage] = useState('');
-  const [debugAudioSrc, setDebugAudioSrc] = useState('');
-
   const speakLetter = (letter: string) => {
-    setDebugAudioSrc(geLetterAudioMap[letter] ?? '');
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
       fallbackText: letter,
-      onDebug: setDebugMessage,
     });
-  };
-
-  const handleLetterPointerDown = (event: PointerEvent<HTMLButtonElement>, letter: string) => {
-    if (event.pointerType === 'mouse') return;
-    event.preventDefault();
-    speakLetter(letter);
   };
 
   return (
@@ -78,7 +66,6 @@ export default function LandingAlphabet() {
           <button
             key={ch}
             type="button"
-            onPointerDown={event => handleLetterPointerDown(event, ch)}
             onClick={() => speakLetter(ch)}
             className={`landing-alphabet-key home-alphabet-key aspect-square rounded-[7px] border border-slate-200/75 bg-white/90 px-[clamp(1px,0.12vw,2px)] py-[clamp(1px,0.2vw,2px)] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${index === 0 ? ' home-alphabet-key--active' : ''}`}
             title={`Озвучить букву ${ch}`}
@@ -89,16 +76,6 @@ export default function LandingAlphabet() {
           </button>
         ))}
       </div>
-      {debugMessage && (
-        <div className="mt-1 px-1 text-center text-[10px] leading-tight text-slate-500">
-          {debugMessage}
-        </div>
-      )}
-      {debugAudioSrc && (
-        <div className="mt-2 px-1">
-          <audio controls playsInline preload="metadata" src={debugAudioSrc} className="w-full h-8" />
-        </div>
-      )}
       <style jsx>{`
         :global(html[data-theme='dark']) .landing-alphabet-shell {
           border-color: rgba(148, 163, 184, 0.16);
