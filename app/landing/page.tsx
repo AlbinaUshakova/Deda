@@ -460,7 +460,7 @@ export default function LandingPage() {
         width: 100%;
         max-width: none;
         height: auto;
-        max-height: min(29vh, 214px);
+        max-height: none;
       }
 
       .landing-screen-item {
@@ -469,12 +469,12 @@ export default function LandingPage() {
 
       .landing-screen-item--crop-frame {
         width: min(78vw, 286px);
-        max-height: min(42vh, 360px);
+        max-height: none;
       }
 
       .landing-screen-item--crop-frame .landing-screen-media {
         width: 100%;
-        height: min(42vh, 360px);
+        height: auto;
       }
 
       .landing-screen-media--contain-mobile {
