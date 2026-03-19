@@ -514,6 +514,22 @@ export default function LandingPage() {
         max-width: 100%;
       }
     }
+
+    @media (display-mode: standalone) and (max-width: 767px) {
+      .landing-screens-grid {
+        grid-auto-columns: 296px;
+        scroll-snap-type: none;
+        scroll-padding-inline: 0;
+      }
+
+      .landing-screen-item {
+        width: 296px;
+      }
+
+      .landing-screen-item--crop-frame {
+        width: 286px;
+      }
+    }
   `;
 
   return (

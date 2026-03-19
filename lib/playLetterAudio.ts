@@ -16,10 +16,18 @@ let playbackToken = 0;
 
 function getSharedAudio() {
   if (!sharedAudio) {
-    sharedAudio = new Audio();
+    if (typeof document !== 'undefined') {
+      sharedAudio = document.createElement('audio') as InlinePlayableAudio;
+      sharedAudio.style.display = 'none';
+      sharedAudio.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(sharedAudio);
+    } else {
+      sharedAudio = new Audio();
+    }
     sharedAudio.preload = 'auto';
     sharedAudio.playsInline = true;
     sharedAudio.setAttribute('playsinline', '');
+    sharedAudio.setAttribute('webkit-playsinline', '');
   }
   return sharedAudio;
 }
