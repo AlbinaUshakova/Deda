@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type PointerEvent } from 'react';
 import { playLetterAudio } from '@/lib/playLetterAudio';
 
 const GEORGIAN_ALPHABET = [
@@ -65,6 +65,12 @@ export default function LandingAlphabet() {
     });
   };
 
+  const handleLetterPointerDown = (event: PointerEvent<HTMLButtonElement>, letter: string) => {
+    if (event.pointerType === 'mouse') return;
+    event.preventDefault();
+    speakLetter(letter);
+  };
+
   return (
     <div className="landing-alphabet-shell rounded-[clamp(10px,1.3vw,15px)] border border-white/70 bg-white/55 p-[clamp(2px,0.45vw,5px)] shadow-[0_10px_24px_rgba(15,23,42,0.06)] backdrop-blur-[6px]">
       <div className="landing-alphabet-grid grid grid-cols-7 gap-[clamp(1px,0.34vw,4px)]">
@@ -72,6 +78,7 @@ export default function LandingAlphabet() {
           <button
             key={ch}
             type="button"
+            onPointerDown={event => handleLetterPointerDown(event, ch)}
             onClick={() => speakLetter(ch)}
             className={`landing-alphabet-key home-alphabet-key aspect-square rounded-[7px] border border-slate-200/75 bg-white/90 px-[clamp(1px,0.12vw,2px)] py-[clamp(1px,0.2vw,2px)] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${index === 0 ? ' home-alphabet-key--active' : ''}`}
             title={`Озвучить букву ${ch}`}

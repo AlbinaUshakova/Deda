@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { usePathname } from 'next/navigation';
 import { getSettings } from '@/lib/settings';
 import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
@@ -283,6 +283,12 @@ export default function GlobalAlphabetOverlay() {
     playingTimerRef.current = window.setTimeout(finish, 1600);
   };
 
+  const handleLetterPointerDown = (event: PointerEvent<HTMLButtonElement>, letter: string) => {
+    if (event.pointerType === 'mouse') return;
+    event.preventDefault();
+    speakLetter(letter);
+  };
+
   if (pathname === '/') return null;
 
   return (
@@ -320,6 +326,7 @@ export default function GlobalAlphabetOverlay() {
             <button
               key={ch}
               type="button"
+              onPointerDown={event => handleLetterPointerDown(event, ch)}
               onClick={() => speakLetter(ch)}
               className={`home-alphabet-key rounded-lg border border-slate-200/75 bg-white/90 py-[1px] text-center shadow-sm hover:bg-slate-50 transition-all ${
                 playingLetter === ch ? 'home-alphabet-key--active' : ''

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { getSettings } from '@/lib/settings';
 import { getEpisodesDataCached, getEpisodesDataSync } from '@/lib/clientContentCache';
 import { playLetterAudio } from '@/lib/playLetterAudio';
@@ -378,6 +378,12 @@ export default function HomePage() {
     });
   };
 
+  const handleLetterPointerDown = (event: PointerEvent<HTMLButtonElement>, letter: string) => {
+    if (event.pointerType === 'mouse') return;
+    event.preventDefault();
+    speakLetter(letter);
+  };
+
   const normalEpisodes = eps.filter(ep => /^ep\d+$/.test(ep.id));
   const specials = eps.filter(ep => !/^ep\d+$/.test(ep.id));
   const allLessonsSpecial = specials.find(ep => ep.id === 'all');
@@ -499,6 +505,7 @@ export default function HomePage() {
                   <button
                     key={ch}
                     type="button"
+                    onPointerDown={event => handleLetterPointerDown(event, ch)}
                     onClick={() => speakLetter(ch)}
                     className="home-alphabet-key cursor-pointer rounded-lg border border-slate-200 bg-white py-[1px] text-center shadow-sm hover:bg-slate-50 transition-colors"
                     title={`Озвучить букву ${ch}`}
