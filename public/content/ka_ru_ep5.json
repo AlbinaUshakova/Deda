@@ -2,47 +2,12 @@
   "id": "ep5",
   "title": "Урок 5",
   "letters": [
-    "ა",
-    "ი",
-    "ე",
-    "ს",
-    "ო",
-    "რ",
-    "ლ",
-    "ნ",
-    "კ",
-    "მ",
-    "დ",
-    "თ",
-    "გ",
     "ტ",
-    "ბ",
-    "ვ",
-    "ხ",
-    "პ",
     "ზ",
-    "ჩ",
     "ც",
-    "ჯ",
-    "ფ",
-    "შ",
-    "ჰ",
-    "ღ",
-    "ყ",
-    "ქ",
-    "ც",
-    "ჭ",
-    "ძ",
-    "წ",
-    "ჟ"
+    "ნ"
   ],
   "cards": [
-    {
-      "type": "word",
-      "ge_text": "დათო",
-      "reading": "dato",
-      "ru_meaning": "Дато"
-    },
     {
       "type": "word",
       "ge_text": "ხორცი",
@@ -51,15 +16,15 @@
     },
     {
       "type": "word",
-      "ge_text": "ცხრა",
-      "reading": "tskhra",
-      "ru_meaning": "9"
-    },
-    {
-      "type": "word",
       "ge_text": "თევზი",
       "reading": "tevzi",
       "ru_meaning": "рыба"
+    },
+    {
+      "type": "word",
+      "ge_text": "ზეთი",
+      "reading": "zeti",
+      "ru_meaning": "масло"
     },
     {
       "type": "word",
@@ -75,105 +40,50 @@
     },
     {
       "type": "word",
-      "ge_text": "ზეთი",
-      "reading": "zeti",
-      "ru_meaning": "масло"
-    },
-    {
-      "type": "word",
       "ge_text": "ხატი",
       "reading": "khati",
       "ru_meaning": "икона"
     },
     {
       "type": "word",
-      "ge_text": "ბათუმი",
-      "reading": "batumi",
-      "ru_meaning": "Батуми"
+      "ge_text": "ნანა",
+      "ru_meaning": "Нана"
     },
     {
       "type": "word",
-      "ge_text": "გოგო ეზოშია",
-      "reading": "gogo ezoshia",
-      "ru_meaning": "девочка во дворе"
+      "ge_text": "მინდა",
+      "ru_meaning": "хочу"
     },
     {
       "type": "word",
-      "ge_text": "თევზი მაგიდაზეა",
-      "reading": "tevzi magidazea",
-      "ru_meaning": "рыба на столе"
+      "ge_text": "არ მინდა",
+      "ru_meaning": "не хочу"
     },
     {
       "type": "word",
-      "ge_text": "გზა შორია",
-      "reading": "gza shoria",
-      "ru_meaning": "дорога далёкая"
+      "ge_text": "ცხრა",
+      "reading": "tskhra",
+      "ru_meaning": "девять"
     },
     {
       "type": "word",
-      "ge_text": "დათო ბათუმშია",
-      "reading": "dato batumshia",
-      "ru_meaning": "Дато в Батуми"
+      "ge_text": "ეს არის ხორცი",
+      "ru_meaning": "это мясо"
     },
     {
       "type": "word",
-      "ge_text": "გოგო სკამზეა",
-      "reading": "gogo sk’amzea",
-      "ru_meaning": "девочка на стуле"
-    },
-    {
-      "type": "word",
-      "ge_text": "გზა კარგია",
-      "reading": "gza kargia",
-      "ru_meaning": "дорога хорошая"
-    },
-    {
-      "type": "word",
-      "ge_text": "თევზი კარგია",
-      "reading": "tevzi kargia",
-      "ru_meaning": "рыба хорошая"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეზო დიდია",
-      "reading": "ezo didia",
-      "ru_meaning": "двор большой"
-    },
-    {
-      "type": "word",
-      "ge_text": "დედა ეზოშია",
-      "reading": "deda ezoshia",
-      "ru_meaning": "мама во дворе"
-    },
-    {
-      "type": "word",
-      "ge_text": "დედა ოთახშია",
-      "reading": "deda otakhshia",
-      "ru_meaning": "мама в комнате"
-    },
-    {
-      "type": "word",
-      "ge_text": "აი ცხრა ქათამი",
-      "reading": "ai tskhra katami",
-      "ru_meaning": "вот 9 куриц"
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს თევზია",
-      "reading": "es tevzia",
+      "ge_text": "ეს არის თევზი",
       "ru_meaning": "это рыба"
     },
     {
       "type": "word",
-      "ge_text": "ეს გზაა",
-      "reading": "es gzaa",
-      "ru_meaning": "это дорога"
+      "ge_text": "ეს არ არის ხორცი",
+      "ru_meaning": "это не мясо"
     },
     {
       "type": "word",
-      "ge_text": "ეს არის ეზო",
-      "reading": "es aris ezo",
-      "ru_meaning": "это двор"
+      "ge_text": "ხორცი და თევზი",
+      "ru_meaning": "мясо и рыба"
     },
     {
       "type": "word",
@@ -183,9 +93,107 @@
     },
     {
       "type": "word",
-      "ge_text": "ერთი ორი სამი ოთხი ხუთი ექვსი შვიდი რვა ცხრა ათი",
-      "reading": "erti ori sami otkhi khuti ekvsi shvidi rva tskhra ati",
-      "ru_meaning": "1 2 3 4 5 6 7 8 9 10"
+      "ge_text": "არ მინდა თევზი",
+      "ru_meaning": "я не хочу рыбу"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ცხრა ქათამი",
+      "reading": "ai tskhra katami",
+      "ru_meaning": "вот девять кур"
+    },
+    {
+      "type": "word",
+      "ge_text": "ცხრა გოგო",
+      "ru_meaning": "девять девочек"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ცხრა სკამი და ორი მაგიდა",
+      "ru_meaning": "у меня есть девять стульев и два стола"
+    },
+    {
+      "type": "word",
+      "ge_text": "ნანას ეზო",
+      "ru_meaning": "двор Наны"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეზოშია",
+      "ru_meaning": "во дворе"
+    },
+    {
+      "type": "word",
+      "ge_text": "გოგო ეზოშია",
+      "reading": "gogo ezoshia",
+      "ru_meaning": "девочка во дворе"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა ეზოშია",
+      "reading": "deda ezoshia",
+      "ru_meaning": "мама во дворе"
+    },
+    {
+      "type": "word",
+      "ge_text": "გზა შორია",
+      "ru_meaning": "дорога далёкая"
+    },
+    {
+      "type": "word",
+      "ge_text": "არ არის ზეთი",
+      "ru_meaning": "масла нет"
+    },
+    {
+      "type": "word",
+      "ge_text": "დედის ხატი",
+      "ru_meaning": "мамина икона"
+    },
+    {
+      "type": "word",
+      "ge_text": "ნანა ბათუმშია",
+      "ru_meaning": "Нана в Батуми"
+    },
+    {
+      "type": "word",
+      "ge_text": "მაგიდაზეა",
+      "ru_meaning": "на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "დიდი თევზი მაგიდაზეა",
+      "ru_meaning": "большая рыба на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "ზეთი მაგიდაზეა",
+      "ru_meaning": "масло на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "სკამზეა",
+      "ru_meaning": "на стуле"
+    },
+    {
+      "type": "word",
+      "ge_text": "გოგო სკამზეა",
+      "reading": "gogo sk’amzea",
+      "ru_meaning": "девочка на стуле"
+    },
+    {
+      "type": "word",
+      "ge_text": "ხატი ოთახშია",
+      "ru_meaning": "икона в комнате"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეზო დიდია",
+      "ru_meaning": "двор большой"
+    },
+    {
+      "type": "word",
+      "ge_text": "ნანა ეზოშია",
+      "ru_meaning": "Нана во дворе"
     }
   ]
 }

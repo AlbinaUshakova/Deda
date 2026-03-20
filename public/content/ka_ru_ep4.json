@@ -2,43 +2,16 @@
   "id": "ep4",
   "title": "Урок 4",
   "letters": [
-    "ა",
-    "ი",
-    "ე",
-    "ს",
-    "ო",
-    "რ",
-    "ლ",
-    "ნ",
     "კ",
-    "მ",
-    "დ",
-    "თ",
-    "გ",
-    "ტ",
-    "ბ",
-    "ვ",
-    "ხ",
-    "პ",
-    "ზ",
     "ჩ",
-    "ც",
-    "ჯ",
-    "ფ",
-    "შ",
-    "ჰ",
-    "ღ",
-    "ყ",
-    "ქ",
-    "ც",
-    "ჭ"
+    "ქ"
   ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "დათო",
-      "reading": "dato",
-      "ru_meaning": "Дато"
+      "ge_text": "კი",
+      "reading": "k’i",
+      "ru_meaning": "да"
     },
     {
       "type": "word",
@@ -48,15 +21,9 @@
     },
     {
       "type": "word",
-      "ge_text": "კი",
-      "reading": "k’i",
-      "ru_meaning": "да"
-    },
-    {
-      "type": "word",
       "ge_text": "კარგი",
       "reading": "k’argi",
-      "ru_meaning": "хороший/хорошая"
+      "ru_meaning": "хороший"
     },
     {
       "type": "word",
@@ -66,15 +33,25 @@
     },
     {
       "type": "word",
-      "ge_text": "კიევი",
-      "reading": "k’ievi",
-      "ru_meaning": "Киев"
+      "ge_text": "ჩაი",
+      "ru_meaning": "чай"
     },
     {
       "type": "word",
-      "ge_text": "მოსკოვი",
-      "reading": "mosk’ovi",
-      "ru_meaning": "Москва"
+      "ge_text": "მაქვს",
+      "ru_meaning": "у меня есть"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს",
+      "reading": "me makvs",
+      "ru_meaning": "у меня есть"
+    },
+    {
+      "type": "word",
+      "ge_text": "შაქარი",
+      "reading": "shakari",
+      "ru_meaning": "сахар"
     },
     {
       "type": "word",
@@ -90,75 +67,45 @@
     },
     {
       "type": "word",
-      "ge_text": "შაქარი",
-      "reading": "shakari",
-      "ru_meaning": "сахар"
+      "ge_text": "ქალი",
+      "ru_meaning": "женщина"
     },
     {
       "type": "word",
-      "ge_text": "აი სამი სკამი",
-      "reading": "ai sami sk’ami",
-      "ru_meaning": "вот 3 стула"
+      "ge_text": "კიევი",
+      "reading": "k’ievi",
+      "ru_meaning": "Киев"
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს",
-      "reading": "me makvs",
-      "ru_meaning": "у меня есть"
+      "ge_text": "მოსკოვი",
+      "reading": "mosk’ovi",
+      "ru_meaning": "Москва"
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს მაგიდა",
-      "reading": "me makvs magida",
-      "ru_meaning": "у меня есть стол"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს შაქარი",
-      "reading": "me makvs shakari",
-      "ru_meaning": "у меня есть сахар"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს სკამი",
-      "reading": "me makvs sk’ami",
-      "ru_meaning": "у меня есть стул"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს ექვსი კაბა",
-      "reading": "me makvs ekvsi k’aba",
-      "ru_meaning": "у меня есть 6 платьев"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს კარგი კაბა",
-      "reading": "me makvs k’argi k’aba",
-      "ru_meaning": "у меня есть хорошее платье"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მქვია",
-      "reading": "me mkvia",
+      "ge_text": "მქვია",
       "ru_meaning": "меня зовут"
     },
     {
       "type": "word",
-      "ge_text": "მე მქვია დათო",
-      "reading": "me mkvia dato",
-      "ru_meaning": "меня зовут Дато"
+      "ge_text": "გქვია",
+      "ru_meaning": "тебя зовут"
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს ჩაი",
-      "reading": "me makvs chai",
-      "ru_meaning": "у меня есть чай"
+      "ge_text": "კარგი კაბა",
+      "ru_meaning": "хорошее платье"
     },
     {
       "type": "word",
-      "ge_text": "რა გქვია?",
-      "reading": "ra gkvia?",
-      "ru_meaning": "как тебя зовут"
+      "ge_text": "კარგი სკამი",
+      "ru_meaning": "хороший стул"
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ქალია",
+      "ru_meaning": "это женщина"
     },
     {
       "type": "word",
@@ -174,9 +121,88 @@
     },
     {
       "type": "word",
-      "ge_text": "კა ქა კი ქი კე ქე კუ ქუ კო ქო",
-      "reading": "k’a ka k’i ki k’e ke k’u ku k’o ko",
-      "ru_meaning": "ка ки кэ ку ко"
+      "ge_text": "მე მაქვს ჩაი",
+      "reading": "me makvs chai",
+      "ru_meaning": "у меня есть чай"
+    },
+    {
+      "type": "word",
+      "ge_text": "კი, მაქვს ჩაი",
+      "ru_meaning": "да, у меня есть чай"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს შაქარი",
+      "reading": "me makvs shakari",
+      "ru_meaning": "у меня есть сахар"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ქათამი",
+      "ru_meaning": "у меня есть курица"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი სამი სკამი",
+      "reading": "ai sami sk’ami",
+      "ru_meaning": "вот три стула"
+    },
+    {
+      "type": "word",
+      "ge_text": "აი ექვსი ქათამი",
+      "reading": "ai ekvsi katami",
+      "ru_meaning": "вот шесть кур"
+    },
+    {
+      "type": "word",
+      "ge_text": "კი, მაქვს კაბა",
+      "ru_meaning": "да, у меня есть платье"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს ექვსი კაბა",
+      "reading": "me makvs ekvsi k’aba",
+      "ru_meaning": "у меня есть шесть платьев"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს კარგი კაბა",
+      "reading": "me makvs k’argi k’aba",
+      "ru_meaning": "у меня есть хорошее платье"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მაქვს მაგიდა",
+      "reading": "me makvs magida",
+      "ru_meaning": "у меня есть стол"
+    },
+    {
+      "type": "word",
+      "ge_text": "კიევი და მოსკოვი",
+      "ru_meaning": "Киев и Москва"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია",
+      "reading": "me mkvia",
+      "ru_meaning": "меня зовут"
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მქვია დათო",
+      "reading": "me mkvia dato",
+      "ru_meaning": "меня зовут Дато"
+    },
+    {
+      "type": "word",
+      "ge_text": "კი, მე დათო ვარ",
+      "ru_meaning": "да, я Дато"
+    },
+    {
+      "type": "word",
+      "ge_text": "რა გქვია?",
+      "reading": "ra gkvia?",
+      "ru_meaning": "как тебя зовут?"
     }
   ]
 }

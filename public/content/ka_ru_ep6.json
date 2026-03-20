@@ -1,11 +1,27 @@
 {
   "id": "ep6",
   "title": "Урок 6",
+  "letters": [
+    "ლ",
+    "ღ"
+  ],
   "cards": [
     {
       "type": "word",
+      "ge_text": "საქართველო",
+      "ru_meaning": "Грузия",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "ქართველი",
-      "ru_meaning": "грузин",
+      "ru_meaning": "грузин / грузинка",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ქართული",
+      "ru_meaning": "грузинский",
       "audio_url": ""
     },
     {
@@ -16,44 +32,8 @@
     },
     {
       "type": "word",
-      "ge_text": "დილა",
-      "ru_meaning": "утро",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "სკოლა",
       "ru_meaning": "школа",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "საქართველო",
-      "ru_meaning": "Грузия",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ქართული",
-      "ru_meaning": "грузинский язык",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "დღე",
-      "ru_meaning": "день",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ღამე",
-      "ru_meaning": "ночь",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "საღამო",
-      "ru_meaning": "вечер",
       "audio_url": ""
     },
     {
@@ -64,50 +44,92 @@
     },
     {
       "type": "word",
+      "ge_text": "დილა",
+      "ru_meaning": "утро",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "დღე",
+      "ru_meaning": "день",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "საღამო",
+      "ru_meaning": "вечер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ღამე",
+      "ru_meaning": "ночь",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "სახლები",
       "ru_meaning": "дома",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ხეები",
-      "ru_meaning": "деревья",
+      "ge_text": "ქართული სკოლა",
+      "ru_meaning": "грузинская школа",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მაგიდები",
-      "ru_meaning": "столы",
+      "ge_text": "ქართული სახლი",
+      "ru_meaning": "грузинский дом",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მამა მაღაზიაშია",
-      "ru_meaning": "папа в магазине",
+      "ge_text": "საქართველოში",
+      "ru_meaning": "в Грузии",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "საღამო მშვიდობისა",
-      "ru_meaning": "добрый вечер",
+      "ge_text": "სახლში",
+      "ru_meaning": "дома",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დილა მშვიდობისა",
-      "ru_meaning": "доброе утро",
+      "ge_text": "მაღაზიაში",
+      "ru_meaning": "в магазине",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ღამე მშვიდობისა",
-      "ru_meaning": "доброй ночи",
+      "ge_text": "ლამაზია",
+      "ru_meaning": "красивая",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "დედა სახლშია",
-      "ru_meaning": "мама дома",
+      "ge_text": "მაღალია",
+      "ru_meaning": "высокий",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს სახლია",
+      "ru_meaning": "это дом",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს სკოლაა",
+      "ru_meaning": "это школа",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს მაღაზიაა",
+      "ru_meaning": "это магазин",
       "audio_url": ""
     },
     {
@@ -118,8 +140,26 @@
     },
     {
       "type": "word",
-      "ge_text": "ეს კარგი დღეა",
-      "ru_meaning": "это хороший день",
+      "ge_text": "მაღაზია დიდია",
+      "ru_meaning": "магазин большой",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "სახლები ლამაზია",
+      "ru_meaning": "дома красивые",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მამა მაღაზიაშია",
+      "ru_meaning": "папа в магазине",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "დედა სახლშია",
+      "ru_meaning": "мама дома",
       "audio_url": ""
     },
     {
@@ -138,6 +178,42 @@
       "type": "word",
       "ge_text": "მე სახლში ვარ",
       "ru_meaning": "я дома",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "დღე კარგია",
+      "ru_meaning": "день хороший",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "დილა მშვიდობისა",
+      "ru_meaning": "доброе утро",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "საღამო მშვიდობისა",
+      "ru_meaning": "добрый вечер",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ღამე მშვიდობისა",
+      "ru_meaning": "спокойной ночи",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "საქართველო ლამაზია",
+      "ru_meaning": "Грузия красивая",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ქართული ლამაზია",
+      "ru_meaning": "грузинский язык красивый",
       "audio_url": ""
     }
   ]
