@@ -141,23 +141,23 @@
     },
     {
       "type": "word",
-      "ge_text": "არ არის ზეთი",
-      "ru_meaning": "масла нет"
+      "ge_text": "მანქანა",
+      "ru_meaning": "машина"
     },
     {
       "type": "word",
-      "ge_text": "დედის ხატი",
-      "ru_meaning": "мамина икона"
-    },
-    {
-      "type": "word",
-      "ge_text": "ნანა ბათუმშია",
-      "ru_meaning": "Нана в Батуми"
+      "ge_text": "ბანანი",
+      "ru_meaning": "банан"
     },
     {
       "type": "word",
       "ge_text": "მაგიდაზეა",
       "ru_meaning": "на столе"
+    },
+    {
+      "type": "word",
+      "ge_text": "ანანასი მაგიდაზეა",
+      "ru_meaning": "ананас на столе"
     },
     {
       "type": "word",

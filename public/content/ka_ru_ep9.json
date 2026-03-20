@@ -1,23 +1,28 @@
 {
   "id": "ep9",
   "title": "Урок 9",
+  "letters": [
+    "წ",
+    "ჰ",
+    "ჭ"
+  ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "ტელეფონი",
-      "ru_meaning": "телефон",
+      "ge_text": "მე მჭირდება ტელეფონი",
+      "ru_meaning": "мне нужен телефон",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "კატა",
-      "ru_meaning": "кошка",
+      "ge_text": "ჭკვიანი კატა",
+      "ru_meaning": "умная кошка",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "სასტუმრო",
-      "ru_meaning": "отель",
+      "ge_text": "ჰო, ეს სასტუმროა",
+      "ru_meaning": "да, это отель",
       "audio_url": ""
     },
     {
@@ -70,14 +75,26 @@
     },
     {
       "type": "word",
+      "ge_text": "მჭირდება",
+      "ru_meaning": "мне нужен",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "ტელეფონი მჭირდება",
       "ru_meaning": "мне нужен телефон",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მინდა",
-      "ru_meaning": "я хочу",
+      "ge_text": "ეს ჰალვაა",
+      "ru_meaning": "это халва",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰო, მინდა",
+      "ru_meaning": "да, хочу",
       "audio_url": ""
     },
     {
@@ -112,8 +129,44 @@
     },
     {
       "type": "word",
-      "ge_text": "მე ვარ სასტუმროში",
-      "ru_meaning": "я в отеле",
+      "ge_text": "მე მინდა მწვადი",
+      "ru_meaning": "я хочу шашлык",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა ჰალვა",
+      "ru_meaning": "я хочу халву",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰო, ტელეფონი მჭირდება",
+      "ru_meaning": "да, мне нужен телефон",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მინდა ხაჭო",
+      "ru_meaning": "я хочу творог",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰო, მინდა წყალი",
+      "ru_meaning": "да, хочу воду",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს წყალია",
+      "ru_meaning": "это вода",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰო, სასტუმროში ვარ",
+      "ru_meaning": "да, я в отеле",
       "audio_url": ""
     },
     {
@@ -124,8 +177,32 @@
     },
     {
       "type": "word",
-      "ge_text": "მე მიყვარს კატები",
-      "ru_meaning": "я люблю кошек",
+      "ge_text": "მწვადი კარგია",
+      "ru_meaning": "шашлык хороший",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჭკვიანი კატები",
+      "ru_meaning": "умные кошки",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მე მიყვარს ჭკვიანი კატები",
+      "ru_meaning": "я люблю умных кошек",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ხაჭაპური კარგია",
+      "ru_meaning": "хачапури хороший",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰამბურგერი ძვირია",
+      "ru_meaning": "гамбургер дорогой",
       "audio_url": ""
     },
     {
@@ -136,8 +213,8 @@
     },
     {
       "type": "word",
-      "ge_text": "სად არის სასტუმრო?",
-      "ru_meaning": "где отель?",
+      "ge_text": "ჰო, ეს სასტუმროა?",
+      "ru_meaning": "да, это отель?",
       "audio_url": ""
     }
   ]

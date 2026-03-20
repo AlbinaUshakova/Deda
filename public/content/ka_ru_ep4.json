@@ -39,7 +39,7 @@
     {
       "type": "word",
       "ge_text": "მაქვს",
-      "ru_meaning": "у меня есть"
+      "ru_meaning": "у меня есть (вещи)"
     },
     {
       "type": "word",
@@ -67,8 +67,8 @@
     },
     {
       "type": "word",
-      "ge_text": "ქალი",
-      "ru_meaning": "женщина"
+      "ge_text": "ქუდი",
+      "ru_meaning": "шапка"
     },
     {
       "type": "word",
@@ -104,8 +104,8 @@
     },
     {
       "type": "word",
-      "ge_text": "ეს ქალია",
-      "ru_meaning": "это женщина"
+      "ge_text": "ეს ქუდია",
+      "ru_meaning": "это шапка"
     },
     {
       "type": "word",

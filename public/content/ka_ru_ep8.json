@@ -1,47 +1,58 @@
 {
   "id": "ep8",
   "title": "Урок 8",
+  "letters": [
+    "ფ",
+    "პ",
+    "ჟ"
+  ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "მანქანა",
-      "ru_meaning": "машина",
+      "ge_text": "ფანქარი",
+      "ru_meaning": "карандаш",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მარი",
-      "ru_meaning": "Мари",
+      "ge_text": "პალტო",
+      "ru_meaning": "пальто",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მარის მანქანა",
-      "ru_meaning": "машина Мари",
+      "ge_text": "ჟაკეტი",
+      "ru_meaning": "куртка",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს მანქანა",
-      "ru_meaning": "у меня есть машина",
+      "ge_text": "მე მაქვს ფანქარი",
+      "ru_meaning": "у меня есть карандаш",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მენეჯერი",
-      "ru_meaning": "менеджер",
+      "ge_text": "პომიდორი",
+      "ru_meaning": "помидор",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მარი მენეჯერია",
-      "ru_meaning": "Мари менеджер",
+      "ge_text": "ჟაკეტი ძვირია",
+      "ru_meaning": "куртка дорогая",
       "audio_url": ""
     },
     {
       "type": "word",
       "ge_text": "კაფე",
       "ru_meaning": "кафе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "კაფეშია",
+      "ru_meaning": "в кафе",
       "audio_url": ""
     },
     {
@@ -94,14 +105,8 @@
     },
     {
       "type": "word",
-      "ge_text": "ძვირი",
-      "ru_meaning": "дорогой",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "ეს პური ძვირია",
-      "ru_meaning": "этот хлеб дорогой",
+      "ru_meaning": "хлеб дорогой",
       "audio_url": ""
     },
     {
@@ -118,20 +123,14 @@
     },
     {
       "type": "word",
-      "ge_text": "ღვინო",
-      "ru_meaning": "вино",
+      "ge_text": "ფაფა",
+      "ru_meaning": "каша",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ეს ღვინოა",
-      "ru_meaning": "это вино",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "მე მაქვს ღვინო",
-      "ru_meaning": "у меня есть вино",
+      "ge_text": "ეს ფაფაა",
+      "ru_meaning": "это каша",
       "audio_url": ""
     },
     {
@@ -148,14 +147,14 @@
     },
     {
       "type": "word",
-      "ge_text": "სად",
-      "ru_meaning": "где",
+      "ge_text": "ფული",
+      "ru_meaning": "деньги",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ფული",
-      "ru_meaning": "деньги",
+      "ge_text": "მე მაქვს ფული",
+      "ru_meaning": "у меня есть деньги",
       "audio_url": ""
     },
     {
@@ -166,38 +165,38 @@
     },
     {
       "type": "word",
-      "ge_text": "სად არის მარი?",
-      "ru_meaning": "где Мари?",
+      "ge_text": "სად არის პური?",
+      "ru_meaning": "где хлеб?",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ბანანი",
-      "ru_meaning": "банан",
+      "ge_text": "პომიდორები",
+      "ru_meaning": "помидоры",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ბანანები",
-      "ru_meaning": "бананы",
+      "ge_text": "პომიდორი მაგიდაზეა",
+      "ru_meaning": "помидор на столе",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ანანასი",
-      "ru_meaning": "ананас",
+      "ge_text": "ფორთოხალი",
+      "ru_meaning": "апельсин",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ანანასები",
-      "ru_meaning": "ананасы",
+      "ge_text": "ფორთოხლები",
+      "ru_meaning": "апельсины",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "მაგიდაზე ანანასები და ბანანებია",
-      "ru_meaning": "на столе ананасы и бананы",
+      "ge_text": "მაგიდაზე პომიდორები და ფორთოხლებია",
+      "ru_meaning": "на столе помидоры и апельсины",
       "audio_url": ""
     },
     {
@@ -214,8 +213,8 @@
     },
     {
       "type": "word",
-      "ge_text": "მე მაქვს ღვინო და ყველი",
-      "ru_meaning": "у меня есть вино и сыр",
+      "ge_text": "მე მაქვს პური და ყველი",
+      "ru_meaning": "у меня есть хлеб и сыр",
       "audio_url": ""
     }
   ]

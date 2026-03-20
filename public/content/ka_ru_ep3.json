@@ -133,7 +133,7 @@
     {
       "type": "word",
       "ge_text": "ვარ",
-      "ru_meaning": "есть"
+      "ru_meaning": "есть (я)"
     },
     {
       "type": "word",
@@ -174,13 +174,13 @@
     {
       "type": "word",
       "ge_text": "ის გოგოა",
-      "ru_meaning": "она девочка"
+      "ru_meaning": "это девочка"
     },
     {
       "type": "word",
       "ge_text": "ის არის მამა",
       "reading": "is aris mama",
-      "ru_meaning": "он папа"
+      "ru_meaning": "это папа"
     },
     {
       "type": "word",

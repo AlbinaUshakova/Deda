@@ -1,23 +1,28 @@
 {
   "id": "ep7",
   "title": "Урок 7",
+  "letters": [
+    "ყ",
+    "ჯ",
+    "ძ"
+  ],
   "cards": [
     {
       "type": "word",
-      "ge_text": "ჩაი",
-      "ru_meaning": "чай",
+      "ge_text": "ჯემი",
+      "ru_meaning": "джем",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ჩემი",
-      "ru_meaning": "мой",
+      "ge_text": "ძველი",
+      "ru_meaning": "старый",
       "audio_url": ""
     },
     {
       "type": "word",
-      "ge_text": "ჩურჩხელა",
-      "ru_meaning": "чурчхела",
+      "ge_text": "ყუთი",
+      "ru_meaning": "коробка",
       "audio_url": ""
     },
     {
@@ -35,13 +40,13 @@
     {
       "type": "word",
       "ge_text": "გამარჯობა",
-      "ru_meaning": "здравствуйте",
+      "ru_meaning": "здравствуйте / добрый день",
       "audio_url": ""
     },
     {
       "type": "word",
       "ge_text": "გაუმარჯოს",
-      "ru_meaning": "за здоровье!",
+      "ru_meaning": "за здоровье",
       "audio_url": ""
     },
     {
@@ -64,14 +69,56 @@
     },
     {
       "type": "word",
+      "ge_text": "ეს ყავა ძვირია",
+      "ru_meaning": "кофе дорогой",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "ჩემი ყავა",
       "ru_meaning": "мой кофе",
       "audio_url": ""
     },
     {
       "type": "word",
+      "ge_text": "ძველი ჯემი",
+      "ru_meaning": "старый джем",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი ყველი",
+      "ru_meaning": "мой сыр",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი რძე",
+      "ru_meaning": "моё молоко",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ჯემია",
+      "ru_meaning": "это джем",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჩემი ძმა",
+      "ru_meaning": "мой брат",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "ჩემი ძმა კარგია",
       "ru_meaning": "мой брат хороший",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მყავს",
+      "ru_meaning": "у меня есть (люди / животные)",
       "audio_url": ""
     },
     {
@@ -84,6 +131,12 @@
       "type": "word",
       "ge_text": "მე მყავს ძმა",
       "ru_meaning": "у меня есть брат",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მიყვარს",
+      "ru_meaning": "люблю",
       "audio_url": ""
     },
     {
@@ -106,8 +159,32 @@
     },
     {
       "type": "word",
+      "ge_text": "ეს რძეა",
+      "ru_meaning": "это молоко",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ყავაა",
+      "ru_meaning": "это кофе",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ჩემი ძმაა",
+      "ru_meaning": "это мой брат",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ყველია",
+      "ru_meaning": "это сыр",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მე მიყვარს ჩემი ძმა",
-      "ru_meaning": "я люблю своего брата",
+      "ru_meaning": "я люблю брата",
       "audio_url": ""
     },
     {
@@ -130,14 +207,15 @@
     },
     {
       "type": "word",
-      "ge_text": "ეს ჩემი დედაა",
-      "ru_meaning": "это моя мама",
+      "ge_text": "ეს ყუთია",
+      "ru_meaning": "это коробка",
       "audio_url": ""
     },
     {
       "type": "word",
       "ge_text": "ყა ყე ყი ყო ყუ",
-      "ru_meaning": "кьа кье кьи кьо кьу",
+      "ge_text": "ეს ძველი ყუთია",
+      "ru_meaning": "это старая коробка",
       "audio_url": ""
     }
   ]
