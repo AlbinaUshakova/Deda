@@ -19,6 +19,7 @@ export type EpisodesData = {
 
 type StaticEpisodeWithCards = {
   id: string;
+  letters?: string[];
   cards?: Array<{ ge_text?: string }>;
 };
 
@@ -36,7 +37,7 @@ export type EpisodeData = {
   cards: EpisodeCard[];
 } | null;
 
-const EPISODES_DATA_CACHE_KEY = 'deda:episodes-data-cache:v1';
+const EPISODES_DATA_CACHE_KEY = 'deda:episodes-data-cache:v2';
 
 let episodesDataCache: EpisodesData | null = null;
 let episodesDataPromise: Promise<EpisodesData> | null = null;
@@ -70,6 +71,12 @@ function buildStaticLettersByEpisode(): Record<string, string[]> {
   const result: Record<string, string[]> = {};
 
   for (const ep of STATIC_RAW_EPISODES) {
+    if (Array.isArray(ep.letters) && ep.letters.length > 0) {
+      result[ep.id] = ep.letters;
+      ep.letters.forEach(ch => seen.add(ch));
+      continue;
+    }
+
     const local = new Set<string>();
 
     for (const card of ep.cards ?? []) {
@@ -121,7 +128,12 @@ function readEpisodesFallbackFromRawContent(): EpisodesData {
       return { episodes: STATIC_EPISODES_FALLBACK, lettersByEpisode: STATIC_LETTERS_BY_EPISODE };
     }
     const parsed = JSON.parse(raw) as {
-      episodes?: Array<{ id: string; title?: string; cards?: Array<{ type?: string; ge_text?: string }> }>;
+      episodes?: Array<{
+        id: string;
+        title?: string;
+        letters?: string[];
+        cards?: Array<{ type?: string; ge_text?: string }>;
+      }>;
     };
     const episodes = (parsed.episodes ?? []).map(ep => ({
       id: ep.id,
@@ -129,9 +141,11 @@ function readEpisodesFallbackFromRawContent(): EpisodesData {
     }));
     const lettersByEpisode: Record<string, string[]> = {};
     for (const ep of parsed.episodes ?? []) {
-      const letters = (ep.cards ?? [])
-        .filter(c => c.type === 'letter' && typeof c.ge_text === 'string' && c.ge_text.length > 0)
-        .map(c => c.ge_text as string);
+      const letters = Array.isArray(ep.letters) && ep.letters.length > 0
+        ? ep.letters
+        : (ep.cards ?? [])
+            .filter(c => c.type === 'letter' && typeof c.ge_text === 'string' && c.ge_text.length > 0)
+            .map(c => c.ge_text as string);
       if (letters.length > 0) lettersByEpisode[ep.id] = letters;
     }
     return { episodes, lettersByEpisode };

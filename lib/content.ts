@@ -19,10 +19,12 @@ export type Episode = {
   id: string;
   title: string;
   cards: Card[];
+  letters?: string[];
 };
 type RawEpisode = {
   id: string;
   title: string;
+  letters?: string[];
   cards: Array<{ type: 'word' | 'phrase'; ge_text: string; ru_meaning: string; audio_url?: string }>;
 };
 
@@ -285,6 +287,7 @@ function loadSingleEp(id: string): Episode | null {
   return normalizeEpisode({
     id: raw.id,
     title: raw.title,
+    letters: raw.letters,
     cards: raw.cards.map(c => ({
       type: c.type,
       ge_text: c.ge_text,
@@ -330,6 +333,12 @@ export async function loadNewLettersPerEpisode(): Promise<Record<string, string[
     const ep = loadSingleEp(id);
     if (!ep) {
       result[id] = [];
+      continue;
+    }
+
+    if (Array.isArray(ep.letters) && ep.letters.length > 0) {
+      result[id] = ep.letters;
+      ep.letters.forEach(ch => seen.add(ch));
       continue;
     }
 

@@ -42,8 +42,27 @@ const NUMBER_WORDS_RU: Record<string, number> = {
 const FAVORITES_KEY = 'deda_fav_ge';
 const OLD_FAVORITES_KEY = 'deda_favorite_words';
 
+function normalizeGeorgianCase(str: string) {
+  return Array.from(str)
+    .map(ch => {
+      const code = ch.codePointAt(0);
+      if (code !== undefined && code >= 0x1C90 && code <= 0x1CBF) {
+        return String.fromCodePoint(code - 0xBC0);
+      }
+      return ch;
+    })
+    .join('');
+}
+
+function stripParentheticalText(str: string) {
+  return str.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+}
+
 function normalizeRu(str: string) {
-  return str.trim().toLowerCase().replace(/ё/g, 'е');
+  return normalizeGeorgianCase(stripParentheticalText(str))
+    .trim()
+    .toLowerCase()
+    .replace(/ё/g, 'е');
 }
 
 /**
@@ -249,6 +268,24 @@ function normalizeSentenceForCompare(str: string): string {
     .replace(/\s+/g, ' ');
 }
 
+function buildAcceptedAnswerVariants(correctAnswer: string): string[] {
+  const rawParts = normalizeRu(correctAnswer)
+    .split('/')
+    .map(part => part.trim())
+    .filter(Boolean);
+
+  if (!rawParts.length) return [correctAnswer];
+
+  const variants = new Set<string>();
+  rawParts.forEach(part => variants.add(part));
+
+  if (rawParts.length > 1) {
+    variants.add(rawParts.join(' '));
+  }
+
+  return Array.from(variants);
+}
+
 function tokenizeAnswerCells(str: string): string[] {
   return Array.from(normalizeRu(str).replace(/[^\p{L}\p{N}]+/gu, ''));
 }
@@ -296,34 +333,39 @@ function evaluateLetterCells(
 // сравнение ответов: сначала числовые формы, потом "только буквы/цифры"
 function isSameAnswer(userInput: string, correctAnswer: string): boolean {
   const nu = normalizeRu(userInput);
-  const nc = normalizeRu(correctAnswer);
 
   if (!nu) return false;
 
-  // 1) числа: "два" == "2", "двадцать пять" == "25"
-  const userNum =
-    parseNumberWordToDigits(nu) ?? (/^\d+$/.test(nu) ? nu : null);
-  const correctNum =
-    parseNumberWordToDigits(nc) ?? (/^\d+$/.test(nc) ? nc : null);
+  const acceptedVariants = buildAcceptedAnswerVariants(correctAnswer);
 
-  if (userNum && correctNum) {
-    return userNum === correctNum;
-  }
+  return acceptedVariants.some(variant => {
+    const nc = normalizeRu(variant);
 
-  // 2) сравниваем только буквы/цифры, игнорируя запятые, точки, пробелы и т.п.
-  const cleanUser = normalizeForCompare(userInput);
-  const cleanCorrect = normalizeForCompare(correctAnswer);
-  if (cleanUser === cleanCorrect) return true;
+    // 1) числа: "два" == "2", "двадцать пять" == "25"
+    const userNum =
+      parseNumberWordToDigits(nu) ?? (/^\d+$/.test(nu) ? nu : null);
+    const correctNum =
+      parseNumberWordToDigits(nc) ?? (/^\d+$/.test(nc) ? nc : null);
 
-  // 2.1) сравниваем как фразы с сохранением слов, но без пунктуации/переносов
-  const sentenceUser = normalizeSentenceForCompare(userInput);
-  const sentenceCorrect = normalizeSentenceForCompare(correctAnswer);
-  if (sentenceUser === sentenceCorrect) return true;
+    if (userNum && correctNum && userNum === correctNum) {
+      return true;
+    }
 
-  // 3) сравнение c числами внутри фраз: "2 стула" == "два стула"
-  const numericUser = normalizeForCompare(normalizeNumbersInText(userInput));
-  const numericCorrect = normalizeForCompare(normalizeNumbersInText(correctAnswer));
-  return numericUser === numericCorrect;
+    // 2) сравниваем только буквы/цифры, игнорируя запятые, точки, пробелы и т.п.
+    const cleanUser = normalizeForCompare(userInput);
+    const cleanCorrect = normalizeForCompare(variant);
+    if (cleanUser === cleanCorrect) return true;
+
+    // 2.1) сравниваем как фразы с сохранением слов, но без пунктуации/переносов
+    const sentenceUser = normalizeSentenceForCompare(userInput);
+    const sentenceCorrect = normalizeSentenceForCompare(variant);
+    if (sentenceUser === sentenceCorrect) return true;
+
+    // 3) сравнение c числами внутри фраз: "2 стула" == "два стула"
+    const numericUser = normalizeForCompare(normalizeNumbersInText(userInput));
+    const numericCorrect = normalizeForCompare(normalizeNumbersInText(variant));
+    return numericUser === numericCorrect;
+  });
 }
 
 /**
