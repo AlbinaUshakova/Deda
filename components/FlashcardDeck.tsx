@@ -73,6 +73,22 @@ function splitDialogLines(text: string): string[] {
     .filter(Boolean);
 }
 
+function getMobileTextSizeClass(text: string, kind: 'ge' | 'ru') {
+  const length = Array.from(String(text || '').trim()).length;
+
+  if (kind === 'ge') {
+    if (length >= 28) return 'max-[640px]:text-[clamp(16px,5.4vw,24px)]';
+    if (length >= 20) return 'max-[640px]:text-[clamp(18px,5.9vw,28px)]';
+    if (length >= 14) return 'max-[640px]:text-[clamp(20px,6.6vw,31px)]';
+    return 'max-[640px]:text-[clamp(22px,7.4vw,34px)]';
+  }
+
+  if (length >= 34) return 'max-[640px]:text-[clamp(15px,5.1vw,22px)]';
+  if (length >= 24) return 'max-[640px]:text-[clamp(17px,5.6vw,26px)]';
+  if (length >= 16) return 'max-[640px]:text-[clamp(19px,6.1vw,28px)]';
+  return 'max-[640px]:text-[clamp(20px,6.6vw,30px)]';
+}
+
 export default function FlashcardDeck({
   cards,
   lessonTitle,
@@ -229,6 +245,14 @@ export default function FlashcardDeck({
   const ruDialogLines = splitDialogLines(card?.ru_meaning || '');
   const isGeDialog = geDialogLines.length > 1;
   const isRuDialog = ruDialogLines.length > 1;
+  const geMobileTextClass = useMemo(
+    () => getMobileTextSizeClass(card?.ge_text || '', 'ge'),
+    [card?.ge_text],
+  );
+  const ruMobileTextClass = useMemo(
+    () => getMobileTextSizeClass(card?.ru_meaning || '', 'ru'),
+    [card?.ru_meaning],
+  );
   const cardTranslit = useMemo(() => {
     if (!card) return '';
     if (transliterationMode === 'latin' && card.translit && card.translit.trim()) {
@@ -714,7 +738,7 @@ export default function FlashcardDeck({
             ) : !flipped ? (
               <div key={`front-${idx}`} className="flex -translate-y-[14px] flex-col items-center justify-center gap-3">
                 <div
-                  className="flashcard-ge-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(34px,5vw,56px)] leading-[1.12] tracking-[0.012em] text-slate-800"
+                  className={`flashcard-ge-text mx-auto w-full max-w-[20ch] max-[640px]:max-w-full max-[640px]:px-[22px] whitespace-normal break-normal text-[clamp(34px,5vw,56px)] ${geMobileTextClass} leading-[1.12] tracking-[0.012em] text-slate-800`}
                   style={{
                     fontFamily:
                       "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
@@ -738,7 +762,7 @@ export default function FlashcardDeck({
                   )}
                 </div>
                 {showTranslit && (
-                  <div className="text-[clamp(16px,2vw,22px)] text-emerald-600/90">
+                  <div className="mb-2 max-[640px]:mb-4 max-[460px]:mb-5 text-[clamp(16px,2vw,22px)] text-emerald-600/90">
                     {isGeDialog && translitDialogLines.length > 1 ? (
                       <div className="flex flex-col items-center gap-1.5">
                         {translitDialogLines.map((line, lineIdx) => (
@@ -760,7 +784,7 @@ export default function FlashcardDeck({
       </div>
     ) : (
       <div key={`back-${idx}`} className="flex -translate-y-[14px] flex-col items-center justify:center gap-3">
-        <div className="flashcard-ru-text mx-auto max-w-[20ch] whitespace-normal break-words text-[clamp(30px,5vw,48px)] leading-tight text-[var(--text-primary)]">
+        <div className={`flashcard-ru-text mx-auto w-full max-w-[20ch] max-[640px]:max-w-full max-[640px]:px-[22px] whitespace-normal break-normal text-[clamp(30px,5vw,48px)] ${ruMobileTextClass} leading-tight text-[var(--text-primary)]`}>
           {isRuDialog ? (
             <div className="flex flex-col items-center gap-1.5">
               {ruDialogLines.map((line, lineIdx) => (

@@ -1270,12 +1270,34 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
     }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 460px) {
+    .flashcard-card-shell {
+        width: min(100%, 420px, 84vw);
+        max-width: 420px;
+    }
+
+    .flashcard-main-card {
+        width: min(100%, 420px, 84vw);
+        max-width: 420px;
+        aspect-ratio: 14 / 11;
+    }
+
+    .flashcard-controls-wrap {
+        width: min(100%, 420px, 84vw);
+        max-width: 420px;
+    }
+
     .flashcard-content {
         padding-left: 16px;
         padding-right: 16px;
         padding-top: 60px;
-        padding-bottom: 44px;
+        padding-bottom: 58px;
+    }
+}
+
+@media (max-width: 420px) {
+    .flashcard-content {
+        padding-bottom: 52px;
     }
 }
 
