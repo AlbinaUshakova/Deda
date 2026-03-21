@@ -13,6 +13,7 @@ export default function AuthStatus() {
     const [showProgress, setShowProgress] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
     const [theme, setTheme] = useState<Settings['theme']>('light');
+    const [transliterationMode, setTransliterationMode] = useState<Settings['transliterationMode']>('ru');
     const menuRef = useRef<HTMLDivElement | null>(null);
     const emitProfileMenuOpened = () => {
         if (typeof window === 'undefined') return;
@@ -40,7 +41,7 @@ export default function AuthStatus() {
     const focusRingClass =
         'focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2';
     const menuItemClass =
-        `flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-[clamp(10px,1.85vw,14px)] font-medium text-[var(--menu-text)] transition ${focusRingClass} hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)]`;
+        `flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-left text-[clamp(10px,1.8vw,13px)] font-medium text-[var(--menu-text)] transition ${focusRingClass} hover:bg-[var(--menu-hover)] active:bg-[var(--menu-active)]`;
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -65,6 +66,7 @@ export default function AuthStatus() {
         const syncSettings = () => {
             const settings = getSettings();
             setTheme(settings.theme);
+            setTransliterationMode(settings.transliterationMode);
         };
         syncSettings();
         window.addEventListener('deda:settings-updated', syncSettings as EventListener);
@@ -124,21 +126,24 @@ export default function AuthStatus() {
                 </button>
 
                 {open && (
-                    <div className="menu-floating-anchor menu-panel-shell menu-panel-size animate-modal-in overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-[clamp(8px,1.5vw,10px)] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
+                    <div className="menu-floating-anchor menu-panel-shell menu-panel-size animate-modal-in overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-[clamp(6px,1.1vw,8px)] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
                         {/* шапка с именем и почтой */}
-                        <div className="relative flex h-10 items-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
+                        <div
+                            className="relative flex h-7 items-center border-b px-0.5 pb-0"
+                            style={{ borderColor: 'color-mix(in srgb, var(--menu-divider) 68%, transparent 32%)' }}
+                        >
                             <button
                                 type="button"
                                 aria-label="Закрыть меню"
-                                className={`absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 rounded-lg text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] ${focusRingClass}`}
+                                className={`home-alphabet-close absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 rounded-md text-[11px] transition-colors ${focusRingClass}`}
                                 onClick={closeMenu}
                             >
                                 ✕
                             </button>
-                            <div className="truncate pr-10 text-[clamp(11px,2vw,14px)] font-semibold">{menuLabel}</div>
+                            <div className="whitespace-nowrap pr-8 text-[clamp(9px,1.55vw,13px)] font-semibold">{menuLabel}</div>
                         </div>
 
-                        <div className="space-y-1 pt-2.5 pb-1.5">
+                        <div className="space-y-0.5 pt-2 pb-1">
                             {/* Прогресс */}
                             <button
                                 className={menuItemClass}
@@ -172,15 +177,18 @@ export default function AuthStatus() {
                                 }}
                             >
                                 <span aria-hidden>💬</span>
-                                <span>Помощь и обратная связь</span>
+                                <span>Помощь и отзывы</span>
                             </button>
                         </div>
 
-                        <div className="mt-1 border-t border-[var(--menu-divider)] pt-2.5">
-                            <div className="mb-2 px-1 text-[clamp(9px,1.55vw,11px)] font-semibold uppercase tracking-[0.08em] text-[var(--menu-text-muted)]">
+                        <div
+                            className="mt-0.5 border-t pt-1"
+                            style={{ borderColor: 'color-mix(in srgb, var(--menu-divider) 68%, transparent 32%)' }}
+                        >
+                            <div className="mb-1 px-1 text-[clamp(9px,1.55vw,11px)] font-semibold uppercase tracking-[0.08em] text-[var(--menu-text-muted)]">
                                 Тема
                             </div>
-                            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[var(--menu-segment-border)] bg-[var(--menu-segment-bg)] p-1">
+                            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[var(--menu-segment-border)] bg-[var(--menu-segment-bg)] p-[3px]">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -188,11 +196,19 @@ export default function AuthStatus() {
                                         setTheme('light');
                                     }}
                                     aria-pressed={theme === 'light'}
-                                    className={`rounded-lg px-2 py-1 text-[clamp(10px,1.7vw,12px)] font-medium transition ${focusRingClass} ${
+                                    className={`rounded-[10px] px-2 py-1 text-[clamp(10px,1.7vw,12px)] font-medium transition ${focusRingClass} ${
                                         theme === 'light'
-                                            ? 'bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] border border-[var(--btn-active-border)] shadow-[var(--btn-active-shadow)]'
+                                            ? 'text-[var(--btn-active-text)] border shadow-none'
                                             : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
                                     }`}
+                                    style={
+                                        theme === 'light'
+                                            ? {
+                                                background: 'color-mix(in srgb, var(--btn-active-bg) 72%, white 28%)',
+                                                borderColor: 'color-mix(in srgb, var(--btn-active-border) 48%, transparent 52%)',
+                                            }
+                                            : undefined
+                                    }
                                 >
                                     Светлая
                                 </button>
@@ -203,13 +219,78 @@ export default function AuthStatus() {
                                         setTheme('dark');
                                     }}
                                     aria-pressed={theme === 'dark'}
-                                    className={`rounded-lg px-2 py-1 text-[clamp(10px,1.7vw,12px)] font-medium transition ${focusRingClass} ${
+                                    className={`rounded-[10px] px-2 py-1 text-[clamp(10px,1.7vw,12px)] font-medium transition ${focusRingClass} ${
                                         theme === 'dark'
-                                            ? 'bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] border border-[var(--btn-active-border)] shadow-[var(--btn-active-shadow)]'
+                                            ? 'text-[var(--btn-active-text)] border shadow-none'
                                             : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
                                     }`}
+                                    style={
+                                        theme === 'dark'
+                                            ? {
+                                                background: 'color-mix(in srgb, var(--btn-active-bg) 72%, white 28%)',
+                                                borderColor: 'color-mix(in srgb, var(--btn-active-border) 48%, transparent 52%)',
+                                            }
+                                            : undefined
+                                    }
                                 >
                                     Тёмная
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            className="mt-0.5 border-t pt-1"
+                            style={{ borderColor: 'color-mix(in srgb, var(--menu-divider) 68%, transparent 32%)' }}
+                        >
+                            <div className="mb-1 px-1 text-[clamp(9px,1.55vw,11px)] font-semibold uppercase tracking-[0.08em] text-[var(--menu-text-muted)]">
+                                Транскрипция
+                            </div>
+                            <div className="grid grid-cols-2 gap-1 rounded-xl border border-[var(--menu-segment-border)] bg-[var(--menu-segment-bg)] p-[3px]">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSettings({ transliterationMode: 'ru' });
+                                        setTransliterationMode('ru');
+                                    }}
+                                    aria-pressed={transliterationMode === 'ru'}
+                                    className={`rounded-[10px] px-2 py-1 text-[clamp(10px,1.7vw,12px)] font-medium transition ${focusRingClass} ${
+                                        transliterationMode === 'ru'
+                                            ? 'text-[var(--btn-active-text)] border shadow-none'
+                                            : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
+                                    }`}
+                                    style={
+                                        transliterationMode === 'ru'
+                                            ? {
+                                                background: 'color-mix(in srgb, var(--btn-active-bg) 72%, white 28%)',
+                                                borderColor: 'color-mix(in srgb, var(--btn-active-border) 48%, transparent 52%)',
+                                            }
+                                            : undefined
+                                    }
+                                >
+                                    Русский
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSettings({ transliterationMode: 'latin' });
+                                        setTransliterationMode('latin');
+                                    }}
+                                    aria-pressed={transliterationMode === 'latin'}
+                                    className={`rounded-[10px] px-2 py-1 text-[clamp(10px,1.7vw,11.5px)] font-medium transition ${focusRingClass} ${
+                                        transliterationMode === 'latin'
+                                            ? 'text-[var(--btn-active-text)] border shadow-none'
+                                            : 'bg-transparent text-[var(--menu-segment-idle)] hover:bg-[var(--menu-segment-idle-hover)]'
+                                    }`}
+                                    style={
+                                        transliterationMode === 'latin'
+                                            ? {
+                                                background: 'color-mix(in srgb, var(--btn-active-bg) 72%, white 28%)',
+                                                borderColor: 'color-mix(in srgb, var(--btn-active-border) 48%, transparent 52%)',
+                                            }
+                                            : undefined
+                                    }
+                                >
+                                    Английский
                                 </button>
                             </div>
                         </div>

@@ -1,6 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { playLetterAudio } from '@/lib/playLetterAudio';
+import { getSettings } from '@/lib/settings';
+import { geLetterToHint, type TransliterationMode } from '@/lib/transliteration';
 
 const GEORGIAN_ALPHABET = [
   'ა', 'ბ', 'გ', 'დ', 'ე', 'ვ', 'ზ', 'თ', 'ი', 'კ', 'ლ',
@@ -8,12 +11,14 @@ const GEORGIAN_ALPHABET = [
   'ღ', 'ყ', 'შ', 'ჩ', 'ც', 'ძ', 'წ', 'ჭ', 'ხ', 'ჯ', 'ჰ',
 ];
 
-const letterTranslit: Record<string, string> = {
-  'ა': 'a', 'ბ': 'b', 'გ': 'g', 'დ': 'd', 'ე': 'e', 'ვ': 'v', 'ზ': 'z', 'თ': 't',
-  'ი': 'i', 'კ': "k'", 'ლ': 'l', 'მ': 'm', 'ნ': 'n', 'ო': 'o', 'პ': "p'", 'ჟ': 'zh',
-  'რ': 'r', 'ს': 's', 'ტ': "t'", 'უ': 'u', 'ფ': 'p', 'ქ': 'k', 'ღ': 'gh', 'ყ': "q'",
-  'შ': 'sh', 'ჩ': 'ch', 'ც': 'ts', 'ძ': 'dz', 'წ': "ts'", 'ჭ': "ch'", 'ხ': 'kh', 'ჯ': 'j', 'ჰ': 'h',
-};
+const GEORGIAN_ALPHABET_ROWS = [
+  GEORGIAN_ALPHABET.slice(0, 6),
+  GEORGIAN_ALPHABET.slice(6, 12),
+  GEORGIAN_ALPHABET.slice(12, 18),
+  GEORGIAN_ALPHABET.slice(18, 24),
+  GEORGIAN_ALPHABET.slice(24, 30),
+  GEORGIAN_ALPHABET.slice(30),
+];
 
 const geLetterAudioMap: Record<string, string> = {
   'ა': '/audio/letters/01-ani.mp3',
@@ -52,6 +57,18 @@ const geLetterAudioMap: Record<string, string> = {
 };
 
 export default function LandingAlphabet() {
+  const [transliterationMode, setTransliterationMode] = useState<TransliterationMode>('ru');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const syncSettings = () => {
+      setTransliterationMode(getSettings().transliterationMode);
+    };
+    syncSettings();
+    window.addEventListener('deda:settings-updated', syncSettings as EventListener);
+    return () => window.removeEventListener('deda:settings-updated', syncSettings as EventListener);
+  }, []);
+
   const speakLetter = (letter: string) => {
     void playLetterAudio({
       audioSrc: geLetterAudioMap[letter],
@@ -61,19 +78,26 @@ export default function LandingAlphabet() {
 
   return (
     <div className="landing-alphabet-shell rounded-[clamp(10px,1.3vw,15px)] border border-white/70 bg-white/55 p-[clamp(2px,0.45vw,5px)] shadow-[0_10px_24px_rgba(15,23,42,0.06)] backdrop-blur-[6px]">
-      <div className="landing-alphabet-grid grid grid-cols-7 gap-[clamp(1px,0.34vw,4px)]">
-        {GEORGIAN_ALPHABET.map((ch, index) => (
-          <button
-            key={ch}
-            type="button"
-            onClick={() => speakLetter(ch)}
-            className={`landing-alphabet-key home-alphabet-key aspect-square rounded-[7px] border border-slate-200/75 bg-white/90 px-[clamp(1px,0.12vw,2px)] py-[clamp(1px,0.2vw,2px)] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${index === 0 ? ' home-alphabet-key--active' : ''}`}
-            title={`Озвучить букву ${ch}`}
-            aria-label={`Озвучить букву ${ch}`}
+      <div className="landing-alphabet-rows flex flex-col gap-[clamp(1px,0.34vw,4px)]">
+        {GEORGIAN_ALPHABET_ROWS.map((row, rowIdx) => (
+          <div
+            key={`landing-alphabet-row-${rowIdx}`}
+            className={row.length === 6 ? 'landing-alphabet-grid grid grid-cols-6 gap-[clamp(1px,0.34vw,4px)]' : 'landing-alphabet-grid--short grid grid-cols-3 gap-[clamp(1px,0.34vw,4px)] mx-auto w-[calc(50%-2px)]'}
           >
-            <div className="landing-alphabet-letter home-alphabet-letter text-[clamp(10px,1.32vw,17px)] leading-none text-black">{ch}</div>
-            <div className="landing-alphabet-translit home-alphabet-translit mt-[1px] text-[clamp(4px,0.52vw,7px)] leading-none text-slate-500">{letterTranslit[ch]}</div>
-          </button>
+            {row.map((ch, index) => (
+              <button
+                key={ch}
+                type="button"
+                onClick={() => speakLetter(ch)}
+                className={`landing-alphabet-key home-alphabet-key aspect-square rounded-[7px] border border-slate-200/75 bg-white/90 px-[clamp(1px,0.12vw,2px)] py-[clamp(2px,0.24vw,3px)] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${rowIdx === 0 && index === 0 ? ' home-alphabet-key--active' : ''}`}
+                title={`Озвучить букву ${ch}`}
+                aria-label={`Озвучить букву ${ch}`}
+              >
+                <div className="landing-alphabet-letter home-alphabet-letter translate-y-[-1px] text-[clamp(10px,1.32vw,17px)] leading-none text-black">{ch}</div>
+                <div className="landing-alphabet-translit home-alphabet-translit mt-[2px] text-[clamp(3px,0.46vw,6px)] leading-none text-slate-400">{geLetterToHint(ch, transliterationMode)}</div>
+              </button>
+            ))}
+          </div>
         ))}
       </div>
       <style jsx>{`
@@ -134,6 +158,10 @@ export default function LandingAlphabet() {
             gap: 0;
           }
 
+          .landing-alphabet-grid--short {
+            width: 50%;
+          }
+
           .landing-alphabet-key {
             border-radius: 5px;
             padding: 0;
@@ -144,7 +172,7 @@ export default function LandingAlphabet() {
           }
 
           .landing-alphabet-translit {
-            font-size: 70%;
+            font-size: 64%;
           }
         }
       `}</style>

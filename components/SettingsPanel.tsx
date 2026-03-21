@@ -47,23 +47,29 @@ export default function SettingsPanel({
 
     return (
         <div className="menu-floating-anchor">
-            <div className="menu-panel-shell menu-panel-size animate-modal-in overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-[clamp(8px,1.5vw,10px)] text-[clamp(11px,1.8vw,12px)] text-[var(--menu-text)] shadow-[var(--menu-shadow)]">
-                <div className="relative flex h-10 items-center justify-center border-b border-[var(--menu-divider)] px-1 pb-1.5">
+            <div
+                className="menu-panel-shell menu-panel-size animate-modal-in overflow-y-auto rounded-2xl border border-[var(--menu-border)] bg-[var(--menu-bg)] p-[clamp(8px,1.5vw,10px)] text-[clamp(11px,1.8vw,12px)] text-[var(--menu-text)] shadow-[var(--menu-shadow)]"
+            >
+                <div
+                    className="relative flex h-7 items-center justify-center border-b px-0.5 pb-0"
+                    style={{ borderColor: 'color-mix(in srgb, var(--menu-divider) 68%, transparent 32%)' }}
+                >
                     {onBack && (
                         <button
                             aria-label="Назад в меню"
-                            className="absolute left-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                            className="absolute left-1 top-1/2 h-6 w-6 -translate-y-1/2 rounded-md text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                             onClick={handleBack}
                         >
-                            <svg viewBox="0 0 20 20" className="mx-auto h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <svg viewBox="0 0 20 20" className="mx-auto h-[11px] w-[11px]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <path d="M12.5 4.5L7 10l5.5 5.5" />
                             </svg>
                         </button>
                     )}
-                    <div className="px-10 text-center text-[clamp(12px,2.2vw,14px)] font-semibold text-[var(--menu-text)]">Настройки игры</div>
+                    <div className="whitespace-nowrap px-7 text-center text-[clamp(9px,1.55vw,13px)] font-semibold text-[var(--menu-text)]">Настройки игры</div>
                     <button
+                        type="button"
                         aria-label="Закрыть"
-                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-xl text-[var(--menu-text-muted)] opacity-85 transition hover:bg-transparent hover:text-[var(--menu-text)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
+                        className="home-alphabet-close absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 rounded-md text-[11px] transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-[var(--menu-focus)] focus-visible:outline-offset-2"
                         onClick={handleClose}
                     >
                         ✕
@@ -78,10 +84,18 @@ export default function SettingsPanel({
                                 setTranslationDirection('ge-ru');
                             }}
                             aria-pressed={translationDirection === 'ge-ru'}
-                            className={`relative rounded-xl border px-2 py-1.5 text-[clamp(10px,1.65vw,11px)] font-semibold transition-colors ${translationDirection === 'ge-ru'
-                                ? 'border-[var(--btn-active-border)] bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] shadow-[var(--btn-active-shadow)]'
+                            className={`relative rounded-[10px] border px-2 py-1 text-[clamp(10px,1.65vw,11px)] font-medium transition-colors ${translationDirection === 'ge-ru'
+                                ? 'text-[var(--btn-active-text)] shadow-none'
                                 : 'border-[#3E4B5E] bg-transparent text-[#A8B3C7] hover:bg-white/5 hover:border-[#6C6CFF] hover:text-[var(--menu-text)]'
                                 }`}
+                            style={
+                                translationDirection === 'ge-ru'
+                                    ? {
+                                        background: 'color-mix(in srgb, var(--btn-active-bg) 72%, white 28%)',
+                                        borderColor: 'color-mix(in srgb, var(--btn-active-border) 48%, transparent 52%)',
+                                    }
+                                    : undefined
+                            }
                         >
                             <div>🇬🇪 → 🇷🇺</div>
                         </button>
@@ -91,10 +105,18 @@ export default function SettingsPanel({
                                 setTranslationDirection('ru-ge');
                             }}
                             aria-pressed={translationDirection === 'ru-ge'}
-                            className={`relative rounded-xl border px-2 py-1.5 text-[clamp(10px,1.65vw,11px)] font-semibold transition-colors ${translationDirection === 'ru-ge'
-                                ? 'border-[var(--btn-active-border)] bg-[var(--btn-active-bg)] text-[var(--btn-active-text)] shadow-[var(--btn-active-shadow)]'
+                            className={`relative rounded-[10px] border px-2 py-1 text-[clamp(10px,1.65vw,11px)] font-medium transition-colors ${translationDirection === 'ru-ge'
+                                ? 'text-[var(--btn-active-text)] shadow-none'
                                 : 'border-[#3E4B5E] bg-transparent text-[#A8B3C7] hover:bg-white/5 hover:border-[#6C6CFF] hover:text-[var(--menu-text)]'
                                 }`}
+                            style={
+                                translationDirection === 'ru-ge'
+                                    ? {
+                                        background: 'color-mix(in srgb, var(--btn-active-bg) 72%, white 28%)',
+                                        borderColor: 'color-mix(in srgb, var(--btn-active-border) 48%, transparent 52%)',
+                                    }
+                                    : undefined
+                            }
                         >
                             <div>🇷🇺 → 🇬🇪</div>
                         </button>

@@ -1036,6 +1036,11 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
     background: #f7f7f8 !important;
 }
 
+.flashcard-card-shell {
+    width: min(100%, 600px, 88vw);
+    max-width: 600px;
+}
+
 .flashcard-content {
     padding: 32px;
     padding-top: 84px;
@@ -1062,6 +1067,11 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
 }
 
 @media (max-width: 1000px) {
+    .flashcard-card-shell {
+        width: min(100%, 520px, 86vw);
+        max-width: 520px;
+    }
+
     .flashcard-main-card {
         width: min(100%, 520px, 86vw);
         max-width: 520px;
@@ -1165,6 +1175,10 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
 }
 
 @media (min-width: 1200px) {
+    .flashcard-card-shell {
+        width: 600px;
+    }
+
     .flashcard-main-card {
         width: 600px;
     }
@@ -1175,6 +1189,11 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
 }
 
 @media (max-width: 900px) {
+    .flashcard-card-shell {
+        width: min(100%, 520px, 86vw);
+        max-width: 520px;
+    }
+
     .flashcard-main-card {
         width: min(100%, 520px, 86vw);
         max-width: 520px;
@@ -1186,6 +1205,11 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
 }
 
 @media (max-width: 800px) {
+    .flashcard-card-shell {
+        width: min(100%, 460px, 84vw);
+        max-width: 460px;
+    }
+
     .flashcard-main-card {
         width: min(100%, 460px, 84vw);
         max-width: 460px;
@@ -1225,6 +1249,11 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
 }
 
 @media (max-width: 520px) {
+    .flashcard-card-shell {
+        width: min(100%, 420px, 82vw);
+        max-width: 420px;
+    }
+
     .flashcard-main-card {
         width: min(100%, 420px, 82vw);
         max-width: 420px;
@@ -1233,6 +1262,15 @@ html[data-theme='dark'] .blocks-grid-gameover-button:hover {
     .flashcard-controls-wrap {
         width: min(100%, 420px, 82vw);
         max-width: 420px;
+    }
+}
+
+@media (max-width: 420px) {
+    .flashcard-content {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 60px;
+        padding-bottom: 44px;
     }
 }
 
