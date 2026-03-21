@@ -509,6 +509,10 @@ export default function HomePage() {
                       key={`progress-alpha-${ch}`}
                       className={`alphabet-writing-letter text-[clamp(11px,1.55vw,19px)] leading-none ${alphabetLetterColorByStatus[letterStatusByChar[ch] ?? 'unknown']}`}
                       aria-label={`Буква ${ch}`}
+                      style={{
+                        fontFamily:
+                          "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
+                      }}
                     >
                       {ch}
                     </span>
@@ -603,7 +607,11 @@ export default function HomePage() {
                               >
                                 <span
                                   className="block leading-[1.05] tracking-[0.015em] pb-[3px]"
-                                  style={{ fontSize: `${lessonLetterSizePx}px` }}
+                                  style={{
+                                    fontSize: `${lessonLetterSizePx}px`,
+                                    fontFamily:
+                                      "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
+                                  }}
                                 >
                                   {ch}
                                 </span>

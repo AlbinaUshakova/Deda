@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { pickImageForCard } from '@/lib/imageMap';
 import { getSettings } from '@/lib/settings';
 import { geTextToHint, type TransliterationMode } from '@/lib/transliteration';
+import { getEpisodesDataSync } from '@/lib/clientContentCache';
 
 type Card = {
   id?: string;
@@ -75,10 +76,12 @@ function splitDialogLines(text: string): string[] {
 export default function FlashcardDeck({
   cards,
   lessonTitle,
+  episodeId,
   onTopicChange,
 }: {
   cards: Card[];
   lessonTitle?: string;
+  episodeId?: string;
   onTopicChange?: (topic: string | null) => void;
 }) {
   const [isFavoritesPage, setIsFavoritesPage] = useState(false);
@@ -125,6 +128,31 @@ export default function FlashcardDeck({
   const hasTopics = useMemo(
     () => cards.some(c => !!c.topic),
     [cards],
+  );
+
+  const currentLessonLetters = useMemo(() => {
+    if (!episodeId || episodeId === 'ep1') return new Set<string>();
+    const { lettersByEpisode } = getEpisodesDataSync();
+    return new Set(lettersByEpisode[episodeId] ?? []);
+  }, [episodeId]);
+
+  const renderLessonLetterHighlight = useCallback(
+    (text: string) => {
+      if (!text || currentLessonLetters.size === 0) return text;
+      return Array.from(text).map((ch, idx) =>
+        currentLessonLetters.has(ch) ? (
+          <span
+            key={`${ch}-${idx}`}
+            className="text-[var(--accent)]"
+          >
+            {ch}
+          </span>
+        ) : (
+          <span key={`${ch}-${idx}`}>{ch}</span>
+        ),
+      );
+    },
+    [currentLessonLetters],
   );
 
   const hasLevels = useMemo(
@@ -701,12 +729,12 @@ export default function FlashcardDeck({
                             lineIdx === 0 ? 'flashcard-dialog-line--question' : 'flashcard-dialog-line--answer'
                           }`}
                         >
-                          {line}
+                          {renderLessonLetterHighlight(line)}
                         </div>
                       ))}
                     </div>
                   ) : (
-                    card.ge_text
+                    renderLessonLetterHighlight(card.ge_text)
                   )}
                 </div>
                 {showTranslit && (

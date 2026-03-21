@@ -141,18 +141,18 @@
     },
     {
       "type": "word",
-      "ge_text": "მანქანა",
-      "ru_meaning": "машина"
+      "ge_text": "ტორტი",
+      "ru_meaning": "торт"
     },
     {
       "type": "word",
-      "ge_text": "ბანანი",
-      "ru_meaning": "банан"
+      "ge_text": "ეს ტორტია",
+      "ru_meaning": "это торт"
     },
     {
       "type": "word",
-      "ge_text": "მაგიდაზეა",
-      "ru_meaning": "на столе"
+      "ge_text": "ტორტი მაგიდაზეა",
+      "ru_meaning": "торт на столе"
     },
     {
       "type": "word",
@@ -187,8 +187,8 @@
     },
     {
       "type": "word",
-      "ge_text": "ეზო დიდია",
-      "ru_meaning": "двор большой"
+      "ge_text": "ანანასი კარგია",
+      "ru_meaning": "ананас хороший"
     },
     {
       "type": "word",

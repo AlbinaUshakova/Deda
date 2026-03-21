@@ -225,6 +225,7 @@ body {
 }
 
 .home-lesson-letter {
+    font-family: 'Noto Sans Georgian', 'DejaVu Sans', system-ui, sans-serif;
     text-shadow: none;
 }
 
@@ -381,12 +382,16 @@ html[data-theme='light'] .header-control-btn {
 }
 
 .alphabet-writing-letter {
-    font-family: inherit;
+    font-family: 'Noto Sans Georgian', 'DejaVu Sans', system-ui, sans-serif;
     font-style: normal;
     font-weight: 400;
     transform: none;
     display: inline-block;
     line-height: 1;
+}
+
+.home-alphabet-letter {
+    font-family: 'Noto Sans Georgian', 'DejaVu Sans', system-ui, sans-serif;
 }
 
 .header-control-btn {

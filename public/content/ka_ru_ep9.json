@@ -9,20 +9,20 @@
   "cards": [
     {
       "type": "word",
+      "ge_text": "ჰო",
+      "ru_meaning": "да",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "მჭირდება",
+      "ru_meaning": "мне нужен",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "მე მჭირდება ტელეფონი",
       "ru_meaning": "мне нужен телефон",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ჭკვიანი კატა",
-      "ru_meaning": "умная кошка",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ჰო, ეს სასტუმროა",
-      "ru_meaning": "да, это отель",
       "audio_url": ""
     },
     {
@@ -75,20 +75,8 @@
     },
     {
       "type": "word",
-      "ge_text": "მჭირდება",
-      "ru_meaning": "мне нужен",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ტელეფონი მჭირდება",
-      "ru_meaning": "мне нужен телефон",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ეს ჰალვაა",
-      "ru_meaning": "это халва",
+      "ge_text": "ჭკვიანი კატა",
+      "ru_meaning": "умная кошка",
       "audio_url": ""
     },
     {
@@ -141,12 +129,6 @@
     },
     {
       "type": "word",
-      "ge_text": "ჰო, ტელეფონი მჭირდება",
-      "ru_meaning": "да, мне нужен телефон",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
       "ge_text": "მე მინდა ხაჭო",
       "ru_meaning": "я хочу творог",
       "audio_url": ""
@@ -159,8 +141,32 @@
     },
     {
       "type": "word",
+      "ge_text": "ჰო, ტელეფონი მჭირდება",
+      "ru_meaning": "да, мне нужен телефон",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს ჰალვაა",
+      "ru_meaning": "это халва",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
       "ge_text": "ეს წყალია",
       "ru_meaning": "это вода",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ეს წვენია",
+      "ru_meaning": "это сок",
+      "audio_url": ""
+    },
+    {
+      "type": "word",
+      "ge_text": "ჰო, ეს სასტუმროა",
+      "ru_meaning": "да, это отель",
       "audio_url": ""
     },
     {
@@ -209,12 +215,6 @@
       "type": "word",
       "ge_text": "მე არ მიყვარს ხაჭო",
       "ru_meaning": "я не люблю творог",
-      "audio_url": ""
-    },
-    {
-      "type": "word",
-      "ge_text": "ჰო, ეს სასტუმროა?",
-      "ru_meaning": "да, это отель?",
       "audio_url": ""
     }
   ]

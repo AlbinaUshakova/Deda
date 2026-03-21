@@ -93,6 +93,7 @@ export default function StudyClient({
             <FlashcardDeck
               cards={words}
               lessonTitle={ep.title || episodeId}
+              episodeId={episodeId}
               onTopicChange={setTopicForPlay}
             />
           </div>

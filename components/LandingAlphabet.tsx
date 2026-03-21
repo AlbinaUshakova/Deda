@@ -12,12 +12,11 @@ const GEORGIAN_ALPHABET = [
 ];
 
 const GEORGIAN_ALPHABET_ROWS = [
-  GEORGIAN_ALPHABET.slice(0, 6),
-  GEORGIAN_ALPHABET.slice(6, 12),
-  GEORGIAN_ALPHABET.slice(12, 18),
-  GEORGIAN_ALPHABET.slice(18, 24),
-  GEORGIAN_ALPHABET.slice(24, 30),
-  GEORGIAN_ALPHABET.slice(30),
+  GEORGIAN_ALPHABET.slice(0, 7),
+  GEORGIAN_ALPHABET.slice(7, 14),
+  GEORGIAN_ALPHABET.slice(14, 21),
+  GEORGIAN_ALPHABET.slice(21, 28),
+  GEORGIAN_ALPHABET.slice(28),
 ];
 
 const geLetterAudioMap: Record<string, string> = {
@@ -82,19 +81,19 @@ export default function LandingAlphabet() {
         {GEORGIAN_ALPHABET_ROWS.map((row, rowIdx) => (
           <div
             key={`landing-alphabet-row-${rowIdx}`}
-            className={row.length === 6 ? 'landing-alphabet-grid grid grid-cols-6 gap-[clamp(1px,0.34vw,4px)]' : 'landing-alphabet-grid--short grid grid-cols-3 gap-[clamp(1px,0.34vw,4px)] mx-auto w-[calc(50%-2px)]'}
+            className={row.length === 7 ? 'landing-alphabet-grid grid grid-cols-7 gap-[clamp(1px,0.34vw,4px)]' : 'landing-alphabet-grid--short grid grid-cols-5 gap-[clamp(1px,0.34vw,4px)] mx-auto w-[calc(71.428%-2px)]'}
           >
             {row.map((ch, index) => (
               <button
                 key={ch}
                 type="button"
                 onClick={() => speakLetter(ch)}
-                className={`landing-alphabet-key home-alphabet-key aspect-square rounded-[7px] border border-slate-200/75 bg-white/90 px-[clamp(1px,0.12vw,2px)] py-[clamp(2px,0.24vw,3px)] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${rowIdx === 0 && index === 0 ? ' home-alphabet-key--active' : ''}`}
+                className={`landing-alphabet-key home-alphabet-key aspect-square rounded-lg border border-slate-200/75 bg-white/90 py-[3px] text-center shadow-sm transition-all hover:border-[rgba(249,115,22,0.35)] hover:bg-slate-50${rowIdx === 0 && index === 0 ? ' home-alphabet-key--active' : ''}`}
                 title={`Озвучить букву ${ch}`}
                 aria-label={`Озвучить букву ${ch}`}
               >
-                <div className="landing-alphabet-letter home-alphabet-letter translate-y-[-1px] text-[clamp(10px,1.32vw,17px)] leading-none text-black">{ch}</div>
-                <div className="landing-alphabet-translit home-alphabet-translit mt-[2px] text-[clamp(3px,0.46vw,6px)] leading-none text-slate-400">{geLetterToHint(ch, transliterationMode)}</div>
+                <div className="landing-alphabet-letter home-alphabet-letter translate-y-[-1px] text-[clamp(14px,2.7vw,19px)] leading-none text-black">{ch}</div>
+                <div className="landing-alphabet-translit home-alphabet-translit mt-[2px] text-[clamp(6px,1.2vw,8px)] leading-none text-slate-400">{geLetterToHint(ch, transliterationMode)}</div>
               </button>
             ))}
           </div>
@@ -159,12 +158,13 @@ export default function LandingAlphabet() {
           }
 
           .landing-alphabet-grid--short {
-            width: 50%;
+            width: 71.428%;
           }
 
           .landing-alphabet-key {
             border-radius: 5px;
-            padding: 0;
+            padding-top: 2px;
+            padding-bottom: 2px;
           }
 
           .landing-alphabet-letter {
