@@ -139,22 +139,11 @@ export default function LandingAlphabet() {
           .landing-alphabet-shell {
             width: 86%;
             margin-inline: auto;
-            padding: 1px;
-            border-color: transparent;
-            background: transparent;
-            box-shadow: none;
-            backdrop-filter: none;
-          }
-
-          :global(html[data-theme='dark']) .landing-alphabet-shell {
-            background: transparent;
-            border-color: transparent;
-            box-shadow: none;
-            backdrop-filter: none;
+            padding: 2px;
           }
 
           .landing-alphabet-grid {
-            gap: 0;
+            gap: 2px;
           }
 
           .landing-alphabet-grid--short {
@@ -162,17 +151,17 @@ export default function LandingAlphabet() {
           }
 
           .landing-alphabet-key {
-            border-radius: 5px;
+            border-radius: 8px;
             padding-top: 2px;
             padding-bottom: 2px;
           }
 
           .landing-alphabet-letter {
-            font-size: 72%;
+            font-size: clamp(13px, 4.4vw, 18px);
           }
 
           .landing-alphabet-translit {
-            font-size: 64%;
+            font-size: clamp(6px, 2vw, 8px);
           }
         }
       `}</style>
