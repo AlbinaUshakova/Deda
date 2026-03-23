@@ -8,9 +8,40 @@ import HeaderLessonTitle from "@/components/HeaderLessonTitle";
 import StandaloneModeSync from "@/components/StandaloneModeSync";
 import ThemeSync from "@/components/ThemeSync";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  title: "Deda - учимся читать по-грузински, играя.",
+  metadataBase: new URL(siteUrl),
+  title: "Deda - учимся читать по-грузински играя.",
   description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
+  openGraph: {
+    title: "Deda - учимся читать по-грузински играя.",
+    description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
+    url: "/",
+    siteName: "Deda",
+    locale: "ru_RU",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Deda - учимся читать по-грузински играя.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Deda - учимся читать по-грузински играя.",
+    description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
+    images: ["/opengraph-image"],
+  },
   icons: {
     icon: "/images/deda-app-icon.png",
     shortcut: "/images/deda-app-icon.png",

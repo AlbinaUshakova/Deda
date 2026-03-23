@@ -60,7 +60,7 @@ const darkInterfaceSlots: Array<{
 ];
 
 export const metadata = {
-  title: 'Deda - учимся читать по-грузински, играя.',
+  title: 'Deda - учимся читать по-грузински играя.',
   description:
     'Слушай буквы, читай карточки и закрепляй чтение в игре.',
 };
@@ -561,7 +561,7 @@ export default function LandingPage() {
             <h1 className="landing-title max-w-[620px] text-[clamp(23px,3.8vw,47px)] font-semibold leading-[1.02] tracking-[-0.02em]">
               Учимся читать
               <br />
-              по-грузински, играя
+              по-грузински играя
             </h1>
             <p className="landing-subtitle mt-6 text-[clamp(15px,2vw,20px)] leading-[1.4] text-[var(--text-secondary)]">
               Слушай буквы, читай карточки
