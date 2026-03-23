@@ -66,8 +66,8 @@ export default async function OpenGraphImage() {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "500px",
-            height: "560px",
+            width: "620px",
+            height: "540px",
             borderRadius: "40px",
             overflow: "hidden",
             background:
@@ -99,8 +99,8 @@ export default async function OpenGraphImage() {
               src={catImageSrc}
               alt="Deda cat"
               style={{
-                width: "468px",
-                height: "468px",
+                width: "500px",
+                height: "500px",
                 objectFit: "contain",
                 filter: "drop-shadow(0 20px 36px rgba(0, 0, 0, 0.28))",
               }}
