@@ -9,12 +9,41 @@ export const size = {
 };
 export const contentType = "image/png";
 
+async function loadFont(fontFamily: string, text: string) {
+  try {
+    const cssResponse = await fetch(
+      `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:wght@700&text=${encodeURIComponent(text)}`,
+    );
+    if (!cssResponse.ok) {
+      return null;
+    }
+
+    const css = await cssResponse.text();
+    const fontUrlMatch = css.match(/src: url\(([^)]+)\) format\('(opentype|truetype|woff2?)'\)/);
+    const fontUrl = fontUrlMatch?.[1];
+
+    if (!fontUrl) {
+      return null;
+    }
+
+    const fontResponse = await fetch(fontUrl);
+    if (!fontResponse.ok) {
+      return null;
+    }
+
+    return await fontResponse.arrayBuffer();
+  } catch {
+    return null;
+  }
+}
+
 export default async function OpenGraphImage() {
   const catImage = await readFile(
     path.join(process.cwd(), "public/images/deda-cat.png"),
   );
-  const fontData = await readFile(
-    "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+  const fontData = await loadFont(
+    "Noto Sans",
+    "Deda — учимся читать по-грузински играя",
   );
   const catImageSrc = `data:image/png;base64,${catImage.toString("base64")}`;
 
@@ -29,7 +58,7 @@ export default async function OpenGraphImage() {
           justifyContent: "center",
           background: "#0b1020",
           color: "#f8fafc",
-          fontFamily: '"Arial Unicode"',
+          fontFamily: '"Noto Sans"',
           padding: "36px",
         }}
       >
@@ -107,16 +136,18 @@ export default async function OpenGraphImage() {
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        {
-          name: "Arial Unicode",
-          data: fontData,
-          style: "normal",
-          weight: 400,
-        },
-      ],
-    },
+    fontData
+      ? {
+          ...size,
+          fonts: [
+            {
+              name: "Noto Sans",
+              data: fontData,
+              style: "normal",
+              weight: 700,
+            },
+          ],
+        }
+      : size,
   );
 }
