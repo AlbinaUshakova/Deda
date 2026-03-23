@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/opengraph-image-v2",
         width: 1200,
         height: 630,
         alt: "Deda - учимся читать по-грузински играя.",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Deda - учимся читать по-грузински играя.",
     description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
-    images: ["/opengraph-image"],
+    images: ["/opengraph-image-v2"],
   },
   icons: {
     icon: "/images/deda-app-icon.png",
