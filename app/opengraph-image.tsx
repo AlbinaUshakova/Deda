@@ -103,36 +103,10 @@ export default async function OpenGraphImage() {
                 height: "468px",
                 objectFit: "contain",
                 filter: "drop-shadow(0 20px 36px rgba(0, 0, 0, 0.28))",
-                marginTop: "-82px",
               }}
             />
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-              padding: "0 32px 58px",
-              marginTop: "-108px",
-              background:
-                "linear-gradient(180deg, rgba(39, 45, 56, 0), rgba(36, 41, 51, 0.82) 24%, #242933 100%)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                fontSize: "33px",
-                lineHeight: 1.08,
-                fontWeight: 700,
-                letterSpacing: "-0.03em",
-                color: "#ffffff",
-                maxWidth: "420px",
-              }}
-            >
-              Deda — учимся читать по-грузински играя
-            </div>
-          </div>
         </div>
       </div>
     ),

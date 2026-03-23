@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     title: "Deda - учимся читать по-грузински играя.",
     description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
     url: "/",
-    siteName: "Deda",
     locale: "ru_RU",
     type: "website",
     images: [
