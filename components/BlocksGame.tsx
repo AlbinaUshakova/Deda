@@ -37,6 +37,25 @@ const NUMBER_WORDS_RU: Record<string, number> = {
   'пятьсот': 500, 'шестьсот': 600, 'семьсот': 700, 'восемьсот': 800,
   'девятьсот': 900, 'тысяча': 1000,
 };
+const NUMBER_WORDS_GE: Record<string, number> = {
+  'ნული': 0,
+  'ერთი': 1,
+  'ორი': 2,
+  'სამი': 3,
+  'ოთხი': 4,
+  'ხუთი': 5,
+  'ექვსი': 6,
+  'შვიდი': 7,
+  'რვა': 8,
+  'ცხრა': 9,
+  'ათი': 10,
+  'ასი': 100,
+  'ათასი': 1000,
+};
+const NUMBER_WORDS: Record<string, number> = {
+  ...NUMBER_WORDS_RU,
+  ...NUMBER_WORDS_GE,
+};
 
 // ключи избранного — новый (общий с карточками) и старый (из BlocksGame)
 const FAVORITES_KEY = 'deda_fav_ge';
@@ -169,11 +188,11 @@ function normalizeNumberForms(str: string): string {
   return str;
 }
 
-// --- пытаемся распарсить числовую фразу в цифры (например "два" -> "2")
+// --- пытаемся распарсить числовую фразу в цифры (например "два" / "ორი" -> "2")
 function parseNumberWordToDigits(str: string): string | null {
   const words = str
     .toLowerCase()
-    .replace(/[^а-яё\s-]/g, ' ')
+    .replace(/[^\p{L}\s-]/gu, ' ')
     .replace(/-+/g, ' ')
     .split(/\s+/)
     .filter(Boolean);
@@ -185,7 +204,7 @@ function parseNumberWordToDigits(str: string): string | null {
   let matched = false;
 
   for (const w of words) {
-    const val = NUMBER_WORDS_RU[w];
+    const val = NUMBER_WORDS[w];
     if (val === undefined) {
       // если встретили слово, которое не входит в числительные — прекращаем
       return null;
@@ -211,7 +230,7 @@ function parseNumberWordToDigits(str: string): string | null {
 function normalizeNumbersInText(str: string): string {
   const normalized = normalizeRu(str);
   const tokens = normalized
-    .replace(/[^а-яё0-9\s-]/g, ' ')
+    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
     .replace(/-+/g, ' ')
     .split(/\s+/)
     .filter(Boolean);
@@ -227,14 +246,14 @@ function normalizeNumbersInText(str: string): string {
       i += 1;
       continue;
     }
-    if (!(token in NUMBER_WORDS_RU)) {
+    if (!(token in NUMBER_WORDS)) {
       out.push(token);
       i += 1;
       continue;
     }
 
     let j = i;
-    while (j < tokens.length && tokens[j] in NUMBER_WORDS_RU) {
+    while (j < tokens.length && tokens[j] in NUMBER_WORDS) {
       j += 1;
     }
     const parsed = parseNumberWordToDigits(tokens.slice(i, j).join(' '));
