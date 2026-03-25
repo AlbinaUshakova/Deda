@@ -1,12 +1,12 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
 import AuthStatus from "@/components/AuthStatus";
 import BrandToggle from "@/components/BrandToggle";
 import GlobalAlphabetOverlay from "@/components/GlobalAlphabetOverlay";
 import HeaderLessonTitle from "@/components/HeaderLessonTitle";
 import StandaloneModeSync from "@/components/StandaloneModeSync";
 import ThemeSync from "@/components/ThemeSync";
+import VercelAnalytics from "@/components/VercelAnalytics";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -78,7 +78,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
-        <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );
