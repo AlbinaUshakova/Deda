@@ -101,14 +101,14 @@
     },
     {
       "type": "word",
-      "ge_text": "საათია",
-      "ru_meaning": "сейчас ... часов"
-    },
-    {
-      "type": "word",
       "ge_text": "ოთხი",
       "reading": "otkhi",
       "ru_meaning": "четыре"
+    },
+    {
+      "type": "word",
+      "ge_text": "იას ოთხი ია",
+      "ru_meaning": "у Ии четыре фиалки"
     },
     {
       "type": "word",
