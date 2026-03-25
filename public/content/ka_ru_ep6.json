@@ -69,7 +69,7 @@
     {
       "type": "word",
       "ge_text": "სახლები",
-      "ru_meaning": "дома",
+      "ru_meaning": "дома (мн. число)",
       "audio_url": ""
     },
     {
@@ -93,7 +93,7 @@
     {
       "type": "word",
       "ge_text": "სახლში",
-      "ru_meaning": "дома",
+      "ru_meaning": "дома (у себя)",
       "audio_url": ""
     },
     {

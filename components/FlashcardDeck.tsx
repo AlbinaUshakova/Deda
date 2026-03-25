@@ -73,18 +73,45 @@ function splitDialogLines(text: string): string[] {
     .filter(Boolean);
 }
 
+function insertSoftHyphens(text: string, chunkSize: number) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed || /\s/.test(trimmed) || trimmed.length <= chunkSize + 2) {
+    return trimmed;
+  }
+
+  const chars = Array.from(trimmed);
+  const parts: string[] = [];
+
+  for (let i = 0; i < chars.length; i += chunkSize) {
+    parts.push(chars.slice(i, i + chunkSize).join(''));
+  }
+
+  return parts.join('\u00AD');
+}
+
 function getMobileTextSizeClass(text: string, kind: 'ge' | 'ru') {
-  const length = Array.from(String(text || '').trim()).length;
+  const trimmed = String(text || '').trim();
+  const length = Array.from(trimmed).length;
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  const maxWordLength = words.reduce(
+    (max, word) => Math.max(max, Array.from(word).length),
+    0,
+  );
 
   if (kind === 'ge') {
-    if (length >= 28) return 'max-[640px]:text-[clamp(16px,5.4vw,24px)]';
-    if (length >= 20) return 'max-[640px]:text-[clamp(18px,5.9vw,28px)]';
-    if (length >= 14) return 'max-[640px]:text-[clamp(20px,6.6vw,31px)]';
+    if (words.length >= 2 && words.length <= 3 && maxWordLength <= 8) {
+      return 'max-[640px]:text-[clamp(22px,7.4vw,34px)]';
+    }
+    if (length >= 34) return 'max-[640px]:text-[clamp(12px,4.1vw,18px)]';
+    if (length >= 28) return 'max-[640px]:text-[clamp(14px,4.8vw,22px)]';
+    if (length >= 20) return 'max-[640px]:text-[clamp(17px,5.5vw,26px)]';
+    if (length >= 14) return 'max-[640px]:text-[clamp(16px,5.1vw,24px)]';
+    if (length >= 10) return 'max-[640px]:text-[clamp(15px,4.8vw,22px)]';
     return 'max-[640px]:text-[clamp(22px,7.4vw,34px)]';
   }
 
-  if (length >= 34) return 'max-[640px]:text-[clamp(15px,5.1vw,22px)]';
-  if (length >= 24) return 'max-[640px]:text-[clamp(17px,5.6vw,26px)]';
+  if (length >= 34) return 'max-[640px]:text-[clamp(13px,4.4vw,20px)]';
+  if (length >= 24) return 'max-[640px]:text-[clamp(16px,5.1vw,24px)]';
   if (length >= 16) return 'max-[640px]:text-[clamp(19px,6.1vw,28px)]';
   return 'max-[640px]:text-[clamp(20px,6.6vw,30px)]';
 }
@@ -156,7 +183,9 @@ export default function FlashcardDeck({
     (text: string) => {
       if (!text || currentLessonLetters.size === 0) return text;
       return Array.from(text).map((ch, idx) =>
-        currentLessonLetters.has(ch) ? (
+        ch === '\u00AD' ? (
+          <span key={`${idx}-shy`}>{ch}</span>
+        ) : currentLessonLetters.has(ch) ? (
           <span
             key={`${ch}-${idx}`}
             className="text-[var(--accent)]"
@@ -169,6 +198,22 @@ export default function FlashcardDeck({
       );
     },
     [currentLessonLetters],
+  );
+
+  const renderCardText = useCallback(
+    (text: string, kind: 'ge' | 'ru') => {
+      const prepared =
+        kind === 'ge'
+          ? insertSoftHyphens(text, 6)
+          : insertSoftHyphens(text, 7);
+
+      if (kind === 'ge') {
+        return renderLessonLetterHighlight(prepared);
+      }
+
+      return prepared;
+    },
+    [renderLessonLetterHighlight],
   );
 
   const hasLevels = useMemo(
@@ -245,6 +290,16 @@ export default function FlashcardDeck({
   const ruDialogLines = splitDialogLines(card?.ru_meaning || '');
   const isGeDialog = geDialogLines.length > 1;
   const isRuDialog = ruDialogLines.length > 1;
+  const geLength = Array.from(String(card?.ge_text || '').trim()).length;
+  const ruLength = Array.from(String(card?.ru_meaning || '').trim()).length;
+  const geMobileLayoutClass =
+    !isGeDialog && geLength >= 10 && !/\s/.test(card?.ge_text || '')
+      ? 'max-[640px]:px-[34px] max-[420px]:px-[38px] max-[640px]:[hyphens:manual] max-[640px]:break-normal'
+      : 'max-[640px]:px-[26px]';
+  const ruMobileLayoutClass =
+    !isRuDialog && ruLength >= 18 && !/\s/.test(card?.ru_meaning || '')
+      ? 'max-[640px]:px-[34px] max-[420px]:px-[38px] max-[640px]:[hyphens:manual] max-[640px]:break-normal'
+      : 'max-[640px]:px-[26px]';
   const geMobileTextClass = useMemo(
     () => getMobileTextSizeClass(card?.ge_text || '', 'ge'),
     [card?.ge_text],
@@ -738,7 +793,7 @@ export default function FlashcardDeck({
             ) : !flipped ? (
               <div key={`front-${idx}`} className="flex -translate-y-[14px] flex-col items-center justify-center gap-3">
                 <div
-                  className={`flashcard-ge-text mx-auto w-full max-w-[20ch] max-[640px]:max-w-full max-[640px]:px-[22px] whitespace-normal break-normal text-[clamp(34px,5vw,56px)] ${geMobileTextClass} leading-[1.12] tracking-[0.012em] text-slate-800`}
+                  className={`flashcard-ge-text mx-auto w-full max-w-[20ch] max-[640px]:max-w-full whitespace-normal break-normal text-[clamp(34px,5vw,56px)] ${geMobileTextClass} ${geMobileLayoutClass} leading-[1.12] text-slate-800`}
                   style={{
                     fontFamily:
                       "'Noto Sans Georgian','DejaVu Sans',system-ui,sans-serif",
@@ -758,7 +813,7 @@ export default function FlashcardDeck({
                       ))}
                     </div>
                   ) : (
-                    renderLessonLetterHighlight(card.ge_text)
+                    renderCardText(card.ge_text, 'ge')
                   )}
                 </div>
                 {showTranslit && (
@@ -784,7 +839,7 @@ export default function FlashcardDeck({
       </div>
     ) : (
       <div key={`back-${idx}`} className="flex -translate-y-[14px] flex-col items-center justify:center gap-3">
-        <div className={`flashcard-ru-text mx-auto w-full max-w-[20ch] max-[640px]:max-w-full max-[640px]:px-[22px] whitespace-normal break-normal text-[clamp(30px,5vw,48px)] ${ruMobileTextClass} leading-tight text-[var(--text-primary)]`}>
+        <div className={`flashcard-ru-text mx-auto w-full max-w-[20ch] max-[640px]:max-w-full whitespace-normal break-normal text-[clamp(30px,5vw,48px)] ${ruMobileTextClass} ${ruMobileLayoutClass} leading-tight text-[var(--text-primary)]`}>
           {isRuDialog ? (
             <div className="flex flex-col items-center gap-1.5">
               {ruDialogLines.map((line, lineIdx) => (
@@ -799,7 +854,7 @@ export default function FlashcardDeck({
                       ))}
                     </div>
                   ) : (
-                    card.ru_meaning || '—'
+                    renderCardText(card.ru_meaning || '—', 'ru')
                   )}
                 </div>
               </div>

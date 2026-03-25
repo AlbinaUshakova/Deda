@@ -226,6 +226,34 @@ function parseNumberWordToDigits(str: string): string | null {
   return String(result);
 }
 
+function normalizeSimpleNumberSequence(str: string): string | null {
+  const tokens = normalizeRu(str)
+    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
+    .replace(/-+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (tokens.length < 2) return null;
+
+  const normalizedTokens: string[] = [];
+
+  for (const token of tokens) {
+    if (/^\d+$/.test(token)) {
+      normalizedTokens.push(token);
+      continue;
+    }
+
+    const value = NUMBER_WORDS[token];
+    if (value === undefined || value < 0 || value > 10) {
+      return null;
+    }
+
+    normalizedTokens.push(String(value));
+  }
+
+  return normalizedTokens.join(' ');
+}
+
 // Приводит числа внутри фразы к единому цифровому виду: "два стула" -> "2 стула"
 function normalizeNumbersInText(str: string): string {
   const normalized = normalizeRu(str);
@@ -379,6 +407,13 @@ function isSameAnswer(userInput: string, correctAnswer: string): boolean {
     const sentenceUser = normalizeSentenceForCompare(userInput);
     const sentenceCorrect = normalizeSentenceForCompare(variant);
     if (sentenceUser === sentenceCorrect) return true;
+
+    // 2.2) последовательности отдельных чисел: "1 2 3" == "один два три"
+    const sequenceUser = normalizeSimpleNumberSequence(userInput);
+    const sequenceCorrect = normalizeSimpleNumberSequence(variant);
+    if (sequenceUser && sequenceCorrect && sequenceUser === sequenceCorrect) {
+      return true;
+    }
 
     // 3) сравнение c числами внутри фраз: "2 стула" == "два стула"
     const numericUser = normalizeForCompare(normalizeNumbersInText(userInput));
