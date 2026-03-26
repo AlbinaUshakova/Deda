@@ -21,10 +21,10 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Deda - учимся читать по-грузински играя.",
-  description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
+  description: "Слушай буквы, читай карточки и играй, чтобы довести чтение по-грузински до автоматизма.",
   openGraph: {
     title: "Deda - учимся читать по-грузински играя.",
-    description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
+    description: "Слушай буквы, читай карточки и играй, чтобы довести чтение по-грузински до автоматизма.",
     url: "/",
     locale: "ru_RU",
     type: "website",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Deda - учимся читать по-грузински играя.",
-    description: "Слушай буквы, читай карточки и закрепляй чтение в игре.",
+    description: "Слушай буквы, читай карточки и играй, чтобы довести чтение по-грузински до автоматизма.",
     images: ["/og-image-v2"],
   },
   icons: {

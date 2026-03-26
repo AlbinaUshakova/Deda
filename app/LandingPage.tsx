@@ -62,7 +62,7 @@ const darkInterfaceSlots: Array<{
 export const landingMetadata = {
   title: 'Deda - учимся читать по-грузински играя.',
   description:
-    'Слушай буквы, читай карточки и закрепляй чтение в игре.',
+    'Слушай буквы, читай карточки и играй, чтобы довести чтение по-грузински до автоматизма.',
 };
 
 export default function LandingPage() {
