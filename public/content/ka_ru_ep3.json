@@ -132,26 +132,9 @@
     },
     {
       "type": "word",
-      "ge_text": "ვარ",
-      "ru_meaning": "есть (я)"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე ვარ",
-      "reading": "me var",
-      "ru_meaning": "я есть"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე ვარ მამა",
-      "reading": "me var mama",
-      "ru_meaning": "я папа"
-    },
-    {
-      "type": "word",
-      "ge_text": "მე ვარ დედა",
-      "reading": "me var deda",
-      "ru_meaning": "я мама"
+      "ge_text": "მე გიორგი ვარ",
+      "reading": "me giorgi var",
+      "ru_meaning": "я Гиорги"
     },
     {
       "type": "word",
@@ -174,12 +157,12 @@
     {
       "type": "word",
       "ge_text": "ის გოგოა",
-      "ru_meaning": "это девочка"
+      "ru_meaning": "та девочка"
     },
     {
       "type": "word",
-      "ge_text": "ის არის მამა",
-      "reading": "is aris mama",
+      "ge_text": "ეს არის მამა",
+      "reading": "es aris mama",
       "ru_meaning": "это папа"
     },
     {
@@ -206,6 +189,21 @@
       "type": "word",
       "ge_text": "ეს გიორგის მეგობარია",
       "ru_meaning": "это друг Гиорги"
+    },
+    {
+      "type": "word",
+      "ge_text": "გიორგის ვარდი",
+      "ru_meaning": "роза Гиорги"
+    },
+    {
+      "type": "word",
+      "ge_text": "მამის ვარდი",
+      "ru_meaning": "папина роза"
+    },
+    {
+      "type": "word",
+      "ge_text": "გოგოს მეგობარი",
+      "ru_meaning": "друг девочки"
     }
   ]
 }
