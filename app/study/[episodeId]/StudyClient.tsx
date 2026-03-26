@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
 import FlashcardDeck from '@/components/FlashcardDeck';
+import { orderLessonCardsByLetterProgression } from '@/lib/lessonCardOrder';
 
 export default function StudyClient({
   episodeId,
@@ -43,7 +44,11 @@ export default function StudyClient({
   if (!ep) return <div className="p-6">Эпизод не найден</div>;
 
   const words = useMemo(
-    () => ep.cards.filter((c: any) => c.type === 'word' || c.type === 'letter'),
+    () =>
+      orderLessonCardsByLetterProgression(
+        ep.cards.filter((c: any) => c.type === 'word' || c.type === 'letter'),
+        ep.letters,
+      ),
     [ep],
   );
 
