@@ -7,6 +7,7 @@ import HeaderLessonTitle from "@/components/HeaderLessonTitle";
 import StandaloneModeSync from "@/components/StandaloneModeSync";
 import ThemeSync from "@/components/ThemeSync";
 import VercelAnalytics from "@/components/VercelAnalytics";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -78,6 +79,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
+        <GoogleAnalytics />
         <VercelAnalytics />
       </body>
     </html>
