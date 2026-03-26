@@ -1,2 +1,2 @@
-export { metadata } from "./landing/page";
-export { default } from "./landing/page";
+export { landingMetadata as metadata } from "./LandingPage";
+export { default } from "./LandingPage";
