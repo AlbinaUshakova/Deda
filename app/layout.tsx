@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import AuthStatus from "@/components/AuthStatus";
 import BrandToggle from "@/components/BrandToggle";
 import GlobalAlphabetOverlay from "@/components/GlobalAlphabetOverlay";
@@ -79,7 +80,9 @@ export default function RootLayout({
             {children}
           </div>
         </main>
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
         <VercelAnalytics />
       </body>
     </html>
